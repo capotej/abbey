@@ -1,5 +1,7 @@
 # Abbey
 
+<img src="https://github.com/user-attachments/assets/410090cc-85a2-41c7-b18f-a7fc7551178a" alt="abbey" width="400"/>
+
 Minimal blog using Rails 8, designed to be easily self-hosted on AWS.
 
 # Getting Started
