@@ -1,0 +1,41 @@
+<%= form_with model: post, class: "space-y-6" do |form| %>
+
+  <% post.errors.each do |error| %>
+    <div><%= error.full_message %></div>
+  <% end %>
+
+  <div class="space-y-2">
+    <%= form.label :title, class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= form.text_field :title, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+  
+  <div class="space-y-2">
+    <%= form.label :slug, class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= form.text_field :slug, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+  
+  <div class="space-y-2">
+    <%= form.label :post_tags, class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= form.text_field :post_tags, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+  
+  <div class="space-y-2">
+    <%= form.label :draft, class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= form.checkbox :draft, class: "mt-1 block rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+  
+  <div class="space-y-2">
+    <%= form.label :markdown_excerpt, class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= form.textarea :markdown_excerpt, rows: 5, data: { controller: "uploading" }, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+
+  <div class="space-y-2">
+    <%= form.label :markdown_body, class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>
+    <%= form.textarea :markdown_body, rows: 25, data: { controller: "uploading" }, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+    <%= form.hidden_field :markdown_body_attachments, multiple: true, data: { direct_upload_url: rails_direct_uploads_url }, id: "markdown_body_attachments" %>
+  </div>
+
+  <div>
+    <%= form.submit class: "rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
+  </div>
+<% end %>

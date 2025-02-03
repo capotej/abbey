@@ -1,0 +1,33 @@
+<% if authenticated? %>
+  <%# Adding bg-slate-800 for dark background + text-white for visible text %>
+    <div class="fixed top-0 left-0 right-0 w-full bg-gray-800">
+        <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-10">
+            <%# Admin actions - left side %>
+            <div class="flex space-x-4 text-sm">
+            <%= link_to new_post_path, 
+                class: "text-white hover:text-gray-300 transition-colors" do %>
+                New Post
+            <% end %>
+            <%= link_to new_page_path, 
+                class: "text-white hover:text-gray-300 transition-colors" do %>
+                New Page
+            <% end %>
+            <%= link_to new_link_path, 
+                class: "text-white hover:text-gray-300 transition-colors" do %>
+                New Link
+            <% end %>
+            </div>
+
+            <%# User info and logout - right side %>
+            <div class="flex items-center space-x-4 text-sm">
+            <%= button_to session_path, 
+                method: :delete,
+                class: "text-white hover:text-gray-300 transition-colors" do %>
+                Sign out
+            <% end %>
+            </div>
+        </div>
+        </div>
+  </div>
+<% end %>

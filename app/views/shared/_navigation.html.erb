@@ -1,0 +1,41 @@
+<header class="border-b border-gray-200 dark:border-gray-700 py-6">
+ <div class="container mx-auto px-4">
+   <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+     <%= link_to root_path do %>
+       <h1 class="text-2xl font-bold text-gray-900 dark:text-white"><%= Rails.application.config.site_name %></h1>
+     <% end %>
+   </div>
+   
+   <div class="flex flex-col md:flex-row md:items-center justify-between">
+     <nav class="flex flex-col md:flex-row md:space-x-6 space-y-3 md:space-y-0">
+      <%= link_to "Home", root_path, 
+          class: "#{current_page?(root_path) ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'} transition-colors" %>
+          
+      <%= link_to "About", "/p/about", 
+          class: "#{current_page?('/p/about') ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'} transition-colors" %>
+          
+      <%= link_to "Presentations", "/p/presentations", 
+          class: "#{current_page?('/p/presentations') ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'} transition-colors" %>
+          
+      <%= link_to "Projects", "/p/projects", 
+          class: "#{current_page?('/p/projects') ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'} transition-colors" %>
+          
+      <%= link_to "Links", links_path, 
+          class: "#{current_page?(links_path) ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'} transition-colors" %>
+     </nav>
+     <div class="flex items-center gap-2 mt-4 md:mt-0">
+      <% if content_for? :rss_button %>
+        <%= yield :rss_button %>
+      <% else %>
+        <%= link_to blog_feed_path, class: "p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors", aria: { label: "RSS Feed" } do %>
+          <%= render "shared/icons/rss" %>
+        <% end %>
+      <% end %>
+      <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+        <span class="dark:hidden">🌙</span>
+        <span class="hidden dark:inline">☀️</span>
+      </button>
+     </div>
+   </div>
+ </div>
+</header>

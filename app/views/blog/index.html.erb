@@ -1,0 +1,32 @@
+<div class="space-y-8">
+  <% @posts.each do |post| %>
+    <article class="border-b border-gray-100 dark:border-gray-800 pb-8 last:border-b-0">
+      <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
+        <%= link_to post.title, dated_post_path(year: post.year, day: post.day, month: post.month, id: post), class: "hover:text-gray-600 dark:hover:text-gray-300" %>
+      </h2>
+      
+      <time class="text-sm text-gray-500 dark:text-gray-400 mb-4 block">
+        <%= post.created_at.strftime('%Y-%m-%d') %>
+      </time>
+      
+      <div class="text-gray-900 dark:text-gray-100">
+        <%= post.rendered_excerpt.html_safe %>
+      </div>
+      
+      <div class="flex flex-wrap gap-2 my-4">
+        <%= render "shared/tags", post: post %>
+      </div>
+ 
+      <div class="mt-4">
+        <% if authenticated? %>
+            <%= link_to "Edit", edit_post_path(post), 
+                class: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium" %>
+            |
+        <% end %>
+        <%= link_to "Read more →", dated_post_path(year: post.year, day: post.day, month: post.month, id: post), 
+            class: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium" %>
+      </div>
+    </article>
+  <% end %>
+  <%= paginate @posts %>
+ </div>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html class="<%= cookies[:dark_mode] == 'true' ? 'dark bg-gray-900' : 'bg-white' %>">
+  <head>
+    <title><%= content_for(:title) || Rails.application.config.site_name %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= stylesheet_link_tag "highlight" %>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= content_for(:rss) || auto_discovery_link_tag(:atom, blog_feed_path) %>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧙‍♂️</text></svg>">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+    <%= render "shared/admin_navigation" %>
+    <div class="<%= authenticated? ? 'pt-10' : '' %>">
+      <%= render "shared/navigation" %>
+      <main class="container mx-auto px-4 py-8">
+        <%= yield %>
+      </main>
+        <%= javascript_tag do %>
+          window.toggleDarkMode = function() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.cookie = `dark_mode=${isDark}; path=/; max-age=31536000`;
+          }
+        <% end %>
+    </div>
+    <%= render "shared/footer" %>
+  </body>
+
+</html>
