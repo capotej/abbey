@@ -1,5 +1,5 @@
 namespace :cloud_init do
-  desc 'Generate cloud-init configuration for Tailscale and EBS setup with enhanced logging'
+  desc "Generate cloud-init configuration for Tailscale and EBS setup with enhanced logging"
   task :generate do
     %w[TAILSCALE_AUTH_KEY EBS_VOLUME_ID TAILSCALE_FQDN TAILSCALE_HOSTNAME].each do |var|
       unless ENV[var]

@@ -1,4 +1,4 @@
-require 'markdown_render'
+require "markdown_render"
 
 module Rendering
   extend ActiveSupport::Concern

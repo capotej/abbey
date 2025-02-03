@@ -22,7 +22,7 @@ class BlogController < ApplicationController
   def redirect
     # handle /post/, post/, /post
     uri = Addressable::URI.parse(request.original_url)
-    sanitized_uri = uri.path.squeeze('/').delete_suffix('/')
+    sanitized_uri = uri.path.squeeze("/").delete_suffix("/")
     redirect_from_post = Post.find_by(redirect_from: sanitized_uri)
 
     if redirect_from_post

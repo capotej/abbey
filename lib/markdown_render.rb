@@ -1,6 +1,6 @@
-require 'redcarpet'
-require 'rouge'
-require 'rouge/plugins/redcarpet'
+require "redcarpet"
+require "rouge"
+require "rouge/plugins/redcarpet"
 
 module Redcarpet
   module Render
@@ -36,7 +36,7 @@ module Redcarpet
 
       def list(content, list_type)
         css_class = "space-y-2 my-4 ml-4"
-        tag = list_type == :ordered ? 'ol' : 'ul'
+        tag = list_type == :ordered ? "ol" : "ul"
         "<#{tag} class=\"#{css_class}\">#{content}</#{tag}>"
       end
 

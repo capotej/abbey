@@ -5,7 +5,7 @@ atom_feed do |feed|
   @links.each do |link|
     feed.entry(link, id: link.uuid, url: link.url) do |entry|
       entry.title(link.title)
-      entry.content(link.description, type: 'text')
+      entry.content(link.description, type: "text")
       entry.author do |author|
         author.name "N/A"
       end

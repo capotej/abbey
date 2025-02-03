@@ -43,5 +43,4 @@ class PagesController < ApplicationController
     def page_params
       params.expect(page: [ :title, :markdown_body, :slug ])
     end
-
 end

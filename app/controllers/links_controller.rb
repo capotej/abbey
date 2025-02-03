@@ -45,5 +45,4 @@ class LinksController < ApplicationController
     def link_params
       params.expect(link: [ :title, :description, :url ])
     end
-
 end

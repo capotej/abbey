@@ -8,19 +8,19 @@ Rails.application.routes.draw do
   resources :posts, controller: "blog", except: :show
 
   get "/blog/:year/:month/:day/:id/", to: "blog#show", as: "dated_post"
-  get "/blog/feed", to: "blog#feed", defaults: { format: 'atom' }
+  get "/blog/feed", to: "blog#feed", defaults: { format: "atom" }
   get "/post/*slug", to: "blog#redirect"
 
   # tags
   get "/t/:id", to: "blog#index_by_tag", as: "tag"
-  get "/t/:id/feed", to: "blog#feed_by_tag", defaults: { format: 'atom' }, as: "tag_feed"
+  get "/t/:id/feed", to: "blog#feed_by_tag", defaults: { format: "atom" }, as: "tag_feed"
 
   # pages
   resources :pages, except: :index, path: "p"
 
   # links
   resources :links, except: :show
-  get "/links/feed", to: "links#feed", defaults: { format: 'atom' }
+  get "/links/feed", to: "links#feed", defaults: { format: "atom" }
 
   # handle old pages from capotej.com
   get "/about", to: redirect("/p/about")

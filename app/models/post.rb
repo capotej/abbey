@@ -18,7 +18,7 @@ class Post < ApplicationRecord
 
   validates_presence_of :title, :markdown_body, :markdown_excerpt
 
-  scope :published, -> { where(draft: [nil, false])}
+  scope :published, -> { where(draft: [ nil, false ]) }
 
   def uuid
     Digest::SHA2.hexdigest self.title + self.created_at.to_s
