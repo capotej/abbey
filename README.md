@@ -4,6 +4,15 @@
 
 Minimal blog using Rails 8, designed to be easily self-hosted on AWS.
 
+# Features
+
+* Light/Dark mode
+* Responsive Layout
+* RSS/Atom
+* Markdown and Code Highlighting
+* Link Blog
+* Drag and Drop image uploads for Pages and Posts
+
 # Getting Started
 
 ## Step 1: Clone the repository and navigate to it
