@@ -48,6 +48,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
+          bundler-cache: true
 
       - name: Lint code for consistent style
         run: bundle exec bin/rubocop -f github
