@@ -446,6 +446,7 @@ DEPENDENCIES
   kamal
   kaminari (~> 1.2)
   metainspector (~> 5.15)
+  net-smtp (~> 0.5.0)
   propshaft
   puma (>= 5.0)
   rails (~> 8.0.1)
