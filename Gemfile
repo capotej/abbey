@@ -72,4 +72,4 @@ gem "redcarpet", "~> 3.6"
 
 gem "metainspector", "~> 5.15"
 
-gem "net-smtp", "~> 0.5.0"
+gem "net-smtp", "0.5.0"
