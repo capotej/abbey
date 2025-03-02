@@ -9,6 +9,7 @@ class FetchFeedJob < ApplicationJob
     end
 
     response = client.get(feed_record.url)
+    # TODO add response validation
     feed = Feedjira.parse(response.body)
     attrs = feed.entries.map do |entry|
       {
