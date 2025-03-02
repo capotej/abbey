@@ -12,7 +12,7 @@ class FeedsController < ApplicationController
     @feed = Feed.new(feed_params)
 
     if @feed.save
-      redirect_to @feed, notice: 'Feed was successfully created.'
+      redirect_to feeds_path, notice: 'Feed was successfully created.'
     else
       render :new
     end
