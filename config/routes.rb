@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
   # feed reader
   resources :feeds, except: :show
+  resources :feed_posts, only: :index
 
   # links
   resources :links, except: :show
