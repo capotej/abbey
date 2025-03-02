@@ -6,7 +6,7 @@ class FetchFeedsJob < ApplicationJob
 
   def perform(*args)
     Feed.all.each do |feed_record|
-      FetchFeedJob.perform_later feed_record.url
+      FetchFeedJob.perform_later feed_record
     end
   end
 end
