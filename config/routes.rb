@@ -18,6 +18,9 @@ Rails.application.routes.draw do
   # pages
   resources :pages, except: :index, path: "p"
 
+  # feed reader
+  resources :feeds
+
   # links
   resources :links, except: :show
   get "/links/feed", to: "links#feed", defaults: { format: "atom" }

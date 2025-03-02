@@ -1,0 +1,5 @@
+class AddPublishedAt < ActiveRecord::Migration[8.0]
+  def change
+    add_column :feed_posts, :published_at, :datetime
+  end
+end
