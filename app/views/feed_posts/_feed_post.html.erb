@@ -18,10 +18,20 @@
     </div>
   </div>
 
-  <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
-    <a href="<%= feed_post.url %>" class="inline-flex items-center py-2 px-4 text-sm font-medium text-blue-600 bg-blue-100 rounded-md hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition-colors">
-      Read More
-      <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-    </a>
+<div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-between">
+    <div>
+      <a href="<%= feed_post.url %>" class="inline-flex items-center py-2 px-4 text-sm font-medium text-blue-600 bg-blue-100 rounded-md hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition-colors">
+        Read More
+        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+      </a>
+    </div>
+    <div>
+    <% if feed_post.promoted? %>
+      <button type="button" class="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-400 bg-gray-200 rounded-md cursor-not-allowed" disabled>
+        Promoted!
+      </button>
+    <% else %>
+        <%= button_to "Promote", feed_post_promote_path(feed_post), method: :post, class: "inline-flex items-center py-2 px-4 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 transition-colors" %>
+    <% end %>
   </div>
 </article>

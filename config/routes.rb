@@ -26,7 +26,10 @@ Rails.application.routes.draw do
 
   # feed reader
   resources :feeds, except: :show
-  resources :feed_posts, only: :index
+  resources :feed_posts, only: :index do
+    post "/promote", to: "feed_posts#promote", as: "promote"
+  end
+
 
   # links
   resources :links, except: :show

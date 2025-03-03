@@ -8,4 +8,4 @@ production:
     class: PruneOldFeedPostsJob
     queue: default
     args: []
-    schedule: every hour
+    schedule: every day
