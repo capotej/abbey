@@ -18,6 +18,13 @@ Rails.application.routes.draw do
   # pages
   resources :pages, except: :index, path: "p"
 
+  # feed reader
+  resources :feeds, except: :show
+  resources :feed_posts, only: :index do
+    post "/promote", to: "feed_posts#promote", as: "promote"
+  end
+
+
   # links
   resources :links, except: :show
   get "/links/feed", to: "links#feed", defaults: { format: "atom" }

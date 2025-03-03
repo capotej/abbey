@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_28_120214) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_03_030409) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -37,6 +37,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_28_120214) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "feed_posts", force: :cascade do |t|
+    t.string "guid"
+    t.string "summary"
+    t.string "url"
+    t.string "title"
+    t.integer "feed_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "published_at"
+    t.boolean "promoted"
+    t.index ["guid"], name: "index_feed_posts_on_guid", unique: true
+  end
+
+  create_table "feeds", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "url"], name: "index_feeds_on_name_and_url", unique: true
   end
 
   create_table "links", force: :cascade do |t|

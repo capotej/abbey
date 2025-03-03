@@ -10,7 +10,7 @@ servers:
     - <%= ENV['TAILSCALE_HOSTNAME'] %>
   # job:
   #   hosts:
-  #     - 192.168.0.1
+  #     - <%= ENV['TAILSCALE_HOSTNAME'] %>
   #   cmd: bin/jobs
 
 # Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.

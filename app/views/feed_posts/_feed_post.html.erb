@@ -1,0 +1,50 @@
+<article class="flex flex-col rounded-lg shadow-md overflow-hidden bg-white dark:bg-gray-800 transition-shadow hover:shadow-lg">
+  <div class="p-6">
+    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
+      <%= link_to feed_post.title, feed_post.url, class: "hover:text-blue-600 dark:hover:text-blue-300 transition-colors" %>
+    </h2>
+
+    <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+      <time datetime="<%= feed_post.published_at.iso8601 %>" class="mr-2">
+        <%= feed_post.published_at.strftime('%Y-%m-%d') %>
+      </time>
+      <span class="mx-1">&middot;</span>
+      <span>Source:</span>
+      <%
+        # Generate a hash value from the feed name
+        hash = feed_post.feed.name.hash.abs % 5 # Modulo 5 to get a value between 0 and 4
+
+        # Define an array of Tailwind background colors
+        bg_colors = ["bg-red-200", "bg-green-200", "bg-blue-200", "bg-yellow-200", "bg-purple-200"]
+        dark_bg_colors = ["dark:bg-red-700", "dark:bg-green-700", "dark:bg-blue-700", "dark:bg-yellow-700", "dark:bg-purple-700"]
+
+        # Define an array of Tailwind text colors
+        text_colors = ["text-red-700", "text-green-700", "text-blue-700", "text-yellow-700", "text-purple-700"]
+        dark_text_colors = ["dark:text-red-300", "dark:text-green-300", "dark:text-blue-300", "dark:text-yellow-300", "dark:text-purple-300"]
+      %>
+      <%= link_to feed_post.feed.name, feeds_path, class: "ml-1 px-2 py-1 rounded-full #{bg_colors[hash]} #{dark_bg_colors[hash]} #{text_colors[hash]} #{dark_text_colors[hash]} hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors inline-block" %>
+    </div>
+
+    <div class="text-gray-700 dark:text-gray-300 leading-relaxed">
+      <%= feed_post.summary %>
+    </div>
+  </div>
+
+  <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-between">
+    <div>
+      <a href="<%= feed_post.url %>" class="inline-flex items-center py-2 px-4 text-sm font-medium text-blue-600 bg-blue-100 rounded-md hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition-colors">
+        Read More
+        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+      </a>
+    </div>
+    <div>
+      <% if feed_post.promoted? %>
+        <button type="button" class="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-400 bg-gray-200 rounded-md cursor-not-allowed" disabled>
+          Promoted!
+        </button>
+      <% else %>
+        <%= button_to "Promote", feed_post_promote_path(feed_post), method: :post, class: "inline-flex items-center py-2 px-4 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 transition-colors" %>
+      <% end %>
+    </div>
+  </div>
+</article>
