@@ -4,3 +4,8 @@ production:
     queue: default
     args: []
     schedule: every hour
+  prune_feeds:
+    class: PruneOldFeedPostsJob
+    queue: default
+    args: []
+    schedule: every hour
