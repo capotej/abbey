@@ -1,6 +1,5 @@
 class Feed < ApplicationRecord
-  has_many :feed_posts
-
+  has_many :feed_posts, dependent: :destroy
   validates_presence_of :url, :name
 
   before_create :populate_feed
