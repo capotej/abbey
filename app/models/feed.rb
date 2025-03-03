@@ -13,7 +13,7 @@ class Feed < ApplicationRecord
 
   def feed_is_valid
     unless valid_feed(self.url)
-      errors.add(:url, "is not a valid RSS or Atom feed: #{e.message}")
+      errors.add(:url, "is not a valid RSS or Atom feed")
     end
   end
 end

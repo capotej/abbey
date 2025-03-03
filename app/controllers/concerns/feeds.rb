@@ -16,9 +16,9 @@ module Feeds
 
       case response.status
       when 200
-        content_type = response.headers["Content-Type"]
+        content_type = response.headers["content-type"]
 
-        if content_type&.include?("application/rss+xml") || content_type&.include?("application/atom+xml") || content_type&.include?("text/xml") # The text/xml part is to deal with some older feeds.
+        if content_type.include?("application/rss+xml") || content_type.include?("application/atom+xml") || content_type.include?("text/xml") || content.type_include?("application/xml") # The text/xml part is to deal with some older feeds.
           # Attempt to parse the feed to further validate.  If it errors, we'll catch it
           # in the rescue block below.  Using a quick parse instead of a full one
           # to save on processing time, but still validate the XML is well formed and
