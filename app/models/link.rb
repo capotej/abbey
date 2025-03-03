@@ -1,4 +1,4 @@
-require 'metainspector'
+require "metainspector"
 
 class Link < ApplicationRecord
   validates_presence_of :url
@@ -17,5 +17,4 @@ class Link < ApplicationRecord
     self.title = page.best_title
     self.description = page.best_description
   end
-
 end

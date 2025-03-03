@@ -1,5 +1,5 @@
-require 'open-uri'
-require 'feedjira'
+require "open-uri"
+require "feedjira"
 
 class FetchFeedsJob < ApplicationJob
   queue_as :default

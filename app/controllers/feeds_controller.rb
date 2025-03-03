@@ -1,5 +1,5 @@
 class FeedsController < ApplicationController
-  before_action :set_feed, only: [:edit, :update, :destroy]
+  before_action :set_feed, only: [ :edit, :update, :destroy ]
   def index
     @feeds = Feed.all
   end
@@ -12,7 +12,7 @@ class FeedsController < ApplicationController
     @feed = Feed.new(feed_params)
 
     if @feed.save
-      redirect_to feeds_path, notice: 'Feed was successfully created.'
+      redirect_to feeds_path, notice: "Feed was successfully created."
     else
       render :new
     end
@@ -23,7 +23,7 @@ class FeedsController < ApplicationController
 
   def update
     if @feed.update(feed_params)
-      redirect_to feeds_path, notice: 'Feed was successfully updated.'
+      redirect_to feeds_path, notice: "Feed was successfully updated."
     else
       render :edit
     end
@@ -31,7 +31,7 @@ class FeedsController < ApplicationController
 
   def destroy
     @feed.destroy
-    redirect_to feeds_url, notice: 'Feed was successfully destroyed.'
+    redirect_to feeds_url, notice: "Feed was successfully destroyed."
   end
 
   private

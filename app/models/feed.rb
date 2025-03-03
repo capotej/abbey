@@ -16,5 +16,4 @@ class Feed < ApplicationRecord
       errors.add(:url, "is not a valid RSS or Atom feed: #{e.message}")
     end
   end
-
 end

@@ -6,6 +6,6 @@ class AddFeed < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :feeds, [:name, :url], unique: true
+    add_index :feeds, [ :name, :url ], unique: true
   end
 end
