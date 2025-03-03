@@ -1,10 +1,4 @@
 Rails.application.routes.draw do
-  get "feeds/create"
-  get "feeds/new"
-  get "feeds/update"
-  get "feeds/destroy"
-  get "feeds/edit"
-  get "feeds/show"
   get "up" => "rails/health#show", as: :rails_health_check
 
   # logins
