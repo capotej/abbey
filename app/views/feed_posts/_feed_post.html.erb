@@ -10,7 +10,19 @@
       </time>
       <span class="mx-1">&middot;</span>
       <span>Source:</span>
-      <%= link_to feed_post.feed.name, feeds_path, class: "ml-1 px-2 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors inline-block" %>
+      <%
+        # Generate a hash value from the feed name
+        hash = feed_post.feed.name.hash.abs % 5 # Modulo 5 to get a value between 0 and 4
+
+        # Define an array of Tailwind background colors
+        bg_colors = ["bg-red-200", "bg-green-200", "bg-blue-200", "bg-yellow-200", "bg-purple-200"]
+        dark_bg_colors = ["dark:bg-red-700", "dark:bg-green-700", "dark:bg-blue-700", "dark:bg-yellow-700", "dark:bg-purple-700"]
+
+        # Define an array of Tailwind text colors
+        text_colors = ["text-red-700", "text-green-700", "text-blue-700", "text-yellow-700", "text-purple-700"]
+        dark_text_colors = ["dark:text-red-300", "dark:text-green-300", "dark:text-blue-300", "dark:text-yellow-300", "dark:text-purple-300"]
+      %>
+      <%= link_to feed_post.feed.name, feeds_path, class: "ml-1 px-2 py-1 rounded-full #{bg_colors[hash]} #{dark_bg_colors[hash]} #{text_colors[hash]} #{dark_text_colors[hash]} hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors inline-block" %>
     </div>
 
     <div class="text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -18,7 +30,7 @@
     </div>
   </div>
 
-<div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-between">
+  <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-between">
     <div>
       <a href="<%= feed_post.url %>" class="inline-flex items-center py-2 px-4 text-sm font-medium text-blue-600 bg-blue-100 rounded-md hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800 transition-colors">
         Read More
@@ -26,12 +38,13 @@
       </a>
     </div>
     <div>
-    <% if feed_post.promoted? %>
-      <button type="button" class="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-400 bg-gray-200 rounded-md cursor-not-allowed" disabled>
-        Promoted!
-      </button>
-    <% else %>
+      <% if feed_post.promoted? %>
+        <button type="button" class="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-400 bg-gray-200 rounded-md cursor-not-allowed" disabled>
+          Promoted!
+        </button>
+      <% else %>
         <%= button_to "Promote", feed_post_promote_path(feed_post), method: :post, class: "inline-flex items-center py-2 px-4 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 transition-colors" %>
-    <% end %>
+      <% end %>
+    </div>
   </div>
 </article>
