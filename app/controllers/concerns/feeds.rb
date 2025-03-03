@@ -39,7 +39,7 @@ module Feeds
     rescue Nokogiri::XML::SyntaxError => e
       Rails.logger.error "Nokogiri XML Syntax Error: #{e.message}"
       false
-    rescue => e
+    rescue Exception => e
       Rails.logger.error "Unexpected error validating feed: #{e.message}"
       false
     end
