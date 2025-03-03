@@ -1,15 +1,9 @@
 class FetchFeedJob < ApplicationJob
+  include Feeds
   queue_as :default
 
   def perform(feed_record)
-    client = Faraday.new do |builder|
-      builder.headers['User-Agent'] = 'capotej/abbey FetchFeeds/v0.0.1'
-      builder.use :http_cache, store: Rails.cache, strategy: Faraday::HttpCache::Strategies::ByVary
-      builder.adapter Faraday.default_adapter
-    end
-
-    response = client.get(feed_record.url)
-    # TODO add response validation
+    response = feed_client.get(feed_record.url)
     feed = Feedjira.parse(response.body)
     attrs = feed.entries.map do |entry|
       {
