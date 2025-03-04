@@ -8,7 +8,7 @@ class Feed < ApplicationRecord
   private
   # attempt to populate the feed on create/update which will error on invalid feeds
   def populate_feed
-    FetchFeedJob.perform_now(self)
+    FetchFeedJob.perform_later(self)
   end
 
   def feed_is_valid
