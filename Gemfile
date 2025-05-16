@@ -70,7 +70,7 @@ gem "rouge", "~> 4.5"
 
 gem "redcarpet", "~> 3.6"
 
-gem "metainspector", "~> 5.15"
+gem "metainspector", "~> 5.16"
 
 gem "net-smtp", "0.5.1"
 
