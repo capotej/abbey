@@ -62,7 +62,7 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "tailwindcss-rails", "3.3.1"
+gem "tailwindcss-rails", "3.3.2"
 
 gem "kaminari", "~> 1.2"
 
