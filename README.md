@@ -214,3 +214,16 @@ If you used `rake "blog:import[/path/to/posts]"` above, this will create those p
 
     $ dotenvx run -- kamal app exec -i rake db:setup
 
+# Common Issues / Troubleshooting
+
+## Docker registry cert expiration
+
+```
+tls: failed to verify certificate: x509: certificate has expired or is not yet valid
+```
+
+To fix this, SSH into the instance and restart the docker registry server to regenerate certificates.
+
+```
+# systemctl restart registry
+```
