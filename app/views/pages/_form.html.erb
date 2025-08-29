@@ -1,7 +1,5 @@
 <%= form_with model: page, class: "space-y-6" do |form| %>
-  <% page.errors.each do |error| %>
-    <div><%= error.full_message %></div>
-  <% end %>
+  <%= render "shared/form_errors", object: page %>
 
   <div class="space-y-2">
     <%= form.label :title, class: "block text-sm font-medium text-gray-700 dark:text-gray-200" %>

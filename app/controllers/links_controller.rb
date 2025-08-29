@@ -22,8 +22,12 @@ class LinksController < ApplicationController
   end
 
   def create
-    link = Link.create! link_params
-    redirect_to links_path
+    @link = Link.new(link_params)
+    if @link.save
+      redirect_to links_path
+    else
+      render :new, status: :unprocessable_content
+    end
   end
 
   def update
@@ -31,7 +35,7 @@ class LinksController < ApplicationController
     if @link.update(link_params)
       redirect_to links_path
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

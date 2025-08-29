@@ -19,8 +19,12 @@ class PagesController < ApplicationController
   end
 
   def create
-    post = Page.create! page_params
-    redirect_to post
+    @page = Page.new(page_params)
+    if @page.save
+      redirect_to @page
+    else
+      render :new, status: :unprocessable_content
+    end
   end
 
   def update
@@ -29,7 +33,7 @@ class PagesController < ApplicationController
     if @page.update(page_params)
       redirect_to @page
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

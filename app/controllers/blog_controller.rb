@@ -53,17 +53,21 @@ class BlogController < ApplicationController
   end
 
   def create
-    post = Post.create! post_params
-    redirect_to dated_post_path(year: post.year, month: post.month, day: post.day, id: post.slug)
+    @post = Post.new(post_params)
+    if @post.save
+      redirect_to dated_post_path(year: @post.year, month: @post.month, day: @post.day, id: @post.slug)
+    else
+      render :new, status: :unprocessable_content
+    end
   end
 
   def update
-    post = Post.find_by_slug(params[:id])
-    post.markdown_body_attachments.purge
-    if post.update(post_params)
-      redirect_to dated_post_path(year: post.year, month: post.month, day: post.day, id: post.slug)
+    @post = Post.find_by_slug(params[:id])
+    @post.markdown_body_attachments.purge
+    if @post.update(post_params)
+      redirect_to dated_post_path(year: @post.year, month: @post.month, day: @post.day, id: @post.slug)
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
