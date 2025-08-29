@@ -14,7 +14,7 @@ class FeedsController < ApplicationController
     if @feed.save
       redirect_to feeds_path, notice: "Feed was successfully created."
     else
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -25,7 +25,7 @@ class FeedsController < ApplicationController
     if @feed.update(feed_params)
       redirect_to feeds_path, notice: "Feed was successfully updated."
     else
-      render :edit
+      render :edit, status: :unprocessable_content
     end
   end
 
