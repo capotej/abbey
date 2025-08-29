@@ -1,0 +1,9 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "lsp": {
+    "ruby": {
+      "command": "bundle",
+      "args": ["exec", "ruby-lsp"]
+    }
+  }
+}
