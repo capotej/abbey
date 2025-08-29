@@ -74,6 +74,6 @@ gem "metainspector", "~> 5.16"
 
 gem "net-smtp", "0.5.1"
 
-gem "feedjira", "~> 3.2"
+gem "feedjira", "~> 4.0"
 
 gem "faraday-http-cache", "~> 2.5"
