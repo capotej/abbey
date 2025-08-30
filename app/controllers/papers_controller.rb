@@ -1,7 +1,5 @@
 class PapersController < ApplicationController
-  allow_unauthenticated_access only: %i[ index show ]
-
-  before_action :authenticate_user!, except: %i[ index show ]
+  allow_unauthenticated_access only: %i[ index show download ]
 
   def index
     @papers = Paper.order(created_at: :desc).page(params[:page])
