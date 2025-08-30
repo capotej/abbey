@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_03_030409) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_30_213252) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -76,6 +76,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_030409) do
     t.datetime "updated_at", null: false
     t.text "markdown_body"
     t.index ["slug"], name: "index_pages_on_slug", unique: true
+  end
+
+  create_table "papers", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.string "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["url"], name: "index_papers_on_url", unique: true
   end
 
   create_table "posts", force: :cascade do |t|
