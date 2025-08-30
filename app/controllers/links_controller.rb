@@ -60,6 +60,11 @@ class LinksController < ApplicationController
     def pdf_url?(url)
       return false unless url
 
+      # Special handling for arxiv URLs
+      if url.include?("arxiv.org/abs/")
+        return true
+      end
+
       uri = URI.parse(url)
       return false unless uri.is_a?(URI::HTTP)
 
@@ -76,15 +81,29 @@ class LinksController < ApplicationController
     end
 
     def create_paper(url)
-      paper = Paper.new(url: url)
+      # Special handling for arxiv URLs
+      pdf_url = if url.include?("arxiv.org/abs/")
+        url.gsub("arxiv.org/abs/", "arxiv.org/pdf/")
+      else
+        url
+      end
+
+      paper = Paper.new(url: pdf_url)
 
       # Set title and description
-      paper.title = "PDF Document"
-      paper.description = "PDF document from #{url}"
+      if url.include?("arxiv.org/abs/")
+        # Use metainspector to get title and description from the abstract page
+        page = MetaInspector.new(url)
+        paper.title = page.best_title
+        paper.description = page.best_description
+      else
+        paper.title = "PDF Document"
+        paper.description = "PDF document from #{url}"
+      end
 
       if paper.save
         # Download and attach the PDF
-        download_and_attach_pdf(paper, url)
+        download_and_attach_pdf(paper, pdf_url)
         redirect_to papers_path
       else
         @link = Link.new(link_params)
@@ -110,11 +129,16 @@ class LinksController < ApplicationController
         response.use_ssl = uri.scheme == "https"
         http_response = response.get(uri.request_uri)
 
-        paper.pdf.attach(
-          io: StringIO.new(http_response.body),
-          filename: "#{Digest::SHA2.hexdigest(url)}.pdf",
-          content_type: "application/pdf"
-        )
+        # Check if the response is successful
+        if http_response.code == "200"
+          paper.pdf.attach(
+            io: StringIO.new(http_response.body),
+            filename: "#{Digest::SHA2.hexdigest(url)}.pdf",
+            content_type: "application/pdf"
+          )
+        else
+          Rails.logger.error "Failed to download PDF: HTTP #{http_response.code} for #{url}"
+        end
       rescue => e
         Rails.logger.error "Failed to download PDF: #{e.message}"
       end
