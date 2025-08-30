@@ -32,3 +32,7 @@
 **Naming**: Snake_case for methods/variables, CamelCase for classes. Use descriptive method names like `rendered_body` and `post_scope`.
 
 **Structure**: Standard Rails MVC. Models in `app/models/`, controllers in `app/controllers/`, tests mirror app structure in `test/`.
+
+## HTML/CSS Styling
+
+**Tailwind**: When writing HTML, always use Tailwind CSS. Make sure to support both dark/light mode where appropriate. 
