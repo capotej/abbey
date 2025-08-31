@@ -5,10 +5,4 @@ class PapersControllerTest < ActionDispatch::IntegrationTest
     get papers_url
     assert_response :success
   end
-
-  test "should get show" do
-    paper = Paper.create!(url: "http://example.com/paper.pdf")
-    get paper_url(paper)
-    assert_response :success
-  end
 end

@@ -1,12 +1,8 @@
 class PapersController < ApplicationController
-  allow_unauthenticated_access only: %i[ index show download ]
+  allow_unauthenticated_access only: %i[ index download ]
 
   def index
     @papers = Paper.order(created_at: :desc).page(params[:page])
-  end
-
-  def show
-    @paper = Paper.find(params[:id])
   end
 
   def edit
