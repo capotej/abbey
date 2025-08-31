@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   # papers
   resources :papers, except: [ :show ] do
     get :download, on: :member
+    get :view, on: :member
   end
 
   # handle old pages from capotej.com

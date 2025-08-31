@@ -14,11 +14,11 @@
             <% if paper.pdf.attached? && paper.pdf.previewable? %>
               <div class="flex-shrink-0 mr-6">
                 <% if paper.arxiv? %>
-                  <%= link_to paper.arxiv_pdf_url, target: "_blank" do %>
+                  <%= link_to paper.arxiv_pdf_url, target: "_blank", data: { turbo: false } do %>
                     <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:opacity-80 transition-opacity" %>
                   <% end %>
                 <% else %>
-                  <%= link_to download_paper_path(paper) do %>
+                  <%= link_to paper.view_url || download_paper_path(paper), target: (paper.view_url == paper.url ? "_blank" : nil), data: { turbo: false } do %>
                     <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:opacity-80 transition-opacity" %>
                   <% end %>
                 <% end %>
@@ -27,9 +27,9 @@
               <div class="flex-1 min-w-0">
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
                   <% if paper.arxiv? %>
-                    <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                    <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
                   <% else %>
-                    <%= link_to paper.title, download_paper_path(paper), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                    <%= link_to paper.title, paper.view_url || download_paper_path(paper), target: (paper.view_url == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
                   <% end %>
                 </h2>
                 
@@ -49,9 +49,9 @@
               <div class="flex-1 min-w-0">
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
                   <% if paper.arxiv? %>
-                    <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                    <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
                   <% else %>
-                    <%= link_to paper.title, download_paper_path(paper), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                    <%= link_to paper.title, paper.view_url || download_paper_path(paper), target: (paper.view_url == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
                   <% end %>
                 </h2>
                 

@@ -31,6 +31,18 @@ class Paper < ApplicationRecord
     arxiv? ? arxiv_pdf_url : nil
   end
 
+  def view_url
+    if arxiv?
+      arxiv_pdf_url
+    elsif pdf.attached?
+      Rails.application.routes.url_helpers.view_paper_path(self)
+    elsif url.present?
+      url
+    else
+      nil
+    end
+  end
+
   private
 
   def set_title_and_desc
