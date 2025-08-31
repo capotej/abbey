@@ -27,9 +27,12 @@
               <div class="flex-1 min-w-0">
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
                   <% if paper.arxiv? %>
-                    <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
+                    <%= link_to paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } do %>
+  <%= paper.title %>
+  <%= render "shared/icons/external_link", class: "w-4 h-4 text-gray-400 dark:text-gray-500" %>
+<% end %>
                   <% else %>
-                    <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
+                    <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } %>
                   <% end %>
                 </h2>
                 
@@ -49,9 +52,12 @@
               <div class="flex-1 min-w-0">
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
                   <% if paper.arxiv? %>
-                    <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
+                    <%= link_to paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } do %>
+  <%= paper.title %>
+  <%= render "shared/icons/external_link", class: "w-4 h-4 text-gray-400 dark:text-gray-500" %>
+<% end %>
                   <% else %>
-                    <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
+                    <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } %>
                   <% end %>
                 </h2>
                 
