@@ -42,11 +42,6 @@
                 <div class="flex items-center justify-between">
                   <div class="text-sm text-gray-500 dark:text-gray-400">
                     Added <%= paper.created_at.strftime("%B %d, %Y") %>
-                    <% if paper.url&.include?("arxiv.org/pdf/") %>
-                      <div class="mt-1">
-                        <%= link_to "View on arXiv", paper.url.gsub("arxiv.org/pdf/", "arxiv.org/abs/"), class: "text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-xs", target: "_blank" %>
-                      </div>
-                    <% end %>
                   </div>
                 </div>
               </div>
@@ -69,11 +64,6 @@
                 <div class="flex items-center justify-between">
                   <div class="text-sm text-gray-500 dark:text-gray-400">
                     Added <%= paper.created_at.strftime("%B %d, %Y") %>
-                    <% if paper.url&.include?("arxiv.org/pdf/") %>
-                      <div class="mt-1">
-                        <%= link_to "View on arXiv", paper.url.gsub("arxiv.org/pdf/", "arxiv.org/abs/"), class: "text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-xs", target: "_blank" %>
-                      </div>
-                    <% end %>
                   </div>
                 </div>
               </div>
