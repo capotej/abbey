@@ -7,24 +7,26 @@
   </div>
 
   <% if @papers.any? %>
-    <div class="space-y-6">
+    <div class="space-y-8">
       <% @papers.each do |paper| %>
-        <div class="border rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <div class="border rounded-lg p-6 hover:shadow-lg transition-all duration-200 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <div class="flex items-start">
             <% if paper.pdf.attached? && paper.pdf.previewable? %>
-              <div class="mr-12">
-                <%= image_tag paper.pdf.preview(resize_to_fit: [100, 100]), class: "w-24 h-24 object-cover rounded border border-gray-200 dark:border-gray-600" %>
+              <div class="flex-shrink-0 mr-8">
+                <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm" %>
               </div>
             <% end %>
             
-            <div class="flex-1 pl-4">
-              <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-                <%= link_to paper.title, paper, class: "hover:text-indigo-600 dark:hover:text-indigo-400" %>
+            <div class="flex-1 min-w-0">
+              <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
+                <%= link_to paper.title, paper, class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
               </h2>
               
-              <p class="text-gray-600 dark:text-gray-300 mb-3">
-                <%= paper.description %>
-              </p>
+              <% if paper.description.present? %>
+                <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                  <%= paper.description %>
+                </p>
+              <% end %>
               
               <div class="flex items-center justify-between">
                 <div class="text-sm text-gray-500 dark:text-gray-400">
@@ -33,9 +35,9 @@
                 
                 <% if paper.pdf.attached? %>
                   <%= link_to "Download PDF", download_paper_path(paper), 
-                      class: "inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+                      class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors shadow-sm" %>
                 <% else %>
-                  <span class="inline-flex items-center px-3 py-1 text-sm font-medium rounded-md text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
+                  <span class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
                     PDF Not Available
                   </span>
                 <% end %>
@@ -44,15 +46,15 @@
           </div>
           
           <% if authenticated? %>
-            <div class="flex justify-end mt-2">
-              <div class="flex space-x-2">
-                <%= link_to edit_paper_path(paper), class: "text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400" do %>
+            <div class="flex justify-end mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+              <div class="flex space-x-3">
+                <%= link_to edit_paper_path(paper), class: "p-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors" do %>
                   <%= render "shared/icons/pencil", class: "h-5 w-5" %>
                 <% end %>
                 
                 <%= link_to paper_path(paper), 
                     data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, 
-                    class: "text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400" do %>
+                    class: "p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors" do %>
                   <%= render "shared/icons/trash", class: "h-5 w-5" %>
                 <% end %>
               </div>
