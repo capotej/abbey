@@ -11,6 +11,26 @@ class Paper < ApplicationRecord
 
   paginates_per 15
 
+  def arxiv?
+    url&.include?("arxiv.org")
+  end
+
+  def arxiv_pdf_url
+    return nil unless arxiv?
+
+    if url.include?("arxiv.org/abs/")
+      url.gsub("arxiv.org/abs/", "arxiv.org/pdf/")
+    elsif url.include?("arxiv.org/pdf/")
+      url
+    else
+      nil
+    end
+  end
+
+  def display_url
+    arxiv? ? arxiv_pdf_url : nil
+  end
+
   private
 
   def set_title_and_desc

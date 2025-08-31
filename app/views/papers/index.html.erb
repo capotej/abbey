@@ -13,14 +13,24 @@
           <div class="flex items-start">
             <% if paper.pdf.attached? && paper.pdf.previewable? %>
               <div class="flex-shrink-0 mr-6">
-                <%= link_to download_paper_path(paper) do %>
-                  <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:opacity-80 transition-opacity" %>
+                <% if paper.arxiv? %>
+                  <%= link_to paper.arxiv_pdf_url, target: "_blank" do %>
+                    <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:opacity-80 transition-opacity" %>
+                  <% end %>
+                <% else %>
+                  <%= link_to download_paper_path(paper) do %>
+                    <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:opacity-80 transition-opacity" %>
+                  <% end %>
                 <% end %>
               </div>
               
               <div class="flex-1 min-w-0">
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
-                  <%= link_to paper.title, download_paper_path(paper), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                  <% if paper.arxiv? %>
+                    <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                  <% else %>
+                    <%= link_to paper.title, download_paper_path(paper), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                  <% end %>
                 </h2>
                 
                 <% if paper.description.present? %>
@@ -43,7 +53,11 @@
             <% else %>
               <div class="flex-1 min-w-0">
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
-                  <%= link_to paper.title, download_paper_path(paper), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                  <% if paper.arxiv? %>
+                    <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                  <% else %>
+                    <%= link_to paper.title, download_paper_path(paper), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" %>
+                  <% end %>
                 </h2>
                 
                 <% if paper.description.present? %>
