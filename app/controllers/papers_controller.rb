@@ -12,7 +12,7 @@ class PapersController < ApplicationController
   def update
     @paper = Paper.find(params[:id])
     if @paper.update(paper_params)
-      redirect_to @paper, notice: "Paper was successfully updated."
+      redirect_to papers_path, notice: "Paper was successfully updated."
     else
       render :edit, status: :unprocessable_content
     end
