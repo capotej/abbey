@@ -33,17 +33,6 @@ class PapersController < ApplicationController
     end
   end
 
-  def view
-    paper = Paper.find(params[:id])
-    if paper.pdf.attached?
-      redirect_to rails_blob_path(paper.pdf, disposition: "inline")
-    elsif paper.url.present?
-      redirect_to paper.url, allow_other_host: true
-    else
-      redirect_to papers_path, notice: "PDF not available for viewing"
-    end
-  end
-
   private
 
   def paper_params

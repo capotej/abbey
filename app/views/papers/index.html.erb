@@ -18,7 +18,7 @@
                     <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:opacity-80 transition-opacity" %>
                   <% end %>
                 <% else %>
-                  <%= link_to paper.view_url || download_paper_path(paper), target: (paper.view_url == paper.url ? "_blank" : nil), data: { turbo: false } do %>
+                  <%= link_to paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), data: { turbo: false } do %>
                     <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:opacity-80 transition-opacity" %>
                   <% end %>
                 <% end %>
@@ -29,7 +29,7 @@
                   <% if paper.arxiv? %>
                     <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
                   <% else %>
-                    <%= link_to paper.title, paper.view_url || download_paper_path(paper), target: (paper.view_url == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
+                    <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
                   <% end %>
                 </h2>
                 
@@ -51,7 +51,7 @@
                   <% if paper.arxiv? %>
                     <%= link_to paper.title, paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
                   <% else %>
-                    <%= link_to paper.title, paper.view_url || download_paper_path(paper), target: (paper.view_url == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
+                    <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors", data: { turbo: false } %>
                   <% end %>
                 </h2>
                 
