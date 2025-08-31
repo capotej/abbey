@@ -30,9 +30,7 @@ Rails.application.routes.draw do
   get "/links/feed", to: "links#feed", defaults: { format: "atom" }
 
   # papers
-  resources :papers, except: [ :show ] do
-    get :download, on: :member
-  end
+  resources :papers, except: [ :show ]
 
   # handle old pages from capotej.com
   get "/about", to: redirect("/p/about")

@@ -1,5 +1,5 @@
 class PapersController < ApplicationController
-  allow_unauthenticated_access only: %i[ index download ]
+  allow_unauthenticated_access only: %i[ index ]
 
   def index
     @papers = Paper.order(created_at: :desc).page(params[:page])
@@ -22,15 +22,6 @@ class PapersController < ApplicationController
     @paper = Paper.find(params[:id])
     @paper.destroy
     redirect_to papers_path, notice: "Paper was successfully deleted."
-  end
-
-  def download
-    paper = Paper.find(params[:id])
-    if paper.pdf.attached?
-      redirect_to rails_blob_path(paper.pdf, disposition: "attachment")
-    else
-      redirect_to papers_path, notice: "PDF not available for download"
-    end
   end
 
   private
