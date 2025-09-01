@@ -9,7 +9,7 @@ Papers | <%= Rails.application.config.site_name %>
         Papers
       </h1>
       <% if @papers.any? && authenticated? %>
-        <%= link_to "Add Paper", new_paper_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+        <%= link_to "Add Paper", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
       <% end %>
     </div>
   </header>
@@ -105,7 +105,7 @@ Papers | <%= Rails.application.config.site_name %>
       <p class="text-gray-500 dark:text-gray-400">No papers available yet.</p>
       <% if authenticated? %>
         <div class="mt-4">
-          <%= link_to "Add your first paper", new_paper_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+          <%= link_to "Add your first paper", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
         </div>
       <% end %>
     </div>
