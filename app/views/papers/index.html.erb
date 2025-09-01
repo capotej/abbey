@@ -1,10 +1,18 @@
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Papers</h1>
-    <% if authenticated? && @papers.any? %>
-      <%= link_to "Add Paper", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
-    <% end %>
-  </div>
+<% content_for :title do %>
+Papers | <%= Rails.application.config.site_name %>
+<% end %>
+
+<div class="max-w-2xl mx-auto">
+  <header class="mb-8">
+    <div class="flex justify-between items-center">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+        Papers
+      </h1>
+      <% if @papers.any? && authenticated? %>
+        <%= link_to "Add Paper", new_paper_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+      <% end %>
+    </div>
+  </header>
 
   <% if @papers.any? %>
     <div class="space-y-8">
@@ -97,7 +105,7 @@
       <p class="text-gray-500 dark:text-gray-400">No papers available yet.</p>
       <% if authenticated? %>
         <div class="mt-4">
-          <%= link_to "Add your first paper", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+          <%= link_to "Add your first paper", new_paper_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
         </div>
       <% end %>
     </div>
