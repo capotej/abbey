@@ -5,23 +5,23 @@
         <div class="flex items-center justify-between h-10">
             <%# Admin actions - left side %>
             <div class="flex space-x-4 text-sm">
-            <%= link_to new_post_path, 
+            <%= link_to new_post_path,
                 class: "text-white hover:text-gray-300 transition-colors" do %>
                 New Post
             <% end %>
-            <%= link_to new_page_path, 
+            <%= link_to new_page_path,
                 class: "text-white hover:text-gray-300 transition-colors" do %>
                 New Page
             <% end %>
-            <%= link_to new_link_path, 
+            <%= link_to new_link_path,
                 class: "text-white hover:text-gray-300 transition-colors" do %>
                 New Link
             <% end %>
-            <%= link_to feeds_path, 
+            <%= link_to feeds_path,
                 class: "text-white hover:text-gray-300 transition-colors" do %>
                 Feeds
             <% end %>
-            <%= link_to feed_posts_path, 
+            <%= link_to feed_posts_path,
                 class: "text-white hover:text-gray-300 transition-colors" do %>
                 Read
             <% end %>
@@ -29,7 +29,7 @@
 
             <%# User info and logout - right side %>
             <div class="flex items-center space-x-4 text-sm">
-            <%= button_to session_path, 
+            <%= button_to session_path,
                 method: :delete,
                 class: "text-white hover:text-gray-300 transition-colors" do %>
                 Sign out

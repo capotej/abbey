@@ -51,6 +51,8 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "ruby-lsp"
+
+  gem 'erb_lint', require: false
 end
 
 group :development do

@@ -14,14 +14,14 @@
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             <%= @post.title %>
         </h1>
-        
+
         <div class="flex flex-col sm:flex-row sm:items-center text-gray-600 dark:text-gray-300 gap-4">
             <time class="text-sm">
             <%= @post.created_at.strftime("%Y-%m-%d") %>
             </time>
             <span class="hidden sm:block">·</span>
             <% if authenticated? %>
-                <%= link_to "Edit", edit_post_path(@post), 
+                <%= link_to "Edit", edit_post_path(@post),
                         class: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium" %>
             <% end %>
         </div>

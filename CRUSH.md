@@ -12,6 +12,9 @@
 - `bundle exec rubocop` - Run linter (uses rubocop-rails-omakase)
 - `bundle exec rubocop -a` - Auto-fix safe corrections
 - `bundle exec brakeman` - Security analysis
+- `bundle exec erb_lint --lint-all` - Run linter on ERB/HTML
+- `bundle exec erb_lint --lint-all -a` - Auto-fix safe corrections
+
 
 **Development**
 - `rails server` - Start development server

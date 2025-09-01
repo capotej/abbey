@@ -26,12 +26,16 @@
       <main class="container mx-auto px-4 py-8">
         <%= yield %>
       </main>
-        <%= javascript_tag do %>
+        <script>
+//<![CDATA[
+
           window.toggleDarkMode = function() {
             const isDark = document.documentElement.classList.toggle('dark');
             document.cookie = `dark_mode=${isDark}; path=/; max-age=31536000`;
           }
-        <% end %>
+
+//]]>
+</script>
     </div>
     <%= render "shared/footer" %>
   </body>

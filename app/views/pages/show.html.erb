@@ -7,10 +7,10 @@
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             <%= @page.title %>
         </h1>
-        
+
         <div class="flex flex-col sm:flex-row sm:items-center text-gray-600 dark:text-gray-300 gap-4">
             <% if authenticated? %>
-                <%= link_to "Edit", edit_page_path(@page), 
+                <%= link_to "Edit", edit_page_path(@page),
                         class: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium" %>
             <% end %>
         </div>

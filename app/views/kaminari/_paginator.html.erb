@@ -4,20 +4,18 @@
     total_pages:   total number of pages
     per_page:      number of items to fetch per page
     remote:        data-remote
-    paginator:     the paginator that renders the pagination tags inside
--%>
+    paginator:     the paginator that renders the pagination tags inside -%>
 <%= paginator.render do -%>
-  <nav 
+  <nav
     class="flex justify-center items-center space-x-2"
-    role="navigation" 
-    aria-label="pager"
-  >
+    role="navigation"
+    aria-label="pager">
     <%# First page %>
     <%= first_page_tag unless current_page.first? %>
-    
+
     <%# Previous page %>
     <%= prev_page_tag unless current_page.first? %>
-    
+
     <%# Page numbers %>
     <% each_page do |page| -%>
       <% if page.display_tag? -%>
@@ -26,10 +24,10 @@
         <%= gap_tag %>
       <% end -%>
     <% end -%>
-    
+
     <%# Next page %>
     <%= next_page_tag unless current_page.last? %>
-    
+
     <%# Last page %>
     <%= last_page_tag unless current_page.last? %>
   </nav>

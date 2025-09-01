@@ -1,4 +1,4 @@
 <% post.tags.each do |tag| %>
-    <%= link_to "# #{tag.name}", tag_path(id: tag.name), 
+    <%= link_to "# #{tag.name}", tag_path(id: tag.name),
         class: "px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors" %>
 <% end %>
