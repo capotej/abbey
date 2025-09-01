@@ -1,7 +1,7 @@
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Papers</h1>
-    <% if authenticated? %>
+    <% if authenticated? && @papers.any? %>
       <%= link_to "Add Paper", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
     <% end %>
   </div>
@@ -9,7 +9,7 @@
   <% if @papers.any? %>
     <div class="space-y-8">
       <% @papers.each do |paper| %>
-        <div class="border rounded-lg p-6 hover:shadow-lg transition-all duration-200 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <div class="border rounded-lg p-6 hover:shadow-lg transition-all duration-200 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 relative">
           <div class="flex items-start">
             <% if paper.pdf.attached? && paper.pdf.previewable? %>
               <div class="flex-shrink-0 mr-6">
@@ -28,9 +28,9 @@
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
                   <% if paper.arxiv? %>
                     <%= link_to paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } do %>
-  <%= paper.title %>
-  <%= render "shared/icons/external_link", class: "w-4 h-4 text-gray-400 dark:text-gray-500" %>
-<% end %>
+                      <%= paper.title %>
+                      <%= render "shared/icons/external_link", class: "w-4 h-4 text-gray-400 dark:text-gray-500" %>
+                    <% end %>
                   <% else %>
                     <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } %>
                   <% end %>
@@ -53,9 +53,9 @@
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
                   <% if paper.arxiv? %>
                     <%= link_to paper.arxiv_pdf_url, target: "_blank", class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } do %>
-  <%= paper.title %>
-  <%= render "shared/icons/external_link", class: "w-4 h-4 text-gray-400 dark:text-gray-500" %>
-<% end %>
+                      <%= paper.title %>
+                      <%= render "shared/icons/external_link", class: "w-4 h-4 text-gray-400 dark:text-gray-500" %>
+                    <% end %>
                   <% else %>
                     <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } %>
                   <% end %>
@@ -77,18 +77,12 @@
           </div>
           
           <% if authenticated? %>
-            <div class="flex justify-end mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-              <div class="flex space-x-3">
-                <%= link_to edit_paper_path(paper), class: "p-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors" do %>
-                  <%= render "shared/icons/pencil", class: "h-5 w-5" %>
-                <% end %>
-                
-                <%= link_to paper_path(paper), 
-                    data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, 
-                    class: "p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors" do %>
-                  <%= render "shared/icons/trash", class: "h-5 w-5" %>
-                <% end %>
-              </div>
+            <div class="absolute top-4 right-4">
+              <%= link_to paper_path(paper), 
+                  data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, 
+                  class: "p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors" do %>
+                <%= render "shared/icons/trash", class: "h-5 w-5" %>
+              <% end %>
             </div>
           <% end %>
         </div>
@@ -101,9 +95,11 @@
   <% else %>
     <div class="text-center py-12">
       <p class="text-gray-500 dark:text-gray-400">No papers available yet.</p>
-      <div class="mt-4">
-        <%= link_to "Add your first paper", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
-      </div>
+      <% if authenticated? %>
+        <div class="mt-4">
+          <%= link_to "Add your first paper", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 </div>
