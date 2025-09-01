@@ -23,7 +23,7 @@
                   <% end %>
                 <% end %>
               </div>
-              
+
               <div class="flex-1 min-w-0">
                 <h2 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white leading-tight">
                   <% if paper.arxiv? %>
@@ -35,13 +35,13 @@
                     <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } %>
                   <% end %>
                 </h2>
-                
+
                 <% if paper.description.present? %>
                   <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
                     <%= paper.description %>
                   </p>
                 <% end %>
-                
+
                 <div class="flex items-center justify-between">
                   <div class="text-sm text-gray-500 dark:text-gray-400">
                     Added <%= paper.created_at.strftime("%B %d, %Y") %>
@@ -60,13 +60,13 @@
                     <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2", data: { turbo: false } %>
                   <% end %>
                 </h2>
-                
+
                 <% if paper.description.present? %>
                   <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
                     <%= paper.description %>
                   </p>
                 <% end %>
-                
+
                 <div class="flex items-center justify-between">
                   <div class="text-sm text-gray-500 dark:text-gray-400">
                     Added <%= paper.created_at.strftime("%B %d, %Y") %>
@@ -75,11 +75,11 @@
               </div>
             <% end %>
           </div>
-          
+
           <% if authenticated? %>
             <div class="absolute top-4 right-4">
-              <%= link_to paper_path(paper), 
-                  data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" }, 
+              <%= link_to paper_path(paper),
+                  data: { "turbo-method": :delete, "turbo-confirm": "Are you sure?" },
                   class: "p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors" do %>
                 <%= render "shared/icons/trash", class: "h-5 w-5" %>
               <% end %>
@@ -88,7 +88,7 @@
         </div>
       <% end %>
     </div>
-    
+
     <div class="mt-8">
       <%= paginate @papers %>
     </div>
