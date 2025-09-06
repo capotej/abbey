@@ -14,13 +14,29 @@ Interesting Links | <%= Rails.application.config.site_name %>
 
 <div class="max-w-2xl mx-auto">
   <header class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-      Interesting Links
-    </h1>
+    <div class="flex justify-between items-center">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+        Interesting Links
+      </h1>
+      <% if @links.any? && authenticated? %>
+        <%= link_to "Add Link", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+      <% end %>
+    </div>
   </header>
 
-  <div class="space-y-8">
-    <%= render @links %>
-  </div>
-  <%= paginate @links %>
+  <% if @links.any? %>
+    <div class="space-y-8">
+      <%= render @links %>
+    </div>
+    <%= paginate @links %>
+  <% else %>
+    <div class="text-center py-12">
+      <p class="text-gray-500 dark:text-gray-400">No links available yet.</p>
+      <% if authenticated? %>
+        <div class="mt-4">
+          <%= link_to "Add your first link", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 </div>

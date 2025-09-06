@@ -29,6 +29,9 @@ Rails.application.routes.draw do
   resources :links, except: :show
   get "/links/feed", to: "links#feed", defaults: { format: "atom" }
 
+  # papers
+  resources :papers, except: [ :show ]
+
   # handle old pages from capotej.com
   get "/about", to: redirect("/p/about")
   get "/projects", to: redirect("/p/projects")

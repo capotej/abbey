@@ -2,10 +2,10 @@
 
 one:
   draft: false
-  content: MyText
   title: MyString
+  markdown_body: MyText
 
 two:
   draft: false
-  content: MyText
   title: MyString
+  markdown_body: MyText

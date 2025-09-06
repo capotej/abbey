@@ -52,7 +52,7 @@ group :development, :test do
 
   gem "ruby-lsp"
 
-  gem 'erb_lint', require: false
+  gem "erb_lint", require: false
 end
 
 group :development do
@@ -64,6 +64,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "webmock"
 end
 
 gem "tailwindcss-rails", "3.3.2"

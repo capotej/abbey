@@ -1,0 +1,41 @@
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-6">
+    <%= link_to "← Back to Papers", papers_path, class: "text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+    <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Edit Paper</h1>
+
+    <%= form_with model: @paper, local: true do |form| %>
+      <% if @paper.errors.any? %>
+        <div class="mb-6">
+          <div class="text-red-700 dark:text-red-400 font-medium mb-2">
+            <%= pluralize(@paper.errors.count, "error") %> prohibited this paper from being saved:
+          </div>
+          
+          <ul class="list-disc list-inside text-red-700 dark:text-red-400">
+            <% @paper.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="mb-4">
+        <%= form.label :title, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.text_field :title, class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white" %>
+      </div>
+
+      <div class="mb-4">
+        <%= form.label :description, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.text_area :description, rows: 4, class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white" %>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <%= form.submit "Update Paper", class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
+        
+        <%= link_to "Cancel", papers_path, class: "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-200 ml-4" %>
+      </div>
+    <% end %>
+  </div>
+</div>
