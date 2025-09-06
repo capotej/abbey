@@ -52,7 +52,7 @@ group :development, :test do
 
   gem "ruby-lsp"
 
-  gem 'erb_lint', require: false
+  gem "erb_lint", require: false
 end
 
 group :development do

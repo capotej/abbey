@@ -12,7 +12,7 @@ class PdfPaperCreatorTest < ActiveSupport::TestCase
       .to_return(status: 200, body: "PDF content", headers: { "Content-Type" => "application/pdf" })
 
     paper = PdfPaperCreator.create_from_url(@pdf_url)
-    
+
     assert paper
     assert_equal @pdf_url, paper.url
     assert_equal "PDF Document", paper.title
@@ -26,7 +26,7 @@ class PdfPaperCreatorTest < ActiveSupport::TestCase
       .to_return(status: 200, headers: { "Content-Type" => "text/html" })
 
     result = PdfPaperCreator.create_from_url(html_url)
-    
+
     assert_equal false, result
   end
 end
