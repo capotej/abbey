@@ -31,3 +31,4 @@
 }
 
 @plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
