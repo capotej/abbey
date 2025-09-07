@@ -67,7 +67,7 @@ group :test do
   gem "webmock"
 end
 
-gem "tailwindcss-rails", "3.3.2"
+gem "tailwindcss-rails", "~> 4.0"
 
 gem "kaminari", "~> 1.2"
 
