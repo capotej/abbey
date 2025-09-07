@@ -6,7 +6,7 @@ Papers | <%= Rails.application.config.site_name %>
   <header class="mb-8">
     <div class="flex justify-between items-center">
       <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-        Papers
+        Interesting Papers
       </h1>
       <% if @papers.any? && authenticated? %>
         <%= link_to "Add Paper", new_link_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" %>
