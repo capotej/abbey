@@ -1,14 +1,14 @@
 <div class="border rounded-lg p-6 hover:shadow-lg transition-all duration-200 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 relative">
   <div class="flex items-start">
     <% if paper.pdf.attached? && paper.pdf.previewable? %>
-      <div class="flex-shrink-0 mr-6">
+      <div class="shrink-0 mr-6">
         <% if paper.arxiv? %>
           <%= link_to paper.arxiv_pdf_url, target: "_blank", data: { turbo: false } do %>
-            <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:opacity-80 transition-opacity" %>
+            <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-xs hover:opacity-80 transition-opacity" %>
           <% end %>
         <% else %>
           <%= link_to paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), data: { turbo: false } do %>
-            <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:opacity-80 transition-opacity" %>
+            <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover rounded-lg border border-gray-200 dark:border-gray-600 shadow-xs hover:opacity-80 transition-opacity" %>
           <% end %>
         <% end %>
       </div>
