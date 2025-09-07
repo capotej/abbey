@@ -1,4 +1,4 @@
-# CRUSH.md
+# AGENT.md
 
 ## Commands
 
