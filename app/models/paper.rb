@@ -1,5 +1,6 @@
 require "net/http"
 require "uri"
+require "digest"
 
 class Paper < ApplicationRecord
   validates_presence_of :url
@@ -10,6 +11,10 @@ class Paper < ApplicationRecord
   before_create :set_title_and_desc
 
   paginates_per 15
+
+  def uuid
+    Digest::SHA2.hexdigest self.url
+  end
 
   def arxiv?
     url&.include?("arxiv.org")
