@@ -1,5 +1,9 @@
 # AGENTS.md
 
+## Rules
+
+**NEVER** run `rails console` or `bundle exec rails console`, this is an interactive command not suitable for agent use.
+
 ## Commands
 
 **Test**
