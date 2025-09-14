@@ -1,12 +1,22 @@
 atom_feed do |feed|
   feed.title "#{Rails.application.config.site_name} - Interesting Links Feed"
-  feed.updated(@links.first.updated_at)
+  feed.updated(@entries.first.updated_at) if @entries.any?
 
-  @links.each do |link|
-    feed.entry(link, id: link.uuid, url: link.url) do |entry|
-      entry.title(link.title)
-      entry.content(link.description, type: "text")
-      entry.author do |author|
+  @entries.each do |entry|
+    # Determine the URL to use for the entry
+    url = if entry.is_a?(Paper)
+      entry.arxiv? ? entry.arxiv_pdf_url : entry.url
+    else
+      entry.url
+    end
+
+    # Generate a unique ID for the entry
+    id = entry.uuid
+
+    feed.entry(entry, id: id, url: url) do |feed_entry|
+      feed_entry.title(entry.title)
+      feed_entry.content(entry.description, type: "text")
+      feed_entry.author do |author|
         author.name "N/A"
       end
     end
