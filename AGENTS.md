@@ -2,7 +2,9 @@
 
 ## Rules
 
-**NEVER** run `rails console` or `bundle exec rails console`, this is an interactive command not suitable for agent use.
+<rules>
+**NEVER** run `bundle exec rails console`.
+</rules>
 
 ## Commands
 
