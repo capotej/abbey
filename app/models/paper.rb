@@ -11,6 +11,10 @@ class Paper < ApplicationRecord
 
   paginates_per 15
 
+  def uuid
+    Digest::SHA2.hexdigest self.url
+  end
+
   def arxiv?
     url&.include?("arxiv.org")
   end

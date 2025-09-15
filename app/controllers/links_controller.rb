@@ -15,7 +15,8 @@ class LinksController < ApplicationController
   end
 
   def feed
-    @links = Link.order(created_at: :desc).limit(20)
+    # Get both links and papers, ordered by creation time
+    @entries = (Link.all + Paper.all).sort_by(&:created_at).reverse.first(20)
     respond_to do |format|
       format.atom
     end
