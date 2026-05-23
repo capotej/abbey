@@ -1,0 +1,114 @@
+/* =============================================================================
+   Abbey – Retro Theme: Rouge syntax highlighting
+   "Retro Terminal" palette – neon on CRT black.
+   All selectors are scoped under `.theme-retro` so default theme highlighting
+   is untouched.
+   ============================================================================= */
+
+.theme-retro .highlight {
+  width: 100%;
+  max-width: none;
+  overflow-x: auto;
+  background: #0a0e1a;
+  color: #d6ffe9;
+}
+
+.theme-retro .highlight pre {
+  white-space: pre;
+  overflow-x: auto;
+  padding: 1rem;
+  width: 100%;
+  margin: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.theme-retro .highlight code,
+.theme-retro pre.highlight code {
+  font-family: "VT323", ui-monospace, monospace;
+  background: transparent;
+  color: inherit;
+  border: none;
+  padding: 0;
+}
+
+.theme-retro code:not(.highlight code) {
+  background: #ffd400;
+  color: #0d0d12;
+  border: 2px solid #0d0d12;
+  padding: 0 6px;
+  border-radius: 0;
+  font-family: "VT323", ui-monospace, monospace;
+  font-size: 0.95em;
+}
+.theme-retro.dark code:not(.highlight code) {
+  background: #ff3eb5;
+  color: #0a0e1a;
+  border-color: #0a0e1a;
+}
+
+.theme-retro .highlight table td { padding: 5px; }
+.theme-retro .highlight table pre { margin: 0; }
+
+.theme-retro .highlight .err     { color: #ff6b4a; }
+.theme-retro .highlight .c,
+.theme-retro .highlight .ch,
+.theme-retro .highlight .cd,
+.theme-retro .highlight .cm,
+.theme-retro .highlight .cpf,
+.theme-retro .highlight .c1,
+.theme-retro .highlight .cs      { color: #6b7a99; font-style: italic; }
+.theme-retro .highlight .cp      { color: #00e5ff; }
+.theme-retro .highlight .nt      { color: #00e5ff; }
+.theme-retro .highlight .o,
+.theme-retro .highlight .ow      { color: #ff3eb5; }
+.theme-retro .highlight .p,
+.theme-retro .highlight .pi      { color: #d6ffe9; }
+
+.theme-retro .highlight .gi      { color: #00ff9c; }
+.theme-retro .highlight .gd      { color: #ff3eb5; }
+.theme-retro .highlight .gh      { color: #ffd400; background: transparent; font-weight: bold; }
+
+.theme-retro .highlight .k,
+.theme-retro .highlight .kn,
+.theme-retro .highlight .kp,
+.theme-retro .highlight .kr,
+.theme-retro .highlight .kv      { color: #ff3eb5; font-weight: bold; }
+.theme-retro .highlight .kc,
+.theme-retro .highlight .kt,
+.theme-retro .highlight .kd      { color: #ffd400; }
+
+.theme-retro .highlight .s,
+.theme-retro .highlight .sb,
+.theme-retro .highlight .sc,
+.theme-retro .highlight .dl,
+.theme-retro .highlight .sd,
+.theme-retro .highlight .s2,
+.theme-retro .highlight .sh,
+.theme-retro .highlight .sx,
+.theme-retro .highlight .s1      { color: #00ff9c; }
+.theme-retro .highlight .sa      { color: #ff3eb5; }
+.theme-retro .highlight .sr      { color: #00e5ff; }
+.theme-retro .highlight .si,
+.theme-retro .highlight .se      { color: #ff6b4a; }
+
+.theme-retro .highlight .nn,
+.theme-retro .highlight .nc,
+.theme-retro .highlight .no      { color: #ffd400; }
+.theme-retro .highlight .na      { color: #00e5ff; }
+
+.theme-retro .highlight .m,
+.theme-retro .highlight .mb,
+.theme-retro .highlight .mf,
+.theme-retro .highlight .mh,
+.theme-retro .highlight .mi,
+.theme-retro .highlight .il,
+.theme-retro .highlight .mo,
+.theme-retro .highlight .mx      { color: #b14aff; }
+.theme-retro .highlight .ss      { color: #00ff9c; }
+.theme-retro .highlight .nf      { color: #00e5ff; }
+.theme-retro .highlight .ne      { color: #ff6b4a; font-weight: bold; }
+.theme-retro .highlight .nb      { color: #ffd400; }
+.theme-retro .highlight .vc,
+.theme-retro .highlight .vg,
+.theme-retro .highlight .vi      { color: #ff3eb5; }
