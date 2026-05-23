@@ -17,7 +17,9 @@ class ThemesTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_no_match(/class="theme-retro/, response.body)
+    assert_no_match(/class="theme-grimoire/, response.body)
     assert_no_match(%r{themes/retro}, response.body, "default theme should not load theme stylesheets")
+    assert_no_match(%r{themes/grimoire}, response.body, "default theme should not load theme stylesheets")
     assert_select "header h1"
     assert_select "footer"
   end
@@ -38,6 +40,22 @@ class ThemesTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "grimoire theme prepends its view path and loads theme stylesheets" do
+    Rails.application.config.theme = "grimoire"
+
+    get root_path
+    assert_response :success
+    assert_match(/class="theme-grimoire/, response.body)
+    assert_match(%r{themes/grimoire}, response.body, "grimoire theme should load themes/grimoire CSS")
+    # System test contract: header still has h1, footer still present.
+    assert_select "header h1"
+    assert_select "footer"
+    # Required nav links remain after retheming.
+    %w[Home About Projects Presentations Links Papers].each do |label|
+      assert_match(/>#{label}</, response.body, "grimoire nav should contain link: #{label}")
+    end
+  end
+
   test "renderer follows theme configuration" do
     Rails.application.config.theme = "default"
     assert_equal MarkdownRender, Post.markdown_renderer,
@@ -46,9 +64,13 @@ class ThemesTest < ActionDispatch::IntegrationTest
     Rails.application.config.theme = "retro"
     assert_equal MinimalMarkdownRender, Post.markdown_renderer,
                  "retro theme should switch to the minimal renderer"
+
+    Rails.application.config.theme = "grimoire"
+    assert_equal MinimalMarkdownRender, Post.markdown_renderer,
+                 "grimoire theme should switch to the minimal renderer"
   end
 
-  test "theme_stylesheets helper is empty for default and populated for retro" do
+  test "theme_stylesheets helper is empty for default and populated for named themes" do
     helper = Class.new do
       include ApplicationHelper
       attr_accessor :_theme
@@ -68,5 +90,9 @@ class ThemesTest < ActionDispatch::IntegrationTest
     helper._theme = "retro"
     assert_includes helper.theme_stylesheets, "themes/retro"
     assert_includes helper.theme_stylesheets, "themes/retro-highlight"
+
+    helper._theme = "grimoire"
+    assert_includes helper.theme_stylesheets, "themes/grimoire"
+    assert_includes helper.theme_stylesheets, "themes/grimoire-highlight"
   end
 end
