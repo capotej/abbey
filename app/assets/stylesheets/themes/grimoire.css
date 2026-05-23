@@ -1,0 +1,819 @@
+/* =============================================================================
+   Abbey – Grimoire Theme
+   Retro hacker dark fantasy. Phrack zine + illuminated manuscript + terminal
+   man page. Matrix-minimal: monospace display, modern sans body, no ornate
+   blackletter — but the dark mode still feels like a cryptarchive.
+
+   Pure CSS – served by Propshaft, loaded only when
+   `Rails.application.config.theme == "grimoire"`. All declarations are scoped
+   under `.theme-grimoire` (set on <html> by themes/grimoire/layouts/
+   application.html.erb) so loading this file in another context is a no-op.
+
+   Custom palette:
+     parchment #ebd9b3   vellum  #f1e3c2   ink      #1a1410
+     shadow    #3a2f25   void    #07080d   obsidian #0e0f17
+     tomb      #161826   blood   #8b1d27   ember    #f08029
+     bone      #e9e0c8   phosphor #57f287  arcane   #6a4cab
+     gold      #c8a44d   ichor   #2d1b3a
+   =============================================================================*/
+
+/* ----------------------------------------------------------------------
+   Base – html background, body backdrop, scanlines, selection, scrollbar
+---------------------------------------------------------------------- */
+
+html.theme-grimoire {
+  background-color: #ebd9b3;
+  color: #1a1410;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-feature-settings: "ss01" on, "cv11" on, "kern", "liga";
+}
+html.theme-grimoire.dark {
+  background-color: #07080d;
+  color: #e9e0c8;
+}
+
+html.theme-grimoire body {
+  position: relative;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Aged parchment (light) — fibre grain + corner foxing */
+html.theme-grimoire body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 1;
+}
+html.theme-grimoire:not(.dark) body::before {
+  background:
+    radial-gradient(circle at 0% 0%,   rgba(120,80,30,0.18), transparent 24%),
+    radial-gradient(circle at 100% 0%, rgba(120,80,30,0.18), transparent 24%),
+    radial-gradient(circle at 0% 100%, rgba(120,80,30,0.18), transparent 24%),
+    radial-gradient(circle at 100% 100%, rgba(120,80,30,0.18), transparent 24%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'><defs><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0 0.05  0 0 0 0.12 0'/></filter></defs><rect width='600' height='600' filter='url(%23n)'/></svg>");
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 600px 600px;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+}
+
+/* Starless void (dark) — drifting ember/arcane dust */
+html.theme-grimoire.dark body::before {
+  opacity: 0.9;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(106,76,171,0.18), transparent 60%),
+    radial-gradient(900px 500px at 10% 110%, rgba(240,128,41,0.10), transparent 65%),
+    radial-gradient(2px 2px at 23% 16%, rgba(200,164,77,0.7), transparent 100%),
+    radial-gradient(1.5px 1.5px at 67% 44%, rgba(87,242,135,0.55), transparent 100%),
+    radial-gradient(2px 2px at 89% 72%, rgba(200,164,77,0.55), transparent 100%),
+    radial-gradient(1.5px 1.5px at 12% 78%, rgba(106,76,171,0.55), transparent 100%),
+    radial-gradient(1.5px 1.5px at 44% 22%, rgba(200,164,77,0.4), transparent 100%),
+    radial-gradient(1px 1px at 56% 88%, rgba(255,255,255,0.5), transparent 100%);
+  background-repeat: no-repeat;
+  animation: grimoire-mist 22s ease-in-out infinite;
+}
+
+/* CRT scanlines — dark-mode only, gentle, preserves readability */
+html.theme-grimoire body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background-image: none;
+}
+html.theme-grimoire.dark body::after {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(87, 242, 135, 0) 0px,
+    rgba(87, 242, 135, 0) 3px,
+    rgba(87, 242, 135, 0.018) 3px,
+    rgba(87, 242, 135, 0.018) 4px
+  );
+  mix-blend-mode: screen;
+}
+
+html.theme-grimoire main,
+html.theme-grimoire header,
+html.theme-grimoire footer,
+html.theme-grimoire nav,
+html.theme-grimoire .content-layer {
+  position: relative;
+  z-index: 1;
+}
+
+html.theme-grimoire ::selection { background: #8b1d27; color: #ebd9b3; }
+html.theme-grimoire.dark ::selection { background: #f08029; color: #07080d; }
+
+/* Terminal-style dark scrollbar */
+html.theme-grimoire.dark ::-webkit-scrollbar { width: 12px; }
+html.theme-grimoire.dark ::-webkit-scrollbar-track { background: #07080d; }
+html.theme-grimoire.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6a4cab, #2d1b3a);
+  border: 1px solid #c8a44d;
+}
+html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; }
+
+/* ----------------------------------------------------------------------
+   Utility-style color/font/spacing classes used inline in grimoire views.
+   Scoped under `.theme-grimoire` so they cannot leak into the default
+   theme. Intentionally mirrors Tailwind-style class names so markup stays
+   expressive without requiring Tailwind config edits.
+---------------------------------------------------------------------- */
+
+/* Backgrounds */
+.theme-grimoire .bg-grim-parchment { background-color: #ebd9b3; }
+.theme-grimoire .bg-grim-vellum    { background-color: #f1e3c2; }
+.theme-grimoire .bg-grim-vellum\/30{ background-color: rgba(241,227,194,0.3); }
+.theme-grimoire .bg-grim-void      { background-color: #07080d; }
+.theme-grimoire .bg-grim-obsidian  { background-color: #0e0f17; }
+.theme-grimoire .bg-grim-tomb      { background-color: #161826; }
+.theme-grimoire .bg-grim-ichor     { background-color: #2d1b3a; }
+
+.theme-grimoire.dark .dark\:bg-grim-void       { background-color: #07080d; }
+.theme-grimoire.dark .dark\:bg-grim-obsidian   { background-color: #0e0f17; }
+.theme-grimoire.dark .dark\:bg-grim-tomb       { background-color: #161826; }
+.theme-grimoire.dark .dark\:bg-grim-ichor      { background-color: #2d1b3a; }
+.theme-grimoire.dark .dark\:bg-grim-obsidian\/60 { background-color: rgba(14,15,23,0.6); }
+
+/* Text colors */
+.theme-grimoire .text-grim-ink     { color: #1a1410; }
+.theme-grimoire .text-grim-shadow  { color: #3a2f25; }
+.theme-grimoire .text-grim-shadow\/60 { color: rgba(58,47,37,0.6); }
+.theme-grimoire .text-grim-shadow\/70 { color: rgba(58,47,37,0.7); }
+.theme-grimoire .text-grim-blood   { color: #8b1d27; }
+.theme-grimoire .text-grim-bone    { color: #e9e0c8; }
+.theme-grimoire .text-grim-ember   { color: #f08029; }
+.theme-grimoire .text-grim-gold    { color: #c8a44d; }
+.theme-grimoire .text-grim-gold\/70 { color: rgba(200,164,77,0.7); }
+.theme-grimoire .text-grim-gold\/80 { color: rgba(200,164,77,0.8); }
+.theme-grimoire .text-grim-phosphor{ color: #57f287; }
+.theme-grimoire .text-grim-arcane  { color: #6a4cab; }
+
+.theme-grimoire.dark .dark\:text-grim-bone     { color: #e9e0c8; }
+.theme-grimoire.dark .dark\:text-grim-ember    { color: #f08029; }
+.theme-grimoire.dark .dark\:text-grim-gold     { color: #c8a44d; }
+.theme-grimoire.dark .dark\:text-grim-gold\/70 { color: rgba(200,164,77,0.7); }
+.theme-grimoire.dark .dark\:text-grim-gold\/80 { color: rgba(200,164,77,0.8); }
+.theme-grimoire.dark .dark\:fill-grim-tomb     { fill: #161826; }
+
+/* Borders */
+.theme-grimoire .border-grim-shadow      { border-color: #3a2f25; }
+.theme-grimoire .border-grim-shadow\/30  { border-color: rgba(58,47,37,0.3); }
+.theme-grimoire .border-grim-shadow\/40  { border-color: rgba(58,47,37,0.4); }
+.theme-grimoire .border-grim-gold        { border-color: #c8a44d; }
+.theme-grimoire .border-grim-gold\/40    { border-color: rgba(200,164,77,0.4); }
+
+.theme-grimoire.dark .dark\:border-grim-gold     { border-color: #c8a44d; }
+.theme-grimoire.dark .dark\:border-grim-gold\/40 { border-color: rgba(200,164,77,0.4); }
+
+/* Hover variants */
+.theme-grimoire .hover\:text-grim-blood:hover { color: #8b1d27; }
+.theme-grimoire .hover\:text-grim-ember:hover { color: #f08029; }
+.theme-grimoire.dark .dark\:hover\:text-grim-ember:hover { color: #f08029; }
+
+.theme-grimoire .group:hover .group-hover\:text-grim-blood { color: #8b1d27; }
+.theme-grimoire.dark .group:hover .dark\:group-hover\:text-grim-ember { color: #f08029; }
+.theme-grimoire .group:hover .group-hover\:underline { text-decoration-line: underline; }
+.theme-grimoire .group:hover .group-hover\:decoration-dotted { text-decoration-style: dotted; }
+.theme-grimoire .group:hover .group-hover\:decoration-1 { text-decoration-thickness: 1px; }
+.theme-grimoire .group:hover .group-hover\:underline-offset-\[6px\] { text-underline-offset: 6px; }
+.theme-grimoire .group:hover .group-hover\:opacity-100 { opacity: 1; }
+
+/* Decoration */
+.theme-grimoire .decoration-grim-blood { text-decoration-color: #8b1d27; }
+.theme-grimoire.dark .dark\:decoration-grim-gold { text-decoration-color: #c8a44d; }
+
+/* Font families */
+.theme-grimoire .font-blackletter { font-family: "JetBrains Mono", ui-monospace, monospace; }
+.theme-grimoire .font-engraved    { font-family: "JetBrains Mono", ui-monospace, monospace; }
+.theme-grimoire .font-manuscript  { font-family: "Inter", system-ui, -apple-system, sans-serif; }
+.theme-grimoire .font-plex        { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+
+/* Arbitrary font sizes used by views (Tailwind `text-[Xrem]` syntax mirror) */
+.theme-grimoire .text-\[0\.62rem\] { font-size: 0.62rem; line-height: 1.2; }
+.theme-grimoire .text-\[0\.66rem\] { font-size: 0.66rem; line-height: 1.2; }
+.theme-grimoire .text-\[0\.7rem\]  { font-size: 0.7rem;  line-height: 1.25; }
+.theme-grimoire .text-\[0\.72rem\] { font-size: 0.72rem; line-height: 1.3; }
+.theme-grimoire .text-\[0\.74rem\] { font-size: 0.74rem; line-height: 1.3; }
+.theme-grimoire .text-\[0\.78rem\] { font-size: 0.78rem; line-height: 1.35; }
+.theme-grimoire .text-\[2\.2rem\]  { font-size: 2.2rem;  line-height: 1; }
+.theme-grimoire .text-\[2\.8rem\]  { font-size: 2.8rem;  line-height: 1; }
+
+/* Arbitrary letter-spacing values */
+.theme-grimoire .tracking-\[0\.12em\] { letter-spacing: 0.12em; }
+.theme-grimoire .tracking-\[0\.14em\] { letter-spacing: 0.14em; }
+.theme-grimoire .tracking-\[0\.18em\] { letter-spacing: 0.18em; }
+.theme-grimoire .tracking-\[0\.2em\]  { letter-spacing: 0.2em; }
+.theme-grimoire .tracking-\[0\.22em\] { letter-spacing: 0.22em; }
+.theme-grimoire .tracking-\[0\.3em\]  { letter-spacing: 0.3em; }
+
+/* Arbitrary leading + underline-offset */
+.theme-grimoire .leading-\[0\.95\] { line-height: 0.95; }
+.theme-grimoire .underline-offset-\[6px\] { text-underline-offset: 6px; }
+
+/* Animations */
+.theme-grimoire .animate-blink { animation: grimoire-blink 1s steps(2, start) infinite; }
+
+/* ----------------------------------------------------------------------
+   Components
+---------------------------------------------------------------------- */
+
+/* TOME — the card. A weathered codex page (light) or obsidian slate (dark)
+   with a thin gold/ink double border + tiny sigils at opposite corners. */
+.theme-grimoire .tome {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255,250,235,0.92), rgba(235,217,179,0.92)),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><defs><filter id='n'><feTurbulence baseFrequency='0.65' numOctaves='2' seed='12'/><feColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.30  0 0 0 0 0.18  0 0 0 0.18 0'/></filter></defs><rect width='240' height='240' filter='url(%23n)'/></svg>");
+  color: #1a1410;
+  border: 1px solid #1a1410;
+  box-shadow:
+    inset 0 0 0 6px #ebd9b3,
+    inset 0 0 0 7px #c8a44d,
+    0 18px 36px -16px rgba(20,12,6,0.55);
+  padding: 1.75rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.theme-grimoire .tome:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 0 0 6px #ebd9b3,
+    inset 0 0 0 7px #c8a44d,
+    0 28px 48px -20px rgba(20,12,6,0.6);
+}
+.theme-grimoire.dark .tome {
+  background:
+    linear-gradient(180deg, #11131c, #0a0b12),
+    radial-gradient(120% 60% at 50% 0%, rgba(106,76,171,0.18), transparent 70%);
+  color: #e9e0c8;
+  border-color: #c8a44d;
+  box-shadow:
+    inset 0 0 0 4px #07080d,
+    inset 0 0 0 5px rgba(200,164,77,0.55),
+    inset 0 0 80px rgba(106,76,171,0.18),
+    0 22px 50px -20px rgba(0,0,0,0.85);
+}
+.theme-grimoire.dark .tome:hover {
+  box-shadow:
+    inset 0 0 0 4px #07080d,
+    inset 0 0 0 5px #c8a44d,
+    inset 0 0 90px rgba(240,128,41,0.18),
+    0 28px 60px -22px rgba(0,0,0,0.95);
+}
+.theme-grimoire .tome::before,
+.theme-grimoire .tome::after {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.85;
+  pointer-events: none;
+}
+.theme-grimoire .tome::before {
+  top: -14px;
+  left: -14px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><g fill='none' stroke='%23c8a44d' stroke-width='1.2'><circle cx='14' cy='14' r='10'/><path d='M14 4v20M4 14h20'/><path d='M14 14 L7 7 M14 14 L21 7 M14 14 L7 21 M14 14 L21 21' stroke-opacity='0.45'/></g></svg>");
+}
+.theme-grimoire .tome::after {
+  bottom: -14px;
+  right: -14px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><g fill='none' stroke='%238b1d27' stroke-width='1.2'><polygon points='14,3 17,13 27,13 19,19 22,28 14,22 6,28 9,19 1,13 11,13'/></g></svg>");
+}
+.theme-grimoire.dark .tome::after {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><g fill='none' stroke='%23f08029' stroke-width='1.2'><polygon points='14,3 17,13 27,13 19,19 22,28 14,22 6,28 9,19 1,13 11,13'/></g></svg>");
+}
+
+/* SPELL BUTTON — bookish raised metal-and-paper button */
+.theme-grimoire .spell-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #1a1410;
+  background: linear-gradient(180deg, #f4e6c0, #d8c08a);
+  border: 1px solid #1a1410;
+  box-shadow: 0 1px 0 #c8a44d, 0 2px 0 #1a1410, 0 4px 12px -2px rgba(20,12,6,0.4);
+  padding: 0.55rem 1rem;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.25s ease;
+  cursor: pointer;
+}
+.theme-grimoire .spell-btn:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #f8edc8, #e2cd9a);
+  box-shadow: 0 1px 0 #c8a44d, 0 4px 0 #1a1410, 0 8px 16px -2px rgba(20,12,6,0.45);
+}
+.theme-grimoire .spell-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #c8a44d, 0 0 0 #1a1410;
+}
+.theme-grimoire.dark .spell-btn {
+  color: #ebd9b3;
+  background: linear-gradient(180deg, #1a1d2a, #0e0f17);
+  border-color: #c8a44d;
+  box-shadow: 0 1px 0 rgba(200,164,77,0.4), 0 2px 0 #07080d, 0 0 18px rgba(240,128,41,0.18);
+}
+.theme-grimoire.dark .spell-btn:hover {
+  background: linear-gradient(180deg, #232636, #15172a);
+  box-shadow: 0 1px 0 #c8a44d, 0 4px 0 #07080d, 0 0 24px rgba(240,128,41,0.45);
+  color: #f08029;
+}
+.theme-grimoire .spell-btn-blood {
+  background: linear-gradient(180deg, #b1262f, #7a161e);
+  color: #ebd9b3;
+  border-color: #1a1410;
+}
+.theme-grimoire .spell-btn-blood:hover { background: linear-gradient(180deg, #c93340, #8a1b24); }
+.theme-grimoire.dark .spell-btn-blood { background: linear-gradient(180deg, #7a161e, #4b0d12); color: #ebd9b3; }
+
+/* ICON RUNE — square icon button (theme toggle, RSS) */
+.theme-grimoire .icon-rune {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(180deg, #f4e6c0, #d8c08a);
+  color: #1a1410;
+  border: 1px solid #1a1410;
+  box-shadow: 0 1px 0 #c8a44d, 0 2px 0 #1a1410;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.theme-grimoire .icon-rune:hover { color: #8b1d27; transform: translateY(-1px); }
+.theme-grimoire.dark .icon-rune {
+  background: linear-gradient(180deg, #1a1d2a, #0e0f17);
+  color: #c8a44d;
+  border-color: #c8a44d;
+  box-shadow: 0 0 14px rgba(240,128,41,0.25);
+}
+.theme-grimoire.dark .icon-rune:hover { color: #f08029; box-shadow: 0 0 22px rgba(240,128,41,0.55); }
+
+/* WAX SEAL — tag pills */
+.theme-grimoire .wax-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  padding: 0.5rem 0.9rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #f6ead0;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%),
+    #8b1d27;
+  border: 1px solid #1a1410;
+  border-radius: 999px;
+  box-shadow:
+    inset 0 -2px 4px rgba(0,0,0,0.4),
+    inset 0 2px 2px rgba(255,255,255,0.15),
+    0 4px 8px -2px rgba(20,12,6,0.45);
+  transform: rotate(-4deg);
+  transition: transform 0.2s ease;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.35);
+}
+.theme-grimoire .wax-seal:hover { transform: rotate(0deg) scale(1.05); }
+.theme-grimoire.dark .wax-seal {
+  border-color: #c8a44d;
+  box-shadow:
+    inset 0 -2px 4px rgba(0,0,0,0.55),
+    inset 0 2px 2px rgba(200,164,77,0.25),
+    0 0 16px rgba(240,128,41,0.2);
+}
+.theme-grimoire .wax-seal-blood    { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), #8b1d27; }
+.theme-grimoire .wax-seal-arcane   { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), #6a4cab; }
+.theme-grimoire .wax-seal-ember    { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), #b65a13; color: #fff3d8; }
+.theme-grimoire .wax-seal-phosphor { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), #2aa758; }
+.theme-grimoire .wax-seal-gold     { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.4), transparent 50%), #c8a44d; color: #1a1410; text-shadow: 0 1px 0 rgba(255,255,255,0.25); }
+.theme-grimoire .wax-seal-ichor    { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.3), transparent 50%), #2d1b3a; }
+
+/* HEADINGS — Matrix-minimal monospace, no ornate text-shadow */
+.theme-grimoire .h-blackletter {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 800;
+  color: #8b1d27;
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  font-feature-settings: "ss02" on, "calt" on;
+}
+.theme-grimoire.dark .h-blackletter {
+  color: #c8a44d;
+  text-shadow: 0 0 10px rgba(200,164,77,0.35), 0 0 28px rgba(240,128,41,0.12);
+}
+.theme-grimoire .h-engraved {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #3a2f25;
+}
+.theme-grimoire.dark .h-engraved { color: #c8a44d; }
+
+/* RUNE DIVIDER — horizontal rule with center label */
+.theme-grimoire .rune-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: #8b1d27;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin: 1.6rem 0;
+}
+.theme-grimoire .rune-divider::before,
+.theme-grimoire .rune-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139,29,39,0.6), transparent);
+}
+.theme-grimoire.dark .rune-divider { color: #c8a44d; }
+.theme-grimoire.dark .rune-divider::before,
+.theme-grimoire.dark .rune-divider::after {
+  background: linear-gradient(90deg, transparent, rgba(200,164,77,0.6), transparent);
+}
+
+/* BLINKING TERMINAL CURSOR */
+.theme-grimoire .cursor-blink::after {
+  content: "▮";
+  display: inline-block;
+  margin-left: 0.35rem;
+  color: #f08029;
+  animation: grimoire-blink 1s steps(2, start) infinite;
+}
+.theme-grimoire.dark .cursor-blink::after { color: #57f287; }
+
+/* ARC LINK — subtle inline link styling */
+.theme-grimoire .arc-link {
+  color: #8b1d27;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+.theme-grimoire .arc-link:hover { color: #f08029; text-decoration-style: solid; }
+.theme-grimoire.dark .arc-link { color: #c8a44d; }
+.theme-grimoire.dark .arc-link:hover { color: #f08029; }
+
+/* SUMMONING CIRCLE — decorative SVG container */
+.theme-grimoire .summoning-circle {
+  position: relative;
+  width: 11rem;
+  height: 11rem;
+  margin: 0 auto;
+}
+.theme-grimoire .summoning-circle svg { width: 100%; height: 100%; }
+.theme-grimoire .summoning-circle .ring-outer {
+  animation: grimoire-sigil-spin 42s linear infinite;
+  transform-origin: center;
+}
+.theme-grimoire .summoning-circle .ring-inner {
+  animation: grimoire-sigil-spin 56s linear infinite reverse;
+  transform-origin: center;
+}
+
+/* MARQUEE — footer scrolling band */
+.theme-grimoire .grim-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #07080d, #0e0f17);
+  color: #c8a44d;
+  border-top: 1px solid #c8a44d;
+  border-bottom: 1px solid #c8a44d;
+  padding: 0.55rem 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 500;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.theme-grimoire .grim-marquee__track {
+  display: inline-block;
+  animation: grimoire-marquee 38s linear infinite;
+}
+.theme-grimoire .grim-marquee__token { display: inline-block; padding: 0 1.5rem; }
+.theme-grimoire .grim-marquee__token span { color: #f08029; padding-right: 1.5rem; }
+
+/* INCANT OVERLAY — Konami code easter egg */
+.theme-grimoire .incant-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, rgba(7,8,13,0.85), rgba(7,8,13,0.98));
+  color: #c8a44d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  text-align: center;
+  animation: grimoire-incant 1.2s ease-out forwards;
+}
+.theme-grimoire .incant-overlay .incant-title {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(2.5rem, 9vw, 6rem);
+  color: #f08029;
+  text-shadow: 0 0 24px rgba(240,128,41,0.65), 0 0 60px rgba(240,128,41,0.35);
+}
+.theme-grimoire .incant-overlay .incant-sub {
+  font-family: "IBM Plex Mono", monospace;
+  color: #57f287;
+  letter-spacing: 0.4em;
+  margin-top: 1rem;
+  text-transform: uppercase;
+}
+
+/* ----------------------------------------------------------------------
+   Rendered markdown content (`.prose-grimoire` wrapper)
+---------------------------------------------------------------------- */
+
+.theme-grimoire .prose-grimoire {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.72;
+  color: #1a1410;
+  font-feature-settings: "ss01" on, "cv11" on, "kern", "liga";
+}
+.theme-grimoire.dark .prose-grimoire { color: #e9e0c8; }
+
+/* Matrix drop cap — chunky monospace block letter, thin underline */
+.theme-grimoire .prose-grimoire > p:first-of-type::first-letter {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 800;
+  float: left;
+  font-size: 4.4rem;
+  line-height: 0.95;
+  padding: 0.15rem 0.55rem 0.15rem 0;
+  margin-right: 0.25rem;
+  color: #8b1d27;
+  border-bottom: 2px solid currentColor;
+}
+.theme-grimoire.dark .prose-grimoire > p:first-of-type::first-letter {
+  color: #57f287;
+  text-shadow: 0 0 10px rgba(87,242,135,0.45), 0 0 24px rgba(87,242,135,0.18);
+  border-bottom-color: rgba(87,242,135,0.55);
+}
+
+.theme-grimoire .prose-grimoire h1,
+.theme-grimoire .prose-grimoire h2,
+.theme-grimoire .prose-grimoire h3 {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 700;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  letter-spacing: -0.02em;
+  color: #3a2f25;
+  text-transform: uppercase;
+}
+.theme-grimoire.dark .prose-grimoire h1,
+.theme-grimoire.dark .prose-grimoire h2,
+.theme-grimoire.dark .prose-grimoire h3 { color: #c8a44d; }
+.theme-grimoire .prose-grimoire h1 {
+  font-size: 1.65rem;
+  border-bottom: 1px solid #8b1d27;
+  padding-bottom: 0.35em;
+}
+.theme-grimoire .prose-grimoire h2 { font-size: 1.35rem; color: #8b1d27; }
+.theme-grimoire .prose-grimoire h3 { font-size: 1.1rem; }
+.theme-grimoire.dark .prose-grimoire h1 { border-bottom-color: #c8a44d; }
+.theme-grimoire.dark .prose-grimoire h2 { color: #f08029; }
+
+.theme-grimoire .prose-grimoire p { margin-bottom: 1.1em; }
+
+.theme-grimoire .prose-grimoire strong { color: #8b1d27; font-weight: 800; }
+.theme-grimoire.dark .prose-grimoire strong { color: #f08029; }
+
+.theme-grimoire .prose-grimoire em { font-style: italic; color: #6a4cab; }
+.theme-grimoire.dark .prose-grimoire em { color: #c8a44d; }
+
+.theme-grimoire .prose-grimoire a {
+  color: #8b1d27;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.theme-grimoire .prose-grimoire a:hover { color: #f08029; text-decoration-style: solid; }
+.theme-grimoire.dark .prose-grimoire a { color: #c8a44d; }
+.theme-grimoire.dark .prose-grimoire a:hover { color: #f08029; }
+
+.theme-grimoire .prose-grimoire ul,
+.theme-grimoire .prose-grimoire ol {
+  margin: 1em 0 1.2em 1.5em;
+  padding-left: 0.5em;
+}
+.theme-grimoire .prose-grimoire ul { list-style: none; }
+.theme-grimoire .prose-grimoire ul > li::before {
+  content: "✦";
+  color: #8b1d27;
+  font-weight: 700;
+  margin-right: 0.55em;
+  display: inline-block;
+  transform: translateY(-1px);
+}
+.theme-grimoire.dark .prose-grimoire ul > li::before { color: #c8a44d; }
+.theme-grimoire .prose-grimoire ol { list-style: decimal; }
+.theme-grimoire .prose-grimoire ol::marker {
+  color: #8b1d27;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 700;
+}
+.theme-grimoire .prose-grimoire li { margin-bottom: 0.4em; }
+
+.theme-grimoire .prose-grimoire blockquote {
+  position: relative;
+  border-left: 2px solid #8b1d27;
+  background: rgba(200,164,77,0.10);
+  padding: 1em 1.2em 1em 2.4em;
+  margin: 1.5em 0;
+  font-style: italic;
+  color: #3a2f25;
+}
+.theme-grimoire .prose-grimoire blockquote::before {
+  content: ">";
+  position: absolute;
+  left: 0.7em;
+  top: 1em;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1.05em;
+  color: #8b1d27;
+  line-height: 1;
+}
+.theme-grimoire.dark .prose-grimoire blockquote {
+  border-left-color: #c8a44d;
+  background: rgba(106,76,171,0.10);
+  color: #e9e0c8;
+}
+.theme-grimoire.dark .prose-grimoire blockquote::before { color: #c8a44d; }
+
+/* Code blocks — wizard's terminal (phosphor green on void) */
+.theme-grimoire .prose-grimoire pre,
+.theme-grimoire pre.highlight {
+  background: #07080d !important;
+  color: #57f287 !important;
+  border: 1px solid #c8a44d;
+  box-shadow:
+    inset 0 0 80px rgba(106,76,171,0.18),
+    0 0 22px rgba(87,242,135,0.18),
+    0 18px 40px -18px rgba(0,0,0,0.7);
+  padding: 1rem 1.1rem;
+  margin: 1.5em 0;
+  overflow-x: auto;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  position: relative;
+}
+.theme-grimoire .prose-grimoire pre::before,
+.theme-grimoire pre.highlight::before {
+  content: "▒▓ ~/grimoire/spells $ cast";
+  display: block;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 500;
+  font-size: 0.66rem;
+  color: #c8a44d;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: -1rem -1.1rem 0.8rem;
+  padding: 0.55rem 0.9rem;
+  background: #0e0f17;
+  border-bottom: 1px solid #c8a44d;
+}
+.theme-grimoire .prose-grimoire pre::after,
+.theme-grimoire pre.highlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 3px,
+    rgba(87,242,135,0.04) 3px 4px
+  );
+}
+
+.theme-grimoire .prose-grimoire code,
+.theme-grimoire code:not(pre code) {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  background: rgba(139,29,39,0.10);
+  color: #8b1d27;
+  padding: 0 6px;
+  border: 1px solid rgba(139,29,39,0.35);
+  font-size: 0.92em;
+  border-radius: 3px;
+}
+.theme-grimoire.dark .prose-grimoire code,
+.theme-grimoire.dark code:not(pre code) {
+  background: rgba(200,164,77,0.10);
+  color: #c8a44d;
+  border-color: rgba(200,164,77,0.4);
+}
+.theme-grimoire .prose-grimoire pre code,
+.theme-grimoire pre.highlight code {
+  background: transparent !important;
+  color: inherit !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: inherit;
+}
+
+.theme-grimoire .prose-grimoire hr {
+  border: none;
+  margin: 2.2em 0;
+  height: 14px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='14' viewBox='0 0 160 14'><g fill='%238b1d27' font-family='JetBrains Mono, monospace' font-size='12' text-anchor='middle'><line x1='0' y1='7' x2='62' y2='7' stroke='%238b1d27' stroke-width='1' stroke-dasharray='3 3'/><text x='80' y='11'>// EOF //</text><line x1='98' y1='7' x2='160' y2='7' stroke='%238b1d27' stroke-width='1' stroke-dasharray='3 3'/></g></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.theme-grimoire.dark .prose-grimoire hr {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='14' viewBox='0 0 160 14'><g fill='%23c8a44d' font-family='JetBrains Mono, monospace' font-size='12' text-anchor='middle'><line x1='0' y1='7' x2='62' y2='7' stroke='%23c8a44d' stroke-width='1' stroke-dasharray='3 3'/><text x='80' y='11'>// EOF //</text><line x1='98' y1='7' x2='160' y2='7' stroke='%23c8a44d' stroke-width='1' stroke-dasharray='3 3'/></g></svg>");
+}
+
+.theme-grimoire .prose-grimoire img {
+  border: 1px solid #1a1410;
+  box-shadow:
+    inset 0 0 0 4px #ebd9b3,
+    inset 0 0 0 5px #c8a44d,
+    0 18px 36px -16px rgba(20,12,6,0.55);
+  margin: 1.5em 0;
+}
+.theme-grimoire.dark .prose-grimoire img {
+  border-color: #c8a44d;
+  box-shadow:
+    inset 0 0 0 4px #07080d,
+    inset 0 0 0 5px #c8a44d,
+    0 18px 36px -16px rgba(0,0,0,0.85);
+}
+
+.theme-grimoire .prose-grimoire table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.4em 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.86rem;
+}
+.theme-grimoire .prose-grimoire th,
+.theme-grimoire .prose-grimoire td {
+  border: 1px solid #1a1410;
+  padding: 0.55rem 0.8rem;
+  text-align: left;
+}
+.theme-grimoire .prose-grimoire th {
+  background: #c8a44d;
+  color: #1a1410;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+.theme-grimoire.dark .prose-grimoire th {
+  background: #2d1b3a;
+  color: #c8a44d;
+  border-color: #c8a44d;
+}
+.theme-grimoire.dark .prose-grimoire td { border-color: rgba(200,164,77,0.4); }
+
+/* ----------------------------------------------------------------------
+   Keyframes (prefixed with `grimoire-` to avoid clashing with other themes)
+---------------------------------------------------------------------- */
+
+@keyframes grimoire-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes grimoire-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes grimoire-sigil-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes grimoire-incant {
+  0%   { opacity: 0; transform: translateY(-12px) scale(0.9); filter: blur(8px); }
+  60%  { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes grimoire-mist {
+  0%, 100% { transform: translateX(-2%) translateY(0); }
+  50%      { transform: translateX(2%) translateY(-1%); }
+}
