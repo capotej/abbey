@@ -1,0 +1,31 @@
+<% content_for :title do %>
+<%= @page.title %> | <%= Rails.application.config.site_name %>
+<% end %>
+
+<article class="tome max-w-3xl mx-auto relative">
+  <div class="absolute -top-3 -left-2 bg-grim-ichor dark:bg-grim-obsidian/60 text-grim-bone border border-grim-gold px-2 py-1 font-plex text-[0.62rem] tracking-[0.2em] uppercase">
+    ✦ Chapter · <%= @page.slug %>
+  </div>
+
+  <header class="mb-8 pb-6 border-b border-grim-shadow/30 dark:border-grim-gold/40">
+    <h1 class="h-blackletter text-3xl md:text-5xl leading-[0.95]">
+      <%= @page.title %><span class="cursor-blink"></span>
+    </h1>
+    <% if authenticated? %>
+      <div class="mt-4 font-plex text-xs tracking-[0.18em] uppercase">
+        <%= link_to "edit ▸", edit_page_path(@page),
+                class: "text-grim-blood dark:text-grim-ember hover:underline" %>
+      </div>
+    <% end %>
+  </header>
+
+  <div class="prose-grimoire max-w-none">
+    <%= @page.rendered_body.html_safe %>
+  </div>
+
+  <div class="rune-divider mt-12"><span>// EOF //</span></div>
+
+  <p class="text-center font-plex text-xs tracking-[0.22em] uppercase text-grim-shadow/70 dark:text-grim-gold/70">
+    exit 0
+  </p>
+</article>
