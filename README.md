@@ -64,8 +64,9 @@ minimal look. Built-in alternatives currently include:
 
 | Theme     | Description |
 |-----------|-------------|
-| `default` | Original minimal Abbey look (no behavioural change). |
-| `retro`   | Memphis-style / 8-bit / 80s computer chrome — neo-brutalist cards, CRT scanlines, terminal code blocks, pixel-display headings. |
+| `default`  | Original minimal Abbey look (no behavioural change). |
+| `retro`    | Memphis-style / 8-bit / 80s computer chrome — neo-brutalist cards, CRT scanlines, terminal code blocks, pixel-display headings. |
+| `grimoire` | Retro hacker dark fantasy — Matrix-minimal monospace, parchment + void palette with phosphor/ember/gold accents, tome cards, wax-seal tags, an animated summoning circle, and a Konami-code easter egg. |
 
 ## Switching themes
 
