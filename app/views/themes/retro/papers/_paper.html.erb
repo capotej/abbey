@@ -1,0 +1,60 @@
+<%
+  shadows = %w[shadow-retro-pink shadow-retro-cyan shadow-retro-yellow shadow-retro-mint shadow-retro-purple shadow-retro-coral]
+  shadow  = shadows[(paper.id || 0) % shadows.length]
+%>
+<article class="bg-memphis-paper dark:bg-memphis-crt border-[3px] border-memphis-ink dark:border-memphis-mint <%= shadow %> p-6 transition-transform duration-200 hover:-translate-x-1 hover:-translate-y-1 relative">
+  <div class="absolute -top-3 -left-3 bg-memphis-yellow text-memphis-ink border-[3px] border-memphis-ink px-2 py-1 font-display text-[9px] uppercase tracking-widest shadow-retro-sm rotate-[-3deg]">
+    PDF
+  </div>
+  <div class="flex items-start gap-6 flex-col sm:flex-row">
+    <% if paper.pdf.attached? && paper.pdf.previewable? %>
+      <div class="shrink-0">
+        <% if paper.arxiv? %>
+          <%= link_to paper.arxiv_pdf_url, target: "_blank", rel: "noopener", data: { turbo: false } do %>
+            <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover border-[3px] border-memphis-ink shadow-retro-sm" %>
+          <% end %>
+        <% else %>
+          <%= link_to paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), data: { turbo: false } do %>
+            <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover border-[3px] border-memphis-ink shadow-retro-sm" %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="flex-1 min-w-0">
+      <h2 class="font-display text-sm sm:text-base text-memphis-ink dark:text-memphis-mint flex items-center gap-2 leading-snug mb-3">
+        <% if paper.arxiv? %>
+          <%= link_to paper.arxiv_pdf_url, target: "_blank", rel: "noopener", class: "hover:text-memphis-pink dark:hover:text-memphis-yellow transition-colors flex items-center gap-2", data: { turbo: false } do %>
+            <%= paper.title %>
+            <%= render "shared/icons/external_link", class: "w-4 h-4 text-memphis-purple dark:text-memphis-cyan" %>
+          <% end %>
+        <% else %>
+          <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "hover:text-memphis-pink dark:hover:text-memphis-yellow transition-colors flex items-center gap-2", data: { turbo: false } %>
+        <% end %>
+      </h2>
+
+      <% if paper.description.present? %>
+        <p class="font-sans text-memphis-ink dark:text-memphis-paper/90 leading-relaxed mb-3">
+          <%= paper.description %>
+        </p>
+      <% end %>
+
+      <div class="font-mono text-base text-memphis-purple dark:text-memphis-cyan">
+        &gt;&gt; added <%= paper.created_at.strftime("%Y-%m-%d") %>
+      </div>
+    </div>
+  </div>
+</article>
+<% if authenticated? %>
+  <div class="flex gap-2 mt-2 justify-end">
+    <%= link_to edit_paper_path(paper), class: "btn-icon-retro" do %>
+      <%= render "shared/icons/pencil", class: "w-4 h-4" %>
+    <% end %>
+    <%= button_to paper_path(paper),
+        method: :delete,
+        class: "btn-icon-retro",
+        form: { data: { turbo_confirm: "Are you sure?" } } do %>
+      <%= render "shared/icons/trash", class: "w-4 h-4" %>
+    <% end %>
+  </div>
+<% end %>

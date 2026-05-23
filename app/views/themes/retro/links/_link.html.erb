@@ -1,0 +1,37 @@
+<%
+  shadows = %w[shadow-retro-pink shadow-retro-cyan shadow-retro-yellow shadow-retro-mint shadow-retro-purple shadow-retro-coral]
+  shadow  = shadows[(link.id || 0) % shadows.length]
+%>
+<%= link_to link.url,
+    rel: "nofollow",
+    class: "block bg-memphis-paper dark:bg-memphis-crt border-[3px] border-memphis-ink dark:border-memphis-mint #{shadow} p-5 transition-transform duration-200 hover:-translate-x-1 hover:-translate-y-1 group" do %>
+  <article>
+    <div class="flex items-baseline justify-between gap-3">
+      <h2 class="font-display text-sm sm:text-base text-memphis-ink dark:text-memphis-mint group-hover:text-memphis-pink dark:group-hover:text-memphis-yellow flex items-center gap-2 leading-snug">
+        <%= link.title %>
+        <%= render "shared/icons/external_link", class: "w-4 h-4 text-memphis-purple dark:text-memphis-cyan" %>
+      </h2>
+      <time class="font-mono text-base text-memphis-purple dark:text-memphis-cyan shrink-0">
+        <%= link.created_at.strftime("%Y-%m-%d") %>
+      </time>
+    </div>
+    <% if link.description.present? %>
+      <p class="mt-3 font-sans text-memphis-ink dark:text-memphis-paper/90">
+        <%= link.description %>
+      </p>
+    <% end %>
+  </article>
+<% end %>
+<% if authenticated? %>
+<div class="flex gap-2 mt-2 justify-end">
+    <%= link_to edit_link_path(link), class: "btn-icon-retro" do %>
+        <%= render "shared/icons/pencil", class: "w-4 h-4" %>
+    <% end %>
+    <%= button_to link_path(link),
+        method: :delete,
+        class: "btn-icon-retro",
+        form: { data: { turbo_confirm: "Are you sure?" } } do %>
+        <%= render "shared/icons/trash", class: "w-4 h-4" %>
+    <% end %>
+</div>
+<% end %>
