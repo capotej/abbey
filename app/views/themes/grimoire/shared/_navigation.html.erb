@@ -1,0 +1,60 @@
+<header class="content-layer border-b border-grim-shadow/30 dark:border-grim-gold/40 bg-grim-parchment dark:bg-grim-void">
+  <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
+      <%= link_to root_path, class: "group inline-block" do %>
+        <%# Terminal masthead: $ cat ./codex_of <site> %>
+        <div class="font-plex text-xs tracking-[0.2em] text-grim-blood dark:text-grim-gold/80 mb-2">
+          <span class="text-grim-shadow/60 dark:text-grim-gold/70">root@grimoire</span>
+          <span class="text-grim-shadow/60 dark:text-grim-gold/70">:</span>
+          <span class="text-grim-arcane dark:text-grim-ember">~</span>
+          <span class="text-grim-shadow/60 dark:text-grim-gold/70">$</span>
+          cat ./codex_of
+        </div>
+        <h1 class="h-blackletter text-[2.2rem] md:text-[2.8rem] leading-[0.95]">
+          <%= Rails.application.config.site_name %><span class="cursor-blink"></span>
+        </h1>
+        <p class="font-plex text-[0.78rem] tracking-[0.18em] text-grim-shadow/70 dark:text-grim-gold/70 mt-3 uppercase">
+          // field notes from over 20 years on the web
+        </p>
+      <% end %>
+
+      <div class="flex items-center gap-2">
+        <% if content_for? :rss_button %>
+          <%= yield :rss_button %>
+        <% else %>
+          <%= link_to blog_feed_path, class: "icon-rune", aria: { label: "RSS Feed" } do %>
+            <%= render "shared/icons/rss" %>
+          <% end %>
+        <% end %>
+        <button onclick="toggleDarkMode()" class="icon-rune" aria-label="Toggle the crypt">
+          <span class="dark:hidden text-lg">☾</span>
+          <span class="hidden dark:inline text-lg">☼</span>
+        </button>
+      </div>
+    </div>
+
+    <%# Roman-numeral table-of-contents nav %>
+    <div class="rune-divider"><span>// NAV //</span></div>
+    <nav class="flex flex-wrap gap-x-6 gap-y-2 mt-3">
+      <%
+        nav_items = [
+          ["Home",          root_path],
+          ["About",         "/p/about"],
+          ["Presentations", "/p/presentations"],
+          ["Projects",      "/p/projects"],
+          ["Links",         links_path],
+          ["Papers",        papers_path]
+        ]
+        numerals = %w[I II III IV V VI VII VIII IX X]
+      %>
+      <% nav_items.each_with_index do |(label, path), idx| %>
+        <% active = current_page?(path) %>
+        <%= link_to path, class: "group inline-flex items-center gap-2 font-plex text-sm tracking-[0.12em] uppercase #{active ? 'text-grim-blood dark:text-grim-ember' : 'text-grim-shadow dark:text-grim-gold/80 hover:text-grim-blood dark:hover:text-grim-ember'}" do %>
+          <span class="font-blackletter text-[0.78rem] opacity-60"><%= numerals[idx] %>.</span>
+          <span class="group-hover:underline group-hover:decoration-dotted group-hover:decoration-1 group-hover:underline-offset-[6px] decoration-grim-blood dark:decoration-grim-gold"><%= label %></span>
+        <% end %>
+      <% end %>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,56 @@
+<%
+  # Roman numeral helper (small range — fine for year stickers since 1900–2099).
+  to_roman = ->(num) {
+    map = { 1000 => 'M', 900 => 'CM', 500 => 'D', 400 => 'CD',
+            100 => 'C',  90 => 'XC', 50 => 'L',  40 => 'XL',
+            10  => 'X',  9  => 'IX', 5  => 'V',  4  => 'IV', 1 => 'I' }
+    result = +""
+    map.each { |val, sym| while num >= val; result << sym; num -= val; end }
+    result
+  }
+%>
+
+<div class="space-y-12">
+  <% @posts.each do |post| %>
+    <article class="tome relative">
+      <%# Folio · Anno date sticker (Roman numerals for years) %>
+      <div class="absolute -top-3 -left-2 bg-grim-ichor dark:bg-grim-obsidian/60 text-grim-bone border border-grim-gold px-2 py-1 font-plex text-[0.62rem] tracking-[0.2em] uppercase">
+        Folio · Anno <%= to_roman.call(post.created_at.year) %>
+      </div>
+
+      <h2 class="h-blackletter text-2xl md:text-3xl mt-3 mb-3 leading-tight">
+        <%= link_to post.title, dated_post_path(year: post.year, day: post.day, month: post.month, id: post),
+            class: "arc-link" %>
+      </h2>
+
+      <p class="font-plex text-xs tracking-[0.18em] uppercase text-grim-shadow/70 dark:text-grim-gold/70 mb-4">
+        // <%= post.created_at.strftime('%Y-%m-%d · %a').downcase %>
+      </p>
+
+      <div class="prose-grimoire max-w-none mb-5">
+        <%= post.rendered_excerpt.html_safe %>
+      </div>
+
+      <div class="flex flex-wrap gap-2 my-4">
+        <%= render "shared/tags", post: post %>
+      </div>
+
+      <div class="mt-5 flex items-center gap-3 flex-wrap">
+        <% if authenticated? %>
+          <%= link_to "edit", edit_post_path(post), class: "font-plex text-xs tracking-[0.14em] uppercase text-grim-shadow/70 dark:text-grim-gold/70 hover:text-grim-blood dark:hover:text-grim-ember" %>
+          <span class="font-plex text-grim-shadow/40 dark:text-grim-gold/40">·</span>
+        <% end %>
+        <%= link_to dated_post_path(year: post.year, day: post.day, month: post.month, id: post),
+            class: "spell-btn" do %>
+          ✦ open spellbook
+        <% end %>
+      </div>
+    </article>
+  <% end %>
+
+  <div class="rune-divider"><span>// LOG //</span></div>
+
+  <div class="pt-2">
+    <%= paginate @posts %>
+  </div>
+</div>

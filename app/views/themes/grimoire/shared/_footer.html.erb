@@ -1,0 +1,67 @@
+<%# Footer: summoning circle on top, scrolling marquee, terminal copyright. %>
+
+<footer class="content-layer mt-auto border-t border-grim-shadow/30 dark:border-grim-gold/40 bg-grim-vellum/30 dark:bg-grim-tomb">
+  <div class="container mx-auto px-4 py-12 max-w-5xl flex flex-col items-center">
+
+    <%# Summoning circle: counter-rotating rings, runes, pentagram, center sigil %>
+    <div class="summoning-circle mb-6">
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <%# Outer ring: rotates clockwise with runic glyphs %>
+        <g class="ring-outer">
+          <circle cx="110" cy="110" r="100" fill="none" stroke="#8b1d27" stroke-width="0.7" class="dark:[stroke:#c8a44d]"/>
+          <circle cx="110" cy="110" r="95"  fill="none" stroke="#8b1d27" stroke-width="0.5" stroke-dasharray="2 4" class="dark:[stroke:#c8a44d]"/>
+          <text font-family="JetBrains Mono, monospace" font-size="8" fill="#8b1d27" class="dark:fill-grim-gold" letter-spacing="2">
+            <textPath href="#nav-ring" startOffset="0%">
+              ✦ ∴ ⌬ ⚯ ☥ ⚚ ⌖ ⌬ ✦ ∴ ⌬ ⚯ ☥ ⚚ ⌖ ⌬ ✦ ∴ ⌬ ⚯ ☥ ⚚ ⌖ ⌬ ✦ ∴ ⌬ ⚯ ☥ ⚚ ⌖ ⌬
+            </textPath>
+          </text>
+        </g>
+        <path id="nav-ring" d="M 110 110 m -90 0 a 90 90 0 1 1 180 0 a 90 90 0 1 1 -180 0" fill="none" />
+
+        <%# Inner ring: rotates counter-clockwise %>
+        <g class="ring-inner">
+          <circle cx="110" cy="110" r="65" fill="none" stroke="#8b1d27" stroke-width="0.6" class="dark:[stroke:#c8a44d]"/>
+          <circle cx="110" cy="110" r="60" fill="none" stroke="#8b1d27" stroke-width="0.4" stroke-dasharray="1 3" class="dark:[stroke:#c8a44d]"/>
+        </g>
+
+        <%# Pentagram (static) %>
+        <g transform="translate(110,110)">
+          <polygon points="0,-55 16,-17 55,-17 24,8 36,46 0,22 -36,46 -24,8 -55,-17 -16,-17"
+                   fill="none" stroke="#8b1d27" stroke-width="0.7" class="dark:[stroke:#c8a44d]" stroke-linejoin="round"/>
+        </g>
+
+        <%# Center sigil: small ember %>
+        <circle cx="110" cy="110" r="6" fill="#f08029" opacity="0.9"/>
+        <circle cx="110" cy="110" r="11" fill="none" stroke="#f08029" stroke-width="0.5" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <p class="font-plex text-[0.7rem] tracking-[0.3em] uppercase text-grim-shadow/70 dark:text-grim-gold/70 mb-8">
+      // summoned by Rails &amp; markdown //
+    </p>
+  </div>
+
+  <%# Scrolling marquee — duplicated track for seamless wrap %>
+  <div class="grim-marquee">
+    <div class="grim-marquee__track">
+      <% 2.times do %>
+        <span class="grim-marquee__token">+++ STDERR : INK STILL DRYING <span>·</span></span>
+        <span class="grim-marquee__token">+++ HEAP : 0xDEADBEEF <span>·</span></span>
+        <span class="grim-marquee__token">+++ TAIL -f /var/log/grimoire <span>·</span></span>
+        <span class="grim-marquee__token">+++ KEY : ↑↑↓↓←→←→BA <span>·</span></span>
+        <span class="grim-marquee__token">+++ MEM : 64K SHOULD BE ENOUGH <span>·</span></span>
+        <span class="grim-marquee__token">+++ SIG : RING ZERO ENGAGED <span>·</span></span>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Terminal copyright bar %>
+  <div class="bg-grim-void text-grim-bone py-3 font-plex text-[0.72rem] tracking-[0.18em] text-center">
+    <span class="text-grim-gold">root@grimoire</span>
+    <span class="text-grim-gold/70">:</span>
+    <span class="text-grim-arcane">~</span>
+    <span class="text-grim-gold/70">$</span>
+    echo "© <%= Date.current.year %> <%= Rails.application.config.site_name %> · all rites reserved"
+    <span class="cursor-blink"></span>
+  </div>
+</footer>

@@ -1,0 +1,56 @@
+<% content_for :title do %>
+<%= @post.title %> | <%= Rails.application.config.site_name %>
+<% end %>
+
+<%
+  to_roman = ->(num) {
+    map = { 1000 => 'M', 900 => 'CM', 500 => 'D', 400 => 'CD',
+            100 => 'C',  90 => 'XC', 50 => 'L',  40 => 'XL',
+            10  => 'X',  9  => 'IX', 5  => 'V',  4  => 'IV', 1 => 'I' }
+    result = +""
+    map.each { |val, sym| while num >= val; result << sym; num -= val; end }
+    result
+  }
+%>
+
+<%= link_to posts_path, class: "inline-flex items-center gap-2 font-plex text-xs tracking-[0.18em] uppercase text-grim-shadow/70 dark:text-grim-gold/70 hover:text-grim-blood dark:hover:text-grim-ember mb-6" do %>
+  <span>◀</span> Back to posts
+<% end %>
+
+<article class="tome max-w-3xl mx-auto relative">
+  <div class="absolute -top-3 -left-2 bg-grim-ichor dark:bg-grim-obsidian/60 text-grim-bone border border-grim-gold px-2 py-1 font-plex text-[0.62rem] tracking-[0.2em] uppercase">
+    Folio · Anno <%= to_roman.call(@post.created_at.year) %>
+  </div>
+
+  <header class="mb-8 pb-6 border-b border-grim-shadow/30 dark:border-grim-gold/40">
+    <h1 class="h-blackletter text-3xl md:text-5xl leading-[0.95] mb-4">
+      <%= @post.title %><span class="cursor-blink"></span>
+    </h1>
+
+    <div class="flex flex-col sm:flex-row sm:items-center font-plex text-xs tracking-[0.18em] uppercase text-grim-shadow/70 dark:text-grim-gold/70 gap-2 sm:gap-4">
+      <time>// <%= @post.created_at.strftime("%Y-%m-%d") %></time>
+      <% if authenticated? %>
+        <span class="hidden sm:inline">·</span>
+        <%= link_to "edit ▸", edit_post_path(@post),
+                class: "text-grim-blood dark:text-grim-ember hover:underline" %>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="prose-grimoire max-w-none mb-10">
+    <%= @post.rendered_body.html_safe %>
+  </div>
+
+  <div class="rune-divider"><span>// EOF //</span></div>
+
+  <p class="text-center font-plex text-xs tracking-[0.22em] uppercase text-grim-shadow/70 dark:text-grim-gold/70 mb-8">
+    exit 0 · end of transmission
+  </p>
+
+  <div class="pt-2">
+    <p class="font-plex text-[0.66rem] tracking-[0.22em] uppercase text-grim-shadow/70 dark:text-grim-gold/70 mb-3">// tagged_with</p>
+    <div class="flex flex-wrap gap-2">
+      <%= render "shared/tags", post: @post %>
+    </div>
+  </div>
+</article>

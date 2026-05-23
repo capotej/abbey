@@ -1,0 +1,57 @@
+<article class="tome relative">
+  <div class="absolute -top-3 -left-2 bg-grim-ichor dark:bg-grim-obsidian/60 text-grim-bone border border-grim-gold px-2 py-1 font-plex text-[0.62rem] tracking-[0.2em] uppercase">
+    Codex · PDF
+  </div>
+  <div class="flex items-start gap-6 flex-col sm:flex-row">
+    <% if paper.pdf.attached? && paper.pdf.previewable? %>
+      <div class="shrink-0">
+        <% if paper.arxiv? %>
+          <%= link_to paper.arxiv_pdf_url, target: "_blank", rel: "noopener", data: { turbo: false } do %>
+            <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover border border-grim-shadow dark:border-grim-gold" %>
+          <% end %>
+        <% else %>
+          <%= link_to paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), data: { turbo: false } do %>
+            <%= image_tag paper.pdf.preview(resize_to_fit: [120, 120]), class: "w-28 h-28 object-cover border border-grim-shadow dark:border-grim-gold" %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="flex-1 min-w-0">
+      <h2 class="h-engraved text-base sm:text-lg flex items-center gap-2 leading-snug mb-3 text-grim-ink dark:text-grim-bone">
+        <span class="text-grim-blood dark:text-grim-ember">✦</span>
+        <% if paper.arxiv? %>
+          <%= link_to paper.arxiv_pdf_url, target: "_blank", rel: "noopener", class: "arc-link flex items-center gap-2", data: { turbo: false } do %>
+            <%= paper.title %>
+            <%= render "shared/icons/external_link", class: "w-3.5 h-3.5 opacity-60" %>
+          <% end %>
+        <% else %>
+          <%= link_to paper.title, paper_view_path(paper), target: (paper_view_path(paper) == paper.url ? "_blank" : nil), class: "arc-link flex items-center gap-2", data: { turbo: false } %>
+        <% end %>
+      </h2>
+
+      <% if paper.description.present? %>
+        <p class="font-manuscript text-grim-ink dark:text-grim-bone leading-relaxed mb-3">
+          <%= paper.description %>
+        </p>
+      <% end %>
+
+      <div class="font-plex text-[0.7rem] tracking-[0.18em] uppercase text-grim-shadow/70 dark:text-grim-gold/70">
+        // bound <%= paper.created_at.strftime("%Y-%m-%d") %>
+      </div>
+    </div>
+  </div>
+</article>
+<% if authenticated? %>
+  <div class="flex gap-2 mt-2 justify-end">
+    <%= link_to edit_paper_path(paper), class: "icon-rune" do %>
+      <%= render "shared/icons/pencil", class: "w-4 h-4" %>
+    <% end %>
+    <%= button_to paper_path(paper),
+        method: :delete,
+        class: "icon-rune",
+        form: { data: { turbo_confirm: "Are you sure?" } } do %>
+      <%= render "shared/icons/trash", class: "w-4 h-4" %>
+    <% end %>
+  </div>
+<% end %>

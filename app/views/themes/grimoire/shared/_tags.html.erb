@@ -1,0 +1,14 @@
+<%
+  seal_palette = %w[
+    wax-seal-blood
+    wax-seal-arcane
+    wax-seal-ember
+    wax-seal-phosphor
+    wax-seal-gold
+    wax-seal-ichor
+  ]
+%>
+<% post.tags.each do |tag| %>
+  <% seal = seal_palette[tag.name.sum % seal_palette.length] %>
+  <%= link_to "##{tag.name}", tag_path(id: tag.name), class: "wax-seal #{seal}" %>
+<% end %>
