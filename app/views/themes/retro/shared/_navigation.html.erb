@@ -1,0 +1,60 @@
+<header class="content-layer border-b-[3px] border-memphis-ink dark:border-memphis-mint bg-memphis-paper dark:bg-memphis-crt">
+  <div class="container mx-auto px-4 py-6 max-w-5xl">
+
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+      <%= link_to root_path, class: "group inline-block" do %>
+        <div class="inline-flex items-center gap-3">
+          <span class="inline-block w-8 h-8 bg-memphis-pink border-[3px] border-memphis-ink shadow-retro-sm group-hover:animate-wiggle"></span>
+          <span class="inline-block w-8 h-8 bg-memphis-cyan border-[3px] border-memphis-ink shadow-retro-sm group-hover:animate-wiggle" style="animation-delay:.08s"></span>
+          <span class="inline-block w-8 h-8 bg-memphis-yellow border-[3px] border-memphis-ink shadow-retro-sm group-hover:animate-wiggle" style="animation-delay:.16s"></span>
+        </div>
+        <h1 class="h-display h-display-lg mt-3 cursor-blink">
+          <%= Rails.application.config.site_name %>
+        </h1>
+        <p class="font-mono text-xl text-memphis-purple dark:text-memphis-cyan mt-1">
+          &gt; field notes, code &amp; experiments<span class="animate-blink">_</span>
+        </p>
+      <% end %>
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <nav class="flex flex-wrap gap-2">
+        <% nav_items = [
+            ["Home",          root_path],
+            ["About",         "/p/about"],
+            ["Presentations", "/p/presentations"],
+            ["Projects",      "/p/projects"],
+            ["Links",         links_path],
+            ["Papers",        papers_path]
+          ] %>
+        <% nav_colors = [
+             'bg-memphis-pink text-memphis-paper',
+             'bg-memphis-cyan text-memphis-ink',
+             'bg-memphis-yellow text-memphis-ink',
+             'bg-memphis-mint text-memphis-ink',
+             'bg-memphis-purple text-memphis-paper',
+             'bg-memphis-coral text-memphis-paper'
+           ] %>
+        <% nav_items.each_with_index do |(label, path), idx| %>
+          <% active = current_page?(path) %>
+          <%= link_to label, path,
+              class: "font-display text-[10px] uppercase tracking-widest px-3 py-2 border-[3px] border-memphis-ink shadow-retro-sm transition-all duration-150 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none #{nav_colors[idx]} #{active ? 'animate-wiggle' : ''}" %>
+        <% end %>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <% if content_for? :rss_button %>
+          <%= yield :rss_button %>
+        <% else %>
+          <%= link_to blog_feed_path, class: "btn-icon-retro", aria: { label: "RSS Feed" } do %>
+            <%= render "shared/icons/rss" %>
+          <% end %>
+        <% end %>
+        <button onclick="toggleDarkMode()" class="btn-icon-retro" aria-label="Toggle terminal mode">
+          <span class="dark:hidden text-lg">🌙</span>
+          <span class="hidden dark:inline text-lg">☀</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

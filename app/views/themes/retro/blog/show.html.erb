@@ -1,0 +1,40 @@
+<% content_for :title do %>
+<%= @post.title %> | <%= Rails.application.config.site_name %>
+<% end %>
+
+<%= link_to posts_path, class: "inline-flex items-center font-mono text-lg text-memphis-purple dark:text-memphis-cyan hover:text-memphis-pink dark:hover:text-memphis-mint mb-6" do %>
+  <span class="mr-2">◀</span> Back to posts
+<% end %>
+
+<article class="max-w-3xl mx-auto bg-memphis-paper dark:bg-memphis-crt border-[3px] border-memphis-ink dark:border-memphis-mint shadow-retro-lg p-6 md:p-10 animate-pop-in">
+
+  <header class="mb-8 border-b-[3px] border-dashed border-memphis-ink dark:border-memphis-mint pb-6">
+    <div class="inline-block bg-memphis-yellow text-memphis-ink border-[3px] border-memphis-ink px-3 py-1 font-display text-[10px] uppercase tracking-widest shadow-retro-sm mb-4 -rotate-2">
+      Post · <%= @post.created_at.strftime('%b %d, %Y') %>
+    </div>
+
+    <h1 class="h-display h-display-lg mb-4 cursor-blink">
+      <%= @post.title %>
+    </h1>
+
+    <div class="flex flex-col sm:flex-row sm:items-center font-mono text-lg text-memphis-purple dark:text-memphis-cyan gap-2 sm:gap-4">
+      <time>&gt; <%= @post.created_at.strftime("%Y-%m-%d") %></time>
+      <% if authenticated? %>
+        <span class="hidden sm:inline">·</span>
+        <%= link_to "Edit ▸", edit_post_path(@post),
+                class: "text-memphis-pink dark:text-memphis-mint hover:underline" %>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="prose-retro max-w-none mb-10">
+    <%= @post.rendered_body.html_safe %>
+  </div>
+
+  <div class="border-t-[3px] border-dashed border-memphis-ink dark:border-memphis-mint pt-6">
+    <p class="font-display text-[10px] uppercase tracking-widest text-memphis-purple dark:text-memphis-cyan mb-3">// tagged_with</p>
+    <div class="flex flex-wrap gap-2">
+      <%= render "shared/tags", post: @post %>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,66 @@
+<% content_for :title do %>
+  #<%= @tag.name %> | <%= Rails.application.config.site_name %>
+<% end %>
+
+<% content_for :rss do %>
+  <%= auto_discovery_link_tag(:atom, tag_feed_path(id: @tag.name)) %>
+<% end %>
+
+<% content_for :rss_button do %>
+  <%= link_to tag_feed_path(id: @tag.name), class: "btn-icon-retro", aria: { label: "RSS Feed" } do %>
+    <%= render "shared/icons/rss" %>
+  <% end %>
+<% end %>
+
+<%
+  card_palettes = [
+    'shadow-retro-pink', 'shadow-retro-cyan', 'shadow-retro-yellow',
+    'shadow-retro-mint', 'shadow-retro-purple', 'shadow-retro-coral'
+  ]
+%>
+
+<div class="space-y-10">
+
+  <div class="bg-memphis-pink dark:bg-memphis-purple text-memphis-paper border-[3px] border-memphis-ink shadow-retro p-6 md:p-8 -rotate-1">
+    <p class="font-display text-[10px] uppercase tracking-widest text-memphis-yellow mb-2">// filter</p>
+    <h1 class="h-display h-display-lg text-memphis-paper" style="text-shadow: 3px 3px 0 #0d0d12">
+      #<%= @tag.name %>
+    </h1>
+    <p class="font-mono text-xl mt-2">&gt; <%= pluralize(@posts.total_count, 'transmission') %> matched the query<span class="animate-blink">_</span></p>
+  </div>
+
+  <% @posts.each_with_index do |post, idx| %>
+    <% shadow = card_palettes[(post.id || idx) % card_palettes.length] %>
+    <article class="bg-memphis-paper dark:bg-memphis-crt border-[3px] border-memphis-ink dark:border-memphis-mint <%= shadow %> p-6 md:p-8 animate-pop-in transition-transform duration-200 hover:-translate-x-1 hover:-translate-y-1">
+      <h2 class="h-display h-display-md mb-3">
+        <%= link_to post.title, dated_post_path(year: post.year, day: post.day, month: post.month, id: post),
+            class: "hover:text-memphis-pink dark:hover:text-memphis-cyan transition-colors" %>
+      </h2>
+
+      <time class="font-mono text-base text-memphis-purple dark:text-memphis-cyan mb-4 block">
+        &gt;&gt; <%= post.created_at.strftime('%Y-%m-%d') %>
+      </time>
+
+      <div class="font-sans text-memphis-ink dark:text-memphis-paper/90 leading-relaxed mb-4">
+        <%= post.rendered_excerpt.html_safe %>
+      </div>
+
+      <div class="flex flex-wrap gap-2 my-4">
+        <%= render "shared/tags", post: post %>
+      </div>
+
+      <div class="mt-4 flex items-center gap-3 flex-wrap">
+        <% if authenticated? %>
+          <%= link_to "Edit", edit_post_path(post), class: "font-mono text-base text-memphis-purple dark:text-memphis-cyan hover:underline" %>
+          <span class="font-mono text-memphis-ink/40 dark:text-memphis-mint/40">|</span>
+        <% end %>
+        <%= link_to dated_post_path(year: post.year, day: post.day, month: post.month, id: post),
+            class: "btn-retro btn-retro-cyan" do %>
+          ▶ Read more
+        <% end %>
+      </div>
+    </article>
+  <% end %>
+
+  <div class="pt-4"><%= paginate @posts %></div>
+</div>
