@@ -1,0 +1,626 @@
+/* =============================================================================
+   Abbey – Retro Theme
+   Memphis / 8-bit / 80s computer aesthetic.
+
+   Pure CSS – served by Propshaft, loaded only when
+   `Rails.application.config.theme == "retro"`. All declarations are scoped
+   under `.theme-retro` (set on <html> by themes/retro/layouts/application.html.erb)
+   so loading this file in another context is a no-op.
+
+   Custom palette:
+     ink     #0d0d12   paper #fff8ef   crt   #0a0e1a
+     pink    #ff3eb5   cyan  #00e5ff   yellow #ffd400
+     mint    #00ff9c   purple #b14aff  coral  #ff6b4a
+   =============================================================================*/
+
+/* ----------------------------------------------------------------------
+   Base – body backdrop, CRT scanlines, selection
+---------------------------------------------------------------------- */
+
+html.theme-retro {
+  background-color: #fff8ef;
+  color: #0d0d12;
+  image-rendering: pixelated;
+}
+html.theme-retro.dark {
+  background-color: #0a0e1a;
+  color: #f0fff7;
+}
+
+html.theme-retro body {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-feature-settings: "ss01" on, "ss02" on;
+  position: relative;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Memphis confetti drifting in the background */
+html.theme-retro body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='420' viewBox='0 0 420 420'><g fill='none' stroke-width='3' stroke-linecap='round'><circle cx='40' cy='60' r='6' fill='%23ff3eb5'/><circle cx='380' cy='90' r='4' fill='%2300e5ff'/><circle cx='130' cy='370' r='5' fill='%23ffd400'/><circle cx='290' cy='300' r='7' fill='%2300ff9c'/><path d='M70 200 q12 -16 24 0 t24 0 t24 0' stroke='%23b14aff'/><path d='M250 50 q10 -12 20 0 t20 0' stroke='%23ff6b4a'/><path d='M310 220 l14 -14 M310 220 l-14 14 M310 220 l14 14 M310 220 l-14 -14' stroke='%230d0d12'/><path d='M60 320 l16 -16 M60 320 l-16 16 M60 320 l16 16 M60 320 l-16 -16' stroke='%2300e5ff'/><polygon points='200,150 215,178 185,178' fill='%23ffd400' stroke='%230d0d12'/><polygon points='350,360 365,388 335,388' fill='%23ff3eb5' stroke='%230d0d12'/><rect x='160' y='40' width='14' height='14' fill='%2300ff9c' stroke='%230d0d12' transform='rotate(20 167 47)'/><rect x='40' y='240' width='10' height='10' fill='%23b14aff' stroke='%230d0d12' transform='rotate(15 45 245)'/></g></svg>");
+  background-size: 420px 420px;
+  animation: retro-drift 22s ease-in-out infinite;
+}
+html.theme-retro.dark body::before {
+  opacity: 0.25;
+  filter: hue-rotate(20deg) saturate(1.2);
+}
+
+/* Subtle CRT scanlines */
+html.theme-retro body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 3px,
+    rgba(0, 0, 0, 0.022) 3px,
+    rgba(0, 0, 0, 0.022) 4px
+  );
+  mix-blend-mode: multiply;
+}
+html.theme-retro.dark body::after {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 255, 156, 0) 0,
+    rgba(0, 255, 156, 0) 3px,
+    rgba(0, 255, 156, 0.028) 3px,
+    rgba(0, 255, 156, 0.028) 4px
+  );
+  mix-blend-mode: screen;
+}
+
+html.theme-retro main,
+html.theme-retro header,
+html.theme-retro footer,
+html.theme-retro nav,
+html.theme-retro .content-layer {
+  position: relative;
+  z-index: 1;
+}
+
+html.theme-retro ::selection {
+  background: #ff3eb5;
+  color: #fff8ef;
+}
+html.theme-retro.dark ::selection {
+  background: #00ff9c;
+  color: #0a0e1a;
+}
+
+/* ----------------------------------------------------------------------
+   Utility-style color/shadow/font classes used inline in retro views.
+   Scoped to `.theme-retro` so they cannot leak into the default theme,
+   and intentionally redundant with the dedicated component classes so
+   markup remains expressive without requiring Tailwind config edits.
+---------------------------------------------------------------------- */
+
+.theme-retro .bg-memphis-paper  { background-color: #fff8ef; }
+.theme-retro .bg-memphis-ink    { background-color: #0d0d12; }
+.theme-retro .bg-memphis-crt    { background-color: #0a0e1a; }
+.theme-retro .bg-memphis-pink   { background-color: #ff3eb5; }
+.theme-retro .bg-memphis-cyan   { background-color: #00e5ff; }
+.theme-retro .bg-memphis-yellow { background-color: #ffd400; }
+.theme-retro .bg-memphis-mint   { background-color: #00ff9c; }
+.theme-retro .bg-memphis-purple { background-color: #b14aff; }
+.theme-retro .bg-memphis-coral  { background-color: #ff6b4a; }
+
+.theme-retro .text-memphis-ink    { color: #0d0d12; }
+.theme-retro .text-memphis-paper  { color: #fff8ef; }
+.theme-retro .text-memphis-pink   { color: #ff3eb5; }
+.theme-retro .text-memphis-cyan   { color: #00e5ff; }
+.theme-retro .text-memphis-yellow { color: #ffd400; }
+.theme-retro .text-memphis-mint   { color: #00ff9c; }
+.theme-retro .text-memphis-purple { color: #b14aff; }
+.theme-retro .text-memphis-coral  { color: #ff6b4a; }
+
+.theme-retro .border-memphis-ink   { border-color: #0d0d12; }
+.theme-retro .border-memphis-pink  { border-color: #ff3eb5; }
+.theme-retro .border-memphis-mint  { border-color: #00ff9c; }
+.theme-retro .border-memphis-cyan  { border-color: #00e5ff; }
+.theme-retro .border-memphis-yellow{ border-color: #ffd400; }
+
+.theme-retro .shadow-retro-sm     { box-shadow: 4px 4px 0 0 #0d0d12; }
+.theme-retro .shadow-retro        { box-shadow: 6px 6px 0 0 #0d0d12; }
+.theme-retro .shadow-retro-lg     { box-shadow: 10px 10px 0 0 #0d0d12; }
+.theme-retro .shadow-retro-pink   { box-shadow: 6px 6px 0 0 #ff3eb5; }
+.theme-retro .shadow-retro-cyan   { box-shadow: 6px 6px 0 0 #00e5ff; }
+.theme-retro .shadow-retro-yellow { box-shadow: 6px 6px 0 0 #ffd400; }
+.theme-retro .shadow-retro-mint   { box-shadow: 6px 6px 0 0 #00ff9c; }
+.theme-retro .shadow-retro-purple { box-shadow: 6px 6px 0 0 #b14aff; }
+.theme-retro .shadow-retro-coral  { box-shadow: 6px 6px 0 0 #ff6b4a; }
+
+.theme-retro .font-display { font-family: "Press Start 2P", system-ui, sans-serif; }
+.theme-retro .font-mono    { font-family: "VT323", ui-monospace, monospace; }
+.theme-retro .font-sans    { font-family: "Space Grotesk", system-ui, sans-serif; }
+
+.theme-retro .animate-blink    { animation: retro-blink 1s steps(2, start) infinite; }
+.theme-retro .animate-wiggle   { animation: retro-wiggle 0.4s ease-in-out; }
+.theme-retro .animate-pop-in   { animation: retro-pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Dark-mode variants of the above (mirrors Tailwind dark: prefix when
+   <html> carries both `theme-retro` and `dark` classes). */
+.theme-retro.dark .dark\:bg-memphis-paper  { background-color: #fff8ef; }
+.theme-retro.dark .dark\:bg-memphis-ink    { background-color: #0d0d12; }
+.theme-retro.dark .dark\:bg-memphis-crt    { background-color: #0a0e1a; }
+.theme-retro.dark .dark\:bg-memphis-pink   { background-color: #ff3eb5; }
+.theme-retro.dark .dark\:bg-memphis-cyan   { background-color: #00e5ff; }
+.theme-retro.dark .dark\:bg-memphis-yellow { background-color: #ffd400; }
+.theme-retro.dark .dark\:bg-memphis-mint   { background-color: #00ff9c; }
+.theme-retro.dark .dark\:bg-memphis-purple { background-color: #b14aff; }
+.theme-retro.dark .dark\:bg-memphis-coral  { background-color: #ff6b4a; }
+.theme-retro.dark .dark\:bg-black          { background-color: #000000; }
+
+.theme-retro.dark .dark\:text-memphis-paper  { color: #fff8ef; }
+.theme-retro.dark .dark\:text-memphis-ink    { color: #0d0d12; }
+.theme-retro.dark .dark\:text-memphis-pink   { color: #ff3eb5; }
+.theme-retro.dark .dark\:text-memphis-cyan   { color: #00e5ff; }
+.theme-retro.dark .dark\:text-memphis-yellow { color: #ffd400; }
+.theme-retro.dark .dark\:text-memphis-mint   { color: #00ff9c; }
+.theme-retro.dark .dark\:text-memphis-purple { color: #b14aff; }
+
+.theme-retro.dark .dark\:border-memphis-mint  { border-color: #00ff9c; }
+.theme-retro.dark .dark\:border-memphis-pink  { border-color: #ff3eb5; }
+.theme-retro.dark .dark\:border-memphis-cyan  { border-color: #00e5ff; }
+.theme-retro.dark .dark\:shadow-none          { box-shadow: none; }
+
+/* Hover & group-hover Memphis color variants
+   (mirror Tailwind `hover:text-memphis-pink` syntax without requiring
+   Memphis tokens in the Tailwind config). */
+.theme-retro .hover\:text-memphis-pink:hover   { color: #ff3eb5; }
+.theme-retro .hover\:text-memphis-cyan:hover   { color: #00e5ff; }
+.theme-retro .hover\:text-memphis-mint:hover   { color: #00ff9c; }
+.theme-retro .hover\:text-memphis-yellow:hover { color: #ffd400; }
+.theme-retro .hover\:bg-memphis-pink:hover     { background-color: #ff3eb5; }
+.theme-retro .hover\:text-memphis-paper:hover  { color: #fff8ef; }
+
+.theme-retro.dark .dark\:hover\:text-memphis-mint:hover   { color: #00ff9c; }
+.theme-retro.dark .dark\:hover\:text-memphis-cyan:hover   { color: #00e5ff; }
+.theme-retro.dark .dark\:hover\:text-memphis-yellow:hover { color: #ffd400; }
+.theme-retro.dark .dark\:hover\:text-memphis-pink:hover   { color: #ff3eb5; }
+
+.theme-retro .group:hover .group-hover\:animate-wiggle { animation: retro-wiggle 0.4s ease-in-out; }
+.theme-retro .group:hover .group-hover\:text-memphis-pink { color: #ff3eb5; }
+.theme-retro.dark .group:hover .dark\:group-hover\:text-memphis-yellow { color: #ffd400; }
+
+/* Color with alpha (mirrors Tailwind `text-memphis-paper/90` opacity syntax). */
+.theme-retro .text-memphis-ink\/40   { color: rgba(13, 13, 18, 0.4); }
+.theme-retro .text-memphis-paper\/90 { color: rgba(255, 248, 239, 0.9); }
+.theme-retro.dark .dark\:text-memphis-mint\/40   { color: rgba(0, 255, 156, 0.4); }
+.theme-retro.dark .dark\:text-memphis-paper\/90  { color: rgba(255, 248, 239, 0.9); }
+
+/* ----------------------------------------------------------------------
+   Keyframes
+---------------------------------------------------------------------- */
+
+@keyframes retro-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes retro-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes retro-drift {
+  0%, 100% { background-position: 0 0; }
+  50%      { background-position: 80px 60px; }
+}
+@keyframes retro-glitch {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-2px, 2px); }
+  40%  { transform: translate(2px, -1px); }
+  60%  { transform: translate(-1px, -2px); }
+  80%  { transform: translate(2px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes retro-pop-in {
+  0%   { opacity: 0; transform: translateY(8px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes retro-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-3deg); }
+  75%      { transform: rotate(3deg); }
+}
+
+/* ----------------------------------------------------------------------
+   Cards / containers
+---------------------------------------------------------------------- */
+
+.theme-retro .card-retro {
+  background: #ffffff;
+  border: 3px solid #0d0d12;
+  box-shadow: 6px 6px 0 0 #0d0d12;
+  padding: 1.5rem;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.theme-retro.dark .card-retro {
+  background: #0a0e1a;
+  border-color: #00ff9c;
+  box-shadow: 6px 6px 0 0 #00ff9c;
+}
+.theme-retro .card-retro:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 10px 10px 0 0 #0d0d12;
+}
+.theme-retro.dark .card-retro:hover {
+  box-shadow: 10px 10px 0 0 #00ff9c;
+}
+
+.theme-retro .card-shadow-pink   { box-shadow: 6px 6px 0 0 #ff3eb5; }
+.theme-retro .card-shadow-cyan   { box-shadow: 6px 6px 0 0 #00e5ff; }
+.theme-retro .card-shadow-yellow { box-shadow: 6px 6px 0 0 #ffd400; }
+.theme-retro .card-shadow-mint   { box-shadow: 6px 6px 0 0 #00ff9c; }
+.theme-retro .card-shadow-purple { box-shadow: 6px 6px 0 0 #b14aff; }
+.theme-retro .card-shadow-coral  { box-shadow: 6px 6px 0 0 #ff6b4a; }
+
+/* ----------------------------------------------------------------------
+   Buttons
+---------------------------------------------------------------------- */
+
+.theme-retro .btn-retro {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Press Start 2P", system-ui, sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #ffd400;
+  color: #0d0d12;
+  border: 3px solid #0d0d12;
+  padding: 0.5rem 1rem;
+  box-shadow: 6px 6px 0 0 #0d0d12;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  cursor: pointer;
+}
+.theme-retro .btn-retro:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0 0 #0d0d12;
+}
+.theme-retro .btn-retro:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 transparent;
+}
+.theme-retro .btn-retro-pink   { background: #ff3eb5; color: #fff8ef; }
+.theme-retro .btn-retro-cyan   { background: #00e5ff; color: #0d0d12; }
+.theme-retro .btn-retro-mint   { background: #00ff9c; color: #0d0d12; }
+.theme-retro .btn-retro-purple { background: #b14aff; color: #fff8ef; }
+.theme-retro .btn-retro-coral  { background: #ff6b4a; color: #fff8ef; }
+.theme-retro .btn-retro-ghost  { background: #fff8ef; color: #0d0d12; }
+
+.theme-retro .btn-icon-retro {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #fff8ef;
+  color: #0d0d12;
+  border: 3px solid #0d0d12;
+  box-shadow: 4px 4px 0 0 #0d0d12;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  cursor: pointer;
+}
+.theme-retro .btn-icon-retro:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 0 transparent;
+}
+.theme-retro.dark .btn-icon-retro {
+  background: #0a0e1a;
+  color: #00ff9c;
+  border-color: #00ff9c;
+  box-shadow: none;
+}
+
+/* ----------------------------------------------------------------------
+   Tag pills
+---------------------------------------------------------------------- */
+
+.theme-retro .tag-retro {
+  display: inline-flex;
+  align-items: center;
+  font-family: "VT323", ui-monospace, monospace;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.25rem 0.75rem;
+  border: 2px solid #0d0d12;
+  box-shadow: 4px 4px 0 0 #0d0d12;
+  transition: transform 150ms ease;
+}
+.theme-retro .tag-retro:hover {
+  transform: rotate(-2deg) scale(1.05);
+}
+.theme-retro .tag-color-1 { background: #ff3eb5; color: #fff8ef; }
+.theme-retro .tag-color-2 { background: #00e5ff; color: #0d0d12; }
+.theme-retro .tag-color-3 { background: #ffd400; color: #0d0d12; }
+.theme-retro .tag-color-4 { background: #00ff9c; color: #0d0d12; }
+.theme-retro .tag-color-5 { background: #b14aff; color: #fff8ef; }
+.theme-retro .tag-color-6 { background: #ff6b4a; color: #fff8ef; }
+
+/* ----------------------------------------------------------------------
+   Pixel-display headings
+---------------------------------------------------------------------- */
+
+.theme-retro .h-display {
+  font-family: "Press Start 2P", system-ui, sans-serif;
+  color: #0d0d12;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  text-shadow: 3px 3px 0 #ff3eb5;
+}
+.theme-retro.dark .h-display {
+  color: #00ff9c;
+  text-shadow: 3px 3px 0 #00e5ff;
+}
+.theme-retro .h-display-sm { font-size: 1rem; }
+.theme-retro .h-display-md { font-size: 1.25rem; }
+.theme-retro .h-display-lg { font-size: 1.5rem; }
+@media (min-width: 640px) {
+  .theme-retro .h-display-sm { font-size: 1.125rem; }
+  .theme-retro .h-display-md { font-size: 1.5rem; }
+  .theme-retro .h-display-lg { font-size: 1.875rem; }
+}
+@media (min-width: 768px) {
+  .theme-retro .h-display-lg { font-size: 2.25rem; }
+}
+
+/* ----------------------------------------------------------------------
+   Blinking terminal cursor + marquee
+---------------------------------------------------------------------- */
+
+.theme-retro .cursor-blink::after {
+  content: "▮";
+  display: inline-block;
+  margin-left: 0.25rem;
+  color: #ff3eb5;
+  animation: retro-blink 1s steps(2, start) infinite;
+}
+.theme-retro.dark .cursor-blink::after { color: #00ff9c; }
+
+.theme-retro .marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  border-top: 3px solid #0d0d12;
+  border-bottom: 3px solid #0d0d12;
+  background: repeating-linear-gradient(
+    45deg,
+    #ffd400 0,
+    #ffd400 18px,
+    #0d0d12 18px,
+    #0d0d12 36px
+  );
+  padding: 4px 0;
+}
+.theme-retro .marquee__track {
+  display: inline-block;
+  animation: retro-marquee 28s linear infinite;
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  color: #0d0d12;
+  background: #fff8ef;
+  padding: 6px 16px;
+  border: 2px solid #0d0d12;
+}
+
+/* ----------------------------------------------------------------------
+   CRT-style code window + glitch hover
+---------------------------------------------------------------------- */
+
+.theme-retro .crt-window {
+  position: relative;
+  background: #0a0e1a;
+  color: #00ff9c;
+  border: 3px solid #0d0d12;
+  box-shadow: 6px 6px 0 0 #0d0d12;
+  font-family: "VT323", ui-monospace, monospace;
+  font-size: 0.875rem;
+  overflow: hidden;
+}
+.theme-retro .crt-window::before {
+  content: "● ● ●";
+  display: block;
+  background: #ff3eb5;
+  color: #0d0d12;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  padding: 6px 12px;
+  border-bottom: 3px solid #0d0d12;
+}
+
+.theme-retro .glitch-hover:hover {
+  animation: retro-glitch 0.8s steps(1) 1;
+}
+
+.theme-retro .animate-pop-in {
+  animation: retro-pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ----------------------------------------------------------------------
+   Date sticker (rotated label)
+---------------------------------------------------------------------- */
+
+.theme-retro .date-sticker {
+  display: inline-block;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  background: #ffd400;
+  color: #0d0d12;
+  border: 2px solid #0d0d12;
+  padding: 4px 8px;
+  transform: rotate(-3deg);
+  box-shadow: 3px 3px 0 0 #0d0d12;
+}
+.theme-retro .date-sticker--pink { background: #ff3eb5; color: #fff8ef; }
+.theme-retro .date-sticker--mint { background: #00ff9c; color: #0d0d12; }
+
+/* ----------------------------------------------------------------------
+   Rendered markdown content (`.prose-retro` wrapper)
+   Used together with MinimalMarkdownRender (semantic HTML only).
+---------------------------------------------------------------------- */
+
+.theme-retro .prose-retro {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #0d0d12;
+}
+.theme-retro.dark .prose-retro { color: #d6ffe9; }
+
+.theme-retro .prose-retro h1,
+.theme-retro .prose-retro h2,
+.theme-retro .prose-retro h3 {
+  font-family: "Press Start 2P", system-ui, sans-serif;
+  line-height: 1.5;
+  margin: 2em 0 0.8em;
+  letter-spacing: -0.02em;
+}
+.theme-retro .prose-retro h1 { font-size: 1.5rem;  color: #ff3eb5; text-shadow: 3px 3px 0 #0d0d12; }
+.theme-retro .prose-retro h2 { font-size: 1.15rem; color: #b14aff; text-shadow: 2px 2px 0 #ffd400; }
+.theme-retro .prose-retro h3 { font-size: 0.95rem; color: #00a3cc; }
+
+.theme-retro.dark .prose-retro h1 { color: #00ff9c; text-shadow: 3px 3px 0 #ff3eb5; }
+.theme-retro.dark .prose-retro h2 { color: #ffd400; text-shadow: 2px 2px 0 #b14aff; }
+.theme-retro.dark .prose-retro h3 { color: #00e5ff; }
+
+.theme-retro .prose-retro p { margin-bottom: 1.1em; }
+
+.theme-retro .prose-retro strong {
+  background: #ffd400;
+  color: #0d0d12;
+  padding: 0 4px;
+  border: 2px solid #0d0d12;
+  font-weight: 700;
+}
+.theme-retro.dark .prose-retro strong {
+  background: #00ff9c;
+  color: #0a0e1a;
+  border-color: #00ff9c;
+}
+
+.theme-retro .prose-retro em { font-style: italic; color: #b14aff; }
+.theme-retro.dark .prose-retro em { color: #00e5ff; }
+
+.theme-retro .prose-retro a {
+  color: #ff3eb5;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.theme-retro .prose-retro a:hover { background: #ffd400; color: #0d0d12; }
+.theme-retro.dark .prose-retro a { color: #00ff9c; }
+.theme-retro.dark .prose-retro a:hover { background: #ff3eb5; color: #fff8ef; }
+
+.theme-retro .prose-retro ul,
+.theme-retro .prose-retro ol {
+  margin: 1em 0 1.2em 1.5em;
+  padding-left: 0.5em;
+}
+.theme-retro .prose-retro ul { list-style: none; }
+.theme-retro .prose-retro ul > li::before {
+  content: "▸ ";
+  color: #ff3eb5;
+  font-weight: 700;
+  margin-right: 0.4em;
+}
+.theme-retro.dark .prose-retro ul > li::before { color: #00ff9c; }
+.theme-retro .prose-retro ol { list-style: decimal; }
+.theme-retro .prose-retro li { margin-bottom: 0.4em; }
+
+.theme-retro .prose-retro blockquote {
+  border-left: 6px solid #ff3eb5;
+  background: rgba(255, 212, 0, 0.18);
+  padding: 1em 1.2em;
+  margin: 1.5em 0;
+  font-style: italic;
+}
+.theme-retro.dark .prose-retro blockquote {
+  border-left-color: #00ff9c;
+  background: rgba(0, 229, 255, 0.08);
+}
+
+.theme-retro .prose-retro pre,
+.theme-retro pre.highlight {
+  background: #0a0e1a;
+  color: #00ff9c;
+  border: 3px solid #0d0d12;
+  box-shadow: 6px 6px 0 0 #ff3eb5;
+  padding: 1rem 1.1rem;
+  margin: 1.5em 0;
+  overflow-x: auto;
+  font-family: "VT323", ui-monospace, monospace;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  position: relative;
+}
+.theme-retro.dark .prose-retro pre,
+.theme-retro.dark pre.highlight {
+  box-shadow: 6px 6px 0 0 #00e5ff;
+  border-color: #00ff9c;
+}
+.theme-retro .prose-retro pre::before,
+.theme-retro pre.highlight::before {
+  content: "● TERMINAL — RUN.EXE";
+  display: block;
+  font-family: "Press Start 2P", monospace;
+  font-size: 9px;
+  color: #ffd400;
+  letter-spacing: 2px;
+  margin: -1rem -1.1rem 0.8rem;
+  padding: 6px 12px;
+  background: #0d0d12;
+  border-bottom: 2px solid #00ff9c;
+}
+
+.theme-retro .prose-retro code,
+.theme-retro code:not(pre code) {
+  font-family: "VT323", ui-monospace, monospace;
+  background: #ffd400;
+  color: #0d0d12;
+  padding: 0 6px;
+  border: 2px solid #0d0d12;
+  font-size: 1em;
+}
+.theme-retro.dark .prose-retro code,
+.theme-retro.dark code:not(pre code) {
+  background: #ff3eb5;
+  color: #0a0e1a;
+  border-color: #0a0e1a;
+}
+.theme-retro .prose-retro pre code,
+.theme-retro pre.highlight code {
+  background: transparent;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.theme-retro .prose-retro hr {
+  border: none;
+  margin: 2em 0;
+  height: 14px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='14' viewBox='0 0 40 14'><path d='M0 7 q5 -7 10 0 t10 0 t10 0 t10 0' fill='none' stroke='%23ff3eb5' stroke-width='3'/></svg>");
+  background-repeat: repeat-x;
+}
+.theme-retro.dark .prose-retro hr {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='14' viewBox='0 0 40 14'><path d='M0 7 q5 -7 10 0 t10 0 t10 0 t10 0' fill='none' stroke='%2300ff9c' stroke-width='3'/></svg>");
+}
+
+.theme-retro .prose-retro img {
+  border: 3px solid #0d0d12;
+  box-shadow: 6px 6px 0 0 #00e5ff;
+  margin: 1.5em 0;
+}
