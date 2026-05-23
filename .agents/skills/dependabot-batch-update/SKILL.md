@@ -1,5 +1,6 @@
 ---
 name: dependabot-batch-update
+category: github
 description: Consolidate multiple open dependabot PRs into a single batch update PR. Uses bundle update for Ruby projects, proper Gemfile.lock regeneration, and consolidated PR creation.
 ---
 
