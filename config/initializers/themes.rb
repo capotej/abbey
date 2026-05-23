@@ -10,7 +10,11 @@
 # default Tailwind build.
 #
 # Set the active theme with the ABBEY_THEME env var, or override here.
-# Built-in themes: "default" (the original minimal look), "retro".
+# Built-in themes:
+#   "default"  — the original minimal abbey look
+#   "retro"    — Memphis / 8-bit / CRT (loud, colorful, hand-typed HTML vibes)
+#   "grimoire" — retro hacker dark fantasy (Matrix-minimal monospace, void +
+#                phosphor + ember, illuminated drop caps, summoning circle)
 
 Rails.application.config.theme = ENV.fetch("ABBEY_THEME", "default")
 
@@ -18,4 +22,4 @@ Rails.application.config.theme = ENV.fetch("ABBEY_THEME", "default")
 # HTML, no inline Tailwind classes) so they can style content entirely from
 # a wrapper class scope. Default theme keeps the original utility-class
 # renderer to preserve current behavior.
-Rails.application.config.themes_using_minimal_renderer = %w[retro]
+Rails.application.config.themes_using_minimal_renderer = %w[retro grimoire]
