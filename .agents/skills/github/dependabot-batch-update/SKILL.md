@@ -64,5 +64,5 @@ Create a branch, commit, push, and open a PR with a summary of all consolidated 
 - **Manual Gemfile.lock edits corrupt checksums**: Always use `bundle update`, not sed/patch on the lock file. The `SPEC CHECKSUMS` section contains SHA256 hashes that must match the actual downloaded gems.
 - **No runtime = no proper update**: Without Ruby+bundler available, you cannot regenerate valid Gemfile.lock checksums. Check for mise.toml, .tool-versions, or Dockerfile to find the right runtime.
 - **Transitive dependencies**: `bundle update` will also update transitive dependencies (e.g., updating puma may update rack). Include these in the PR body as "also picked up."
-- **Puma major version bumps** (e.g., 7.x → 8.x) may have breaking changes — always run tests and note breaking changes in the PR body.
+- **Major version bumps** may have breaking changes — always run tests and note any in the PR body.
 - **`gh pr diff --json` is not supported**: Use `gh pr view N --json title,body` or `gh api repos/OWNER/REPO/pulls/N --jq .body` instead to get PR metadata.
