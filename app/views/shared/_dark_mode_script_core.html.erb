@@ -1,0 +1,47 @@
+<%# Shared dark-mode boot + toggle logic. Themes can wrap or extend this
+    partial (see grimoire's Konami override). Expects a local `theme`. %>
+<script>
+//<![CDATA[
+(function() {
+  var BASE  = "<%= j(theme.html_class.to_s) %>";
+  var LIGHT = "<%= j(theme.light_html_class.to_s) %>";
+  var DARK  = "<%= j(theme.dark_html_class.to_s) %>";
+
+  function readDarkCookie() {
+    var match = document.cookie.match(/(?:^|; )dark_mode=([^;]+)/);
+    return match && match[1] === "true";
+  }
+
+  function parseClasses(value) {
+    return value ? value.split(/\s+/).filter(Boolean) : [];
+  }
+
+  function applyDarkMode() {
+    var isDark = readDarkCookie();
+    var variantClasses = parseClasses(isDark ? DARK : LIGHT);
+    var removable = parseClasses(LIGHT).concat(parseClasses(DARK));
+    var root = document.documentElement;
+
+    removable.forEach(function(token) { root.classList.remove(token); });
+    parseClasses(BASE).forEach(function(token) { root.classList.add(token); });
+    variantClasses.forEach(function(token) { root.classList.add(token); });
+  }
+
+  window.applyAbbeyDarkMode = applyDarkMode;
+
+  window.toggleDarkMode = function() {
+    var isDark = !readDarkCookie();
+    document.cookie = "dark_mode=" + isDark + "; path=/; max-age=31536000; SameSite=Lax";
+    applyDarkMode();
+  };
+
+  applyDarkMode();
+
+  if (!window.__abbeyDarkBound) {
+    window.__abbeyDarkBound = true;
+    document.addEventListener("turbo:load", applyDarkMode);
+    document.addEventListener("turbo:render", applyDarkMode);
+  }
+})();
+//]]>
+</script>

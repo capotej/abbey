@@ -1,18 +1,5 @@
-<%# ============================================================================
-  Shared layout chrome — the boilerplate every theme's layout needs but
-  shouldn't have to maintain. Drives <head>, <body> wrapper, navigation,
-  and footer entirely from the active Abbey::Theme manifest, so a new
-  theme can ship a layout that's just:
-
-    <%%= render "layouts/abbey_chrome" do %%>
-      <%%= yield %%>
-    <%% end %%>
-
-  Themes can still override:
-    * shared/_navigation, _admin_navigation, _footer  (view-path prepend)
-    * shared/_dark_mode_script                        (per-theme JS)
-    * The yielded block (any per-theme markup the layout wants)
-============================================================================ %>
+<%# Shared layout chrome: <head>, body wrapper, nav, footer — driven by Abbey::Theme.active.
+    Theme layouts render this partial with a block; override shared/* partials via view-path prepend. %>
 <%
   theme = Abbey::Theme.active
 %><!DOCTYPE html>
@@ -43,6 +30,8 @@
         <link rel="stylesheet" href="<%= href %>">
       <% end %>
     <% end %>
+
+    <%= render "shared/dark_mode_script" %>
 
     <%# Per-page OG / Twitter / canonical meta tags (link previews).
         Show templates can override values via `content_for :meta`. The
@@ -75,7 +64,6 @@
       <main class="<%= theme.main_class %>">
         <%= yield %>
       </main>
-      <%= render "shared/dark_mode_script" %>
     </div>
     <%= render "shared/footer" %>
   </body>

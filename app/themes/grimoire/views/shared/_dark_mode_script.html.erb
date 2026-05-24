@@ -1,49 +1,13 @@
-<%# Grimoire override of the default dark-mode toggle.
-    * Turbo-safe: re-applies the dark cookie on turbo:load and turbo:render
-      (the page cache otherwise restores stale <html> classes on back/
-      forward navigation).
-    * Listener guard against double-registration: this script re-evals on
-      every Turbo navigation, which would otherwise pile up listeners.
-    * Ships the Konami easter egg: ↑ ↑ ↓ ↓ ← → ← → B A summons a
-      "necromancer" overlay and forces dark mode on. %>
+<%# Grimoire override: shared Turbo-safe dark mode + Konami easter egg. %>
+<%= render "shared/dark_mode_script_core", theme: Abbey::Theme.active %>
 <script>
 //<![CDATA[
-// Dark-mode state lives in a cookie. The server renders the right
-// class on hard loads, but Turbo's page cache restores stale <html>
-// attributes on back/forward navigation, so we also re-apply the
-// class from the cookie on every Turbo load AND render event.
-function readDarkCookie() {
-  const m = document.cookie.match(/(?:^|; )dark_mode=([^;]+)/);
-  return m && m[1] === 'true';
-}
-function applyDarkMode() {
-  document.documentElement.classList.toggle('dark', readDarkCookie());
-}
-applyDarkMode();
-// Guard against double-registration: this layout script re-evals on
-// every Turbo navigation, which would otherwise pile up listeners.
-if (!window.__abbeyDarkBound) {
-  window.__abbeyDarkBound = true;
-  document.addEventListener('turbo:load',   applyDarkMode);
-  document.addEventListener('turbo:render', applyDarkMode);
-}
-window.toggleDarkMode = function() {
-  const isDark = !readDarkCookie();
-  document.cookie = `dark_mode=${isDark}; path=/; max-age=31536000; SameSite=Lax`;
-  document.documentElement.classList.toggle('dark', isDark);
-}
-
-// ------------------------------------------------------------
-// KONAMI INCANTATION  ↑ ↑ ↓ ↓ ← → ← → B A
-// Unlocks a "necromancer" overlay + flips on dark mode.
-// Guarded so Turbo re-evals don't pile up listeners.
-// ------------------------------------------------------------
 if (!window.__abbeyKonamiBound) { window.__abbeyKonamiBound = true;
 (function() {
-  const seq = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","KeyB","KeyA"];
-  let idx = 0;
+  var seq = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","KeyB","KeyA"];
+  var idx = 0;
   document.addEventListener("keydown", function(e) {
-    const want = seq[idx];
+    var want = seq[idx];
     if (e.code === want || e.key === want) {
       idx++;
       if (idx === seq.length) { idx = 0; summon(); }
@@ -52,23 +16,20 @@ if (!window.__abbeyKonamiBound) { window.__abbeyKonamiBound = true;
     }
   });
   function summon() {
-    document.documentElement.classList.add("dark");
     document.cookie = "dark_mode=true; path=/; max-age=31536000; SameSite=Lax";
-    const overlay = document.createElement("div");
+    window.applyAbbeyDarkMode();
+    var overlay = document.createElement("div");
     overlay.className = "incant-overlay";
-    overlay.innerHTML = `
-      <div class="incant-title">N E C R O M A N C E R</div>
-      <div class="incant-sub">// mode unlocked · press any key to dismiss //</div>
-    `;
+    overlay.innerHTML = "<div class=\"incant-title\">N E C R O M A N C E R</div><div class=\"incant-sub\">// mode unlocked · press any key to dismiss //</div>";
     document.body.appendChild(overlay);
-    const dismiss = () => {
+    var dismiss = function() {
       overlay.style.transition = "opacity .4s ease";
       overlay.style.opacity = 0;
-      setTimeout(() => overlay.remove(), 400);
+      setTimeout(function() { overlay.remove(); }, 400);
       document.removeEventListener("keydown", dismiss);
       document.removeEventListener("click", dismiss);
     };
-    setTimeout(() => {
+    setTimeout(function() {
       document.addEventListener("keydown", dismiss);
       document.addEventListener("click", dismiss);
     }, 200);

@@ -52,6 +52,29 @@ class ThemesTest < ActionDispatch::IntegrationTest
     assert_match %r{<link rel="icon" href="data:image/svg\+xml,.*memphis|.*ff3eb5}, body
   end
 
+  test "dark mode cookie drives html classes from theme manifest" do
+    Rails.application.config.theme = "default"
+    cookies[:dark_mode] = "true"
+
+    get root_path
+    assert_response :success
+    assert_match(/<html class="dark bg-gray-900">/, response.body)
+
+    Rails.application.config.theme = "retro"
+    get root_path
+    assert_match(/<html class="theme-retro dark">/, response.body)
+  end
+
+  test "dark mode script syncs cookie state and survives turbo navigation" do
+    Rails.application.config.theme = "retro"
+
+    get root_path
+    assert_response :success
+    assert_match(/applyAbbeyDarkMode/, response.body)
+    assert_match(/turbo:load/, response.body)
+    assert_match(/theme-retro/, response.body)
+  end
+
   test "retro theme prepends its view path and loads theme stylesheets" do
     Rails.application.config.theme = "retro"
 

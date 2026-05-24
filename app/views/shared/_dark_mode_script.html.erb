@@ -1,14 +1,4 @@
 <%# Default dark-mode toggle. Themes can override this partial by
     creating app/themes/<name>/views/shared/_dark_mode_script.html.erb
-    (e.g. grimoire ships a Turbo-safe version with the Konami easter
-    egg). %>
-<script>
-//<![CDATA[
-
-window.toggleDarkMode = function() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  document.cookie = `dark_mode=${isDark}; path=/; max-age=31536000`;
-}
-
-//]]>
-</script>
+    (e.g. grimoire ships a Konami easter egg on top of the core). %>
+<%= render "shared/dark_mode_script_core", theme: Abbey::Theme.active %>
