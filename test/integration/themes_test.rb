@@ -30,6 +30,7 @@ class ThemesTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_match(/class="theme-retro/, response.body)
+    assert_match(%r{/assets/tailwind-retro[-.]}, response.body, "retro theme should load its Tailwind bundle")
     assert_match(%r{/assets/retro[-.]},           response.body, "retro theme should load retro.css")
     assert_match(%r{/assets/retro-highlight[-.]}, response.body, "retro theme should load retro-highlight.css")
     # System test contract: header still has h1, footer still present.
@@ -47,6 +48,7 @@ class ThemesTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_match(/class="theme-grimoire/, response.body)
+    assert_match(%r{/assets/tailwind-grimoire[-.]}, response.body, "grimoire theme should load its Tailwind bundle")
     assert_match(%r{/assets/grimoire[-.]},           response.body, "grimoire theme should load grimoire.css")
     assert_match(%r{/assets/grimoire-highlight[-.]}, response.body, "grimoire theme should load grimoire-highlight.css")
     # System test contract: header still has h1, footer still present.
