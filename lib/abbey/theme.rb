@@ -86,15 +86,19 @@ module Abbey
       end
     end
 
-    attr_accessor :display_name, :html_class, :body_class, :theme_color_light,
-                  :theme_color_dark, :fonts, :favicon_svg
+    attr_accessor :display_name, :html_class, :dark_html_class, :light_html_class,
+                  :body_class, :main_class, :theme_color_light, :theme_color_dark,
+                  :fonts, :favicon_svg
     attr_reader   :name, :markdown_renderer_choice
 
     def initialize(name)
       @name                     = name.to_sym
       @display_name             = name.to_s.titleize
       @html_class               = "theme-#{name}"
+      @dark_html_class          = "dark"
+      @light_html_class         = nil
       @body_class               = nil
+      @main_class               = "container mx-auto px-4 py-8"
       @markdown_renderer_choice = :default
       @theme_color_light        = nil
       @theme_color_dark         = nil
@@ -160,8 +164,16 @@ module Abbey
 
       def initialize
         super(:default)
-        @display_name = "Default"
-        @html_class   = nil
+        @display_name     = "Default"
+        @html_class       = nil
+        @dark_html_class  = "dark bg-gray-900"
+        @light_html_class = "bg-white"
+        @body_class       = "min-h-screen bg-white dark:bg-gray-900 transition-colors"
+        @main_class       = "container mx-auto px-4 py-8"
+        # The original default favicon: wizard emoji as inline SVG.
+        @favicon_svg = <<~SVG.strip
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🧙‍♂️</text></svg>
+        SVG
       end
 
       def markdown_renderer

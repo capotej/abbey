@@ -20,8 +20,36 @@ class ThemesTest < ActionDispatch::IntegrationTest
     assert_no_match(/class="theme-grimoire/, response.body)
     assert_no_match(%r{/assets/retro[-/]},     response.body, "default theme should not load retro CSS")
     assert_no_match(%r{/assets/grimoire[-/]},  response.body, "default theme should not load grimoire CSS")
+    # Default chrome contract: html background, main wrapper, default favicon.
+    assert_match(/<html class="bg-white">/,                            response.body)
+    assert_match(/<body class="min-h-screen bg-white dark:bg-gray-900/, response.body)
+    assert_match(%r{<main class="container mx-auto px-4 py-8">},        response.body)
+    assert_match(%r{<link rel="icon" href="data:image/svg\+xml,},       response.body, "default theme should emit its inline favicon")
+    # No theme tailwind bundles leak into the default :app inclusion.
+    assert_no_match(%r{/assets/tailwind-retro},    response.body, "default :app must not include per-theme tailwind bundles")
+    assert_no_match(%r{/assets/tailwind-grimoire}, response.body, "default :app must not include per-theme tailwind bundles")
     assert_select "header h1"
     assert_select "footer"
+  end
+
+  test "chrome partial drives <head> entirely from theme manifest" do
+    Rails.application.config.theme = "retro"
+
+    get root_path
+    assert_response :success
+    body = response.body
+
+    assert_match(/<html class="theme-retro">/,                        body, "retro html_class should be applied")
+    assert_match(/<body class="min-h-screen flex flex-col font-sans/, body, "retro body_class should be applied")
+    assert_match(%r{<main class="container mx-auto px-4 py-8 max-w-5xl content-layer flex-1">}, body)
+    # theme_color emitted as media-aware pair from manifest
+    assert_match %r{<meta name="theme-color" content="#fff8ef" media="\(prefers-color-scheme: light\)">}, body
+    assert_match %r{<meta name="theme-color" content="#0a0e1a" media="\(prefers-color-scheme: dark\)">},  body
+    # Manifest fonts emitted with preconnect
+    assert_match %r{rel="preconnect" href="https://fonts.googleapis.com"}, body
+    assert_match %r{Press\+Start\+2P}, body
+    # Manifest favicon emitted (memphis 4-square SVG)
+    assert_match %r{<link rel="icon" href="data:image/svg\+xml,.*memphis|.*ff3eb5}, body
   end
 
   test "retro theme prepends its view path and loads theme stylesheets" do

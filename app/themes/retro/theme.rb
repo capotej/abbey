@@ -4,6 +4,7 @@ Abbey::Theme.register(:retro) do |t|
   t.display_name      = "Retro (Memphis / 8-bit / CRT)"
   t.html_class        = "theme-retro"
   t.body_class        = "min-h-screen flex flex-col font-sans bg-memphis-paper dark:bg-memphis-crt"
+  t.main_class        = "container mx-auto px-4 py-8 max-w-5xl content-layer flex-1"
   t.markdown_renderer = :minimal
   t.theme_color_light = "#fff8ef"
   t.theme_color_dark  = "#0a0e1a"

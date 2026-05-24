@@ -4,6 +4,7 @@ Abbey::Theme.register(:grimoire) do |t|
   t.display_name      = "Grimoire (Retro hacker dark fantasy)"
   t.html_class        = "theme-grimoire"
   t.body_class        = "min-h-screen flex flex-col bg-grim-parchment dark:bg-grim-void"
+  t.main_class        = "container mx-auto px-4 py-10 max-w-5xl content-layer flex-1"
   t.markdown_renderer = :minimal
   t.theme_color_light = "#ebd9b3"
   t.theme_color_dark  = "#07080d"

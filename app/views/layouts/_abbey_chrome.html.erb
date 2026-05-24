@@ -1,0 +1,82 @@
+<%# ============================================================================
+  Shared layout chrome — the boilerplate every theme's layout needs but
+  shouldn't have to maintain. Drives <head>, <body> wrapper, navigation,
+  and footer entirely from the active Abbey::Theme manifest, so a new
+  theme can ship a layout that's just:
+
+    <%%= render "layouts/abbey_chrome" do %%>
+      <%%= yield %%>
+    <%% end %%>
+
+  Themes can still override:
+    * shared/_navigation, _admin_navigation, _footer  (view-path prepend)
+    * shared/_dark_mode_script                        (per-theme JS)
+    * The yielded block (any per-theme markup the layout wants)
+============================================================================ %>
+<%
+  theme = Abbey::Theme.active
+%><!DOCTYPE html>
+<html<%= " class=\"#{chrome_html_class(theme)}\"".html_safe if chrome_html_class(theme) %>>
+  <head>
+    <title><%= content_for(:title) || Rails.application.config.site_name %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <% if theme.theme_color_light && theme.theme_color_dark %>
+      <meta name="theme-color" content="<%= theme.theme_color_light %>" media="(prefers-color-scheme: light)">
+      <meta name="theme-color" content="<%= theme.theme_color_dark %>" media="(prefers-color-scheme: dark)">
+    <% elsif theme.theme_color_light %>
+      <meta name="theme-color" content="<%= theme.theme_color_light %>">
+    <% elsif theme.theme_color_dark %>
+      <meta name="theme-color" content="<%= theme.theme_color_dark %>">
+    <% end %>
+
+    <% if theme.favicon_svg %>
+      <link rel="icon" href="data:image/svg+xml,<%= ERB::Util.url_encode(theme.favicon_svg) %>">
+    <% end %>
+
+    <% if theme.fonts.any? %>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <% theme.fonts.each do |href| %>
+        <link rel="stylesheet" href="<%= href %>">
+      <% end %>
+    <% end %>
+
+    <%# Per-page OG / Twitter / canonical meta tags (link previews).
+        Show templates can override values via `content_for :meta`. The
+        `meta_tags` helper is optional; downstream apps that don't define
+        it (or upstream Abbey before the meta_tags helper lands) get
+        nothing here, not a NoMethodError. %>
+    <% if content_for?(:meta) %>
+      <%= content_for(:meta) %>
+    <% elsif respond_to?(:meta_tags) %>
+      <%= meta_tags %>
+    <% end %>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= content_for(:rss) || auto_discovery_link_tag(:atom, blog_feed_path) %>
+
+    <%= stylesheet_link_tag "highlight" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%# Extra stylesheets contributed by the active theme. %>
+    <% theme_stylesheets.each do |sheet| %>
+      <%= stylesheet_link_tag sheet, "data-turbo-track": "reload" %>
+    <% end %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body<%= " class=\"#{theme.body_class}\"".html_safe if theme.body_class.present? %>>
+    <%= render "shared/admin_navigation" %>
+    <div class="<%= authenticated? ? 'pt-10' : '' %><%= ' flex-1 flex flex-col' unless theme.default? %>">
+      <%= render "shared/navigation" %>
+      <main class="<%= theme.main_class %>">
+        <%= yield %>
+      </main>
+      <%= render "shared/dark_mode_script" %>
+    </div>
+    <%= render "shared/footer" %>
+  </body>
+</html>
