@@ -4,32 +4,70 @@
    man page. Matrix-minimal: monospace display, modern sans body, no ornate
    blackletter — but the dark mode still feels like a cryptarchive.
 
-   Pure CSS – served by Propshaft, loaded only when
-   `Rails.application.config.theme == "grimoire"`. All declarations are scoped
-   under `.theme-grimoire` (set on <html> by themes/grimoire/layouts/
-   application.html.erb) so loading this file in another context is a no-op.
+   Loaded only when `Rails.application.config.theme == "grimoire"`. All
+   declarations are scoped under `.theme-grimoire` (set on <html> by
+   themes/grimoire/layouts/application.html.erb) so loading this file in
+   any other context is a no-op.
 
-   Custom palette:
-     parchment #ebd9b3   vellum  #f1e3c2   ink      #1a1410
-     shadow    #3a2f25   void    #07080d   obsidian #0e0f17
-     tomb      #161826   blood   #8b1d27   ember    #f08029
-     bone      #e9e0c8   phosphor #57f287  arcane   #6a4cab
-     gold      #c8a44d   ichor   #2d1b3a
-   =============================================================================*/
+   Color/font/animation TOKENS live in `app/assets/tailwind/application.css`
+   under `@theme`, so Tailwind auto-generates `bg-grim-blood`,
+   `text-grim-gold`, `dark:border-grim-gold`, `hover:text-grim-ember`,
+   `font-blackletter`, `font-plex`, `text-[0.62rem]`, `tracking-[0.18em]`,
+   etc. The arbitrary-value classes and `dark:` / `hover:` / `group-hover:`
+   variants used across grimoire views all "just work" — no hand-rolled
+   `.theme-grimoire .bg-grim-X` declarations needed.
+
+   This file ships:
+     1. theme-root environmental styles (parchment grain, ember dust,
+        scanlines, custom scrollbar)
+     2. font-family rebinding inside `.theme-grimoire` so `font-sans` /
+        `font-mono` resolve to the grimoire stack, and `font-display` /
+        `font-blackletter` / `font-engraved` / `font-plex` / `font-manuscript`
+        resolve to the right theme fonts
+     3. component classes (`.tome`, `.spell-btn`, `.icon-rune`, `.wax-seal`,
+        `.h-blackletter`, `.h-engraved`, `.rune-divider`, `.cursor-blink`,
+        `.arc-link`, `.summoning-circle`, `.grim-marquee`, `.incant-overlay`)
+     4. typography for the `.prose-grimoire` wrapper (matrix drop-cap,
+        terminal pre blocks, dotted-underline links, EOF rune <hr>)
+
+   Palette: parchment #ebd9b3 · vellum #f1e3c2 · ink #1a1410 · shadow #3a2f25
+            void #07080d · obsidian #0e0f17 · tomb #161826 · ichor #2d1b3a
+            blood #8b1d27 · ember #f08029 · bone #e9e0c8
+            phosphor #57f287 · arcane #6a4cab · gold #c8a44d
+============================================================================= */
+
+/* ----------------------------------------------------------------------
+   Font-family rebinding via CSS variable cascade.
+   Tailwind generates `.font-X { font-family: var(--font-X) }` for every
+   font token declared in `@theme`. Redefining those variables on
+   `.theme-grimoire` makes `font-sans`, `font-mono`, `font-blackletter`,
+   `font-engraved`, `font-plex`, `font-manuscript` resolve to the grimoire
+   stack inside this theme — without affecting the default theme.
+---------------------------------------------------------------------- */
+
+.theme-grimoire {
+  --font-sans:        "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono:        "IBM Plex Mono", ui-monospace, monospace;
+  --font-display:     "JetBrains Mono", ui-monospace, monospace;
+  --font-blackletter: "JetBrains Mono", ui-monospace, monospace;
+  --font-engraved:    "JetBrains Mono", ui-monospace, monospace;
+  --font-plex:        "IBM Plex Mono", ui-monospace, monospace;
+  --font-manuscript:  "Inter", system-ui, -apple-system, sans-serif;
+}
 
 /* ----------------------------------------------------------------------
    Base – html background, body backdrop, scanlines, selection, scrollbar
 ---------------------------------------------------------------------- */
 
 html.theme-grimoire {
-  background-color: #ebd9b3;
-  color: #1a1410;
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background-color: var(--color-grim-parchment);
+  color: var(--color-grim-ink);
+  font-family: var(--font-sans);
   font-feature-settings: "ss01" on, "cv11" on, "kern", "liga";
 }
 html.theme-grimoire.dark {
-  background-color: #07080d;
-  color: #e9e0c8;
+  background-color: var(--color-grim-void);
+  color: var(--color-grim-bone);
 }
 
 html.theme-grimoire body {
@@ -103,118 +141,17 @@ html.theme-grimoire .content-layer {
   z-index: 1;
 }
 
-html.theme-grimoire ::selection { background: #8b1d27; color: #ebd9b3; }
-html.theme-grimoire.dark ::selection { background: #f08029; color: #07080d; }
+html.theme-grimoire ::selection      { background: var(--color-grim-blood); color: var(--color-grim-parchment); }
+html.theme-grimoire.dark ::selection { background: var(--color-grim-ember); color: var(--color-grim-void); }
 
 /* Terminal-style dark scrollbar */
 html.theme-grimoire.dark ::-webkit-scrollbar { width: 12px; }
-html.theme-grimoire.dark ::-webkit-scrollbar-track { background: #07080d; }
+html.theme-grimoire.dark ::-webkit-scrollbar-track { background: var(--color-grim-void); }
 html.theme-grimoire.dark ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #6a4cab, #2d1b3a);
-  border: 1px solid #c8a44d;
+  background: linear-gradient(180deg, var(--color-grim-arcane), var(--color-grim-ichor));
+  border: 1px solid var(--color-grim-gold);
 }
-html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; }
-
-/* ----------------------------------------------------------------------
-   Utility-style color/font/spacing classes used inline in grimoire views.
-   Scoped under `.theme-grimoire` so they cannot leak into the default
-   theme. Intentionally mirrors Tailwind-style class names so markup stays
-   expressive without requiring Tailwind config edits.
----------------------------------------------------------------------- */
-
-/* Backgrounds */
-.theme-grimoire .bg-grim-parchment { background-color: #ebd9b3; }
-.theme-grimoire .bg-grim-vellum    { background-color: #f1e3c2; }
-.theme-grimoire .bg-grim-vellum\/30{ background-color: rgba(241,227,194,0.3); }
-.theme-grimoire .bg-grim-void      { background-color: #07080d; }
-.theme-grimoire .bg-grim-obsidian  { background-color: #0e0f17; }
-.theme-grimoire .bg-grim-tomb      { background-color: #161826; }
-.theme-grimoire .bg-grim-ichor     { background-color: #2d1b3a; }
-
-.theme-grimoire.dark .dark\:bg-grim-void       { background-color: #07080d; }
-.theme-grimoire.dark .dark\:bg-grim-obsidian   { background-color: #0e0f17; }
-.theme-grimoire.dark .dark\:bg-grim-tomb       { background-color: #161826; }
-.theme-grimoire.dark .dark\:bg-grim-ichor      { background-color: #2d1b3a; }
-.theme-grimoire.dark .dark\:bg-grim-obsidian\/60 { background-color: rgba(14,15,23,0.6); }
-
-/* Text colors */
-.theme-grimoire .text-grim-ink     { color: #1a1410; }
-.theme-grimoire .text-grim-shadow  { color: #3a2f25; }
-.theme-grimoire .text-grim-shadow\/60 { color: rgba(58,47,37,0.6); }
-.theme-grimoire .text-grim-shadow\/70 { color: rgba(58,47,37,0.7); }
-.theme-grimoire .text-grim-blood   { color: #8b1d27; }
-.theme-grimoire .text-grim-bone    { color: #e9e0c8; }
-.theme-grimoire .text-grim-ember   { color: #f08029; }
-.theme-grimoire .text-grim-gold    { color: #c8a44d; }
-.theme-grimoire .text-grim-gold\/70 { color: rgba(200,164,77,0.7); }
-.theme-grimoire .text-grim-gold\/80 { color: rgba(200,164,77,0.8); }
-.theme-grimoire .text-grim-phosphor{ color: #57f287; }
-.theme-grimoire .text-grim-arcane  { color: #6a4cab; }
-
-.theme-grimoire.dark .dark\:text-grim-bone     { color: #e9e0c8; }
-.theme-grimoire.dark .dark\:text-grim-ember    { color: #f08029; }
-.theme-grimoire.dark .dark\:text-grim-gold     { color: #c8a44d; }
-.theme-grimoire.dark .dark\:text-grim-gold\/70 { color: rgba(200,164,77,0.7); }
-.theme-grimoire.dark .dark\:text-grim-gold\/80 { color: rgba(200,164,77,0.8); }
-.theme-grimoire.dark .dark\:fill-grim-tomb     { fill: #161826; }
-
-/* Borders */
-.theme-grimoire .border-grim-shadow      { border-color: #3a2f25; }
-.theme-grimoire .border-grim-shadow\/30  { border-color: rgba(58,47,37,0.3); }
-.theme-grimoire .border-grim-shadow\/40  { border-color: rgba(58,47,37,0.4); }
-.theme-grimoire .border-grim-gold        { border-color: #c8a44d; }
-.theme-grimoire .border-grim-gold\/40    { border-color: rgba(200,164,77,0.4); }
-
-.theme-grimoire.dark .dark\:border-grim-gold     { border-color: #c8a44d; }
-.theme-grimoire.dark .dark\:border-grim-gold\/40 { border-color: rgba(200,164,77,0.4); }
-
-/* Hover variants */
-.theme-grimoire .hover\:text-grim-blood:hover { color: #8b1d27; }
-.theme-grimoire .hover\:text-grim-ember:hover { color: #f08029; }
-.theme-grimoire.dark .dark\:hover\:text-grim-ember:hover { color: #f08029; }
-
-.theme-grimoire .group:hover .group-hover\:text-grim-blood { color: #8b1d27; }
-.theme-grimoire.dark .group:hover .dark\:group-hover\:text-grim-ember { color: #f08029; }
-.theme-grimoire .group:hover .group-hover\:underline { text-decoration-line: underline; }
-.theme-grimoire .group:hover .group-hover\:decoration-dotted { text-decoration-style: dotted; }
-.theme-grimoire .group:hover .group-hover\:decoration-1 { text-decoration-thickness: 1px; }
-.theme-grimoire .group:hover .group-hover\:underline-offset-\[6px\] { text-underline-offset: 6px; }
-.theme-grimoire .group:hover .group-hover\:opacity-100 { opacity: 1; }
-
-/* Decoration */
-.theme-grimoire .decoration-grim-blood { text-decoration-color: #8b1d27; }
-.theme-grimoire.dark .dark\:decoration-grim-gold { text-decoration-color: #c8a44d; }
-
-/* Font families */
-.theme-grimoire .font-blackletter { font-family: "JetBrains Mono", ui-monospace, monospace; }
-.theme-grimoire .font-engraved    { font-family: "JetBrains Mono", ui-monospace, monospace; }
-.theme-grimoire .font-manuscript  { font-family: "Inter", system-ui, -apple-system, sans-serif; }
-.theme-grimoire .font-plex        { font-family: "IBM Plex Mono", ui-monospace, monospace; }
-
-/* Arbitrary font sizes used by views (Tailwind `text-[Xrem]` syntax mirror) */
-.theme-grimoire .text-\[0\.62rem\] { font-size: 0.62rem; line-height: 1.2; }
-.theme-grimoire .text-\[0\.66rem\] { font-size: 0.66rem; line-height: 1.2; }
-.theme-grimoire .text-\[0\.7rem\]  { font-size: 0.7rem;  line-height: 1.25; }
-.theme-grimoire .text-\[0\.72rem\] { font-size: 0.72rem; line-height: 1.3; }
-.theme-grimoire .text-\[0\.74rem\] { font-size: 0.74rem; line-height: 1.3; }
-.theme-grimoire .text-\[0\.78rem\] { font-size: 0.78rem; line-height: 1.35; }
-.theme-grimoire .text-\[2\.2rem\]  { font-size: 2.2rem;  line-height: 1; }
-.theme-grimoire .text-\[2\.8rem\]  { font-size: 2.8rem;  line-height: 1; }
-
-/* Arbitrary letter-spacing values */
-.theme-grimoire .tracking-\[0\.12em\] { letter-spacing: 0.12em; }
-.theme-grimoire .tracking-\[0\.14em\] { letter-spacing: 0.14em; }
-.theme-grimoire .tracking-\[0\.18em\] { letter-spacing: 0.18em; }
-.theme-grimoire .tracking-\[0\.2em\]  { letter-spacing: 0.2em; }
-.theme-grimoire .tracking-\[0\.22em\] { letter-spacing: 0.22em; }
-.theme-grimoire .tracking-\[0\.3em\]  { letter-spacing: 0.3em; }
-
-/* Arbitrary leading + underline-offset */
-.theme-grimoire .leading-\[0\.95\] { line-height: 0.95; }
-.theme-grimoire .underline-offset-\[6px\] { text-underline-offset: 6px; }
-
-/* Animations */
-.theme-grimoire .animate-blink { animation: grimoire-blink 1s steps(2, start) infinite; }
+html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: var(--color-grim-ember); }
 
 /* ----------------------------------------------------------------------
    Components
@@ -227,11 +164,11 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   background:
     linear-gradient(180deg, rgba(255,250,235,0.92), rgba(235,217,179,0.92)),
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><defs><filter id='n'><feTurbulence baseFrequency='0.65' numOctaves='2' seed='12'/><feColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.30  0 0 0 0 0.18  0 0 0 0.18 0'/></filter></defs><rect width='240' height='240' filter='url(%23n)'/></svg>");
-  color: #1a1410;
-  border: 1px solid #1a1410;
+  color: var(--color-grim-ink);
+  border: 1px solid var(--color-grim-ink);
   box-shadow:
-    inset 0 0 0 6px #ebd9b3,
-    inset 0 0 0 7px #c8a44d,
+    inset 0 0 0 6px var(--color-grim-parchment),
+    inset 0 0 0 7px var(--color-grim-gold),
     0 18px 36px -16px rgba(20,12,6,0.55);
   padding: 1.75rem;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -239,26 +176,26 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 .theme-grimoire .tome:hover {
   transform: translateY(-2px);
   box-shadow:
-    inset 0 0 0 6px #ebd9b3,
-    inset 0 0 0 7px #c8a44d,
+    inset 0 0 0 6px var(--color-grim-parchment),
+    inset 0 0 0 7px var(--color-grim-gold),
     0 28px 48px -20px rgba(20,12,6,0.6);
 }
 .theme-grimoire.dark .tome {
   background:
     linear-gradient(180deg, #11131c, #0a0b12),
     radial-gradient(120% 60% at 50% 0%, rgba(106,76,171,0.18), transparent 70%);
-  color: #e9e0c8;
-  border-color: #c8a44d;
+  color: var(--color-grim-bone);
+  border-color: var(--color-grim-gold);
   box-shadow:
-    inset 0 0 0 4px #07080d,
+    inset 0 0 0 4px var(--color-grim-void),
     inset 0 0 0 5px rgba(200,164,77,0.55),
     inset 0 0 80px rgba(106,76,171,0.18),
     0 22px 50px -20px rgba(0,0,0,0.85);
 }
 .theme-grimoire.dark .tome:hover {
   box-shadow:
-    inset 0 0 0 4px #07080d,
-    inset 0 0 0 5px #c8a44d,
+    inset 0 0 0 4px var(--color-grim-void),
+    inset 0 0 0 5px var(--color-grim-gold),
     inset 0 0 90px rgba(240,128,41,0.18),
     0 28px 60px -22px rgba(0,0,0,0.95);
 }
@@ -292,14 +229,14 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-plex);
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: #1a1410;
+  color: var(--color-grim-ink);
   background: linear-gradient(180deg, #f4e6c0, #d8c08a);
-  border: 1px solid #1a1410;
-  box-shadow: 0 1px 0 #c8a44d, 0 2px 0 #1a1410, 0 4px 12px -2px rgba(20,12,6,0.4);
+  border: 1px solid var(--color-grim-ink);
+  box-shadow: 0 1px 0 var(--color-grim-gold), 0 2px 0 var(--color-grim-ink), 0 4px 12px -2px rgba(20,12,6,0.4);
   padding: 0.55rem 1rem;
   transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.25s ease;
   cursor: pointer;
@@ -307,30 +244,30 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 .theme-grimoire .spell-btn:hover {
   transform: translateY(-1px);
   background: linear-gradient(180deg, #f8edc8, #e2cd9a);
-  box-shadow: 0 1px 0 #c8a44d, 0 4px 0 #1a1410, 0 8px 16px -2px rgba(20,12,6,0.45);
+  box-shadow: 0 1px 0 var(--color-grim-gold), 0 4px 0 var(--color-grim-ink), 0 8px 16px -2px rgba(20,12,6,0.45);
 }
 .theme-grimoire .spell-btn:active {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 #c8a44d, 0 0 0 #1a1410;
+  box-shadow: 0 1px 0 var(--color-grim-gold), 0 0 0 var(--color-grim-ink);
 }
 .theme-grimoire.dark .spell-btn {
-  color: #ebd9b3;
-  background: linear-gradient(180deg, #1a1d2a, #0e0f17);
-  border-color: #c8a44d;
-  box-shadow: 0 1px 0 rgba(200,164,77,0.4), 0 2px 0 #07080d, 0 0 18px rgba(240,128,41,0.18);
+  color: var(--color-grim-parchment);
+  background: linear-gradient(180deg, #1a1d2a, var(--color-grim-obsidian));
+  border-color: var(--color-grim-gold);
+  box-shadow: 0 1px 0 rgba(200,164,77,0.4), 0 2px 0 var(--color-grim-void), 0 0 18px rgba(240,128,41,0.18);
 }
 .theme-grimoire.dark .spell-btn:hover {
   background: linear-gradient(180deg, #232636, #15172a);
-  box-shadow: 0 1px 0 #c8a44d, 0 4px 0 #07080d, 0 0 24px rgba(240,128,41,0.45);
-  color: #f08029;
+  box-shadow: 0 1px 0 var(--color-grim-gold), 0 4px 0 var(--color-grim-void), 0 0 24px rgba(240,128,41,0.45);
+  color: var(--color-grim-ember);
 }
 .theme-grimoire .spell-btn-blood {
   background: linear-gradient(180deg, #b1262f, #7a161e);
-  color: #ebd9b3;
-  border-color: #1a1410;
+  color: var(--color-grim-parchment);
+  border-color: var(--color-grim-ink);
 }
 .theme-grimoire .spell-btn-blood:hover { background: linear-gradient(180deg, #c93340, #8a1b24); }
-.theme-grimoire.dark .spell-btn-blood { background: linear-gradient(180deg, #7a161e, #4b0d12); color: #ebd9b3; }
+.theme-grimoire.dark .spell-btn-blood { background: linear-gradient(180deg, #7a161e, #4b0d12); color: var(--color-grim-parchment); }
 
 /* ICON RUNE — square icon button (theme toggle, RSS) */
 .theme-grimoire .icon-rune {
@@ -340,20 +277,20 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   width: 2.5rem;
   height: 2.5rem;
   background: linear-gradient(180deg, #f4e6c0, #d8c08a);
-  color: #1a1410;
-  border: 1px solid #1a1410;
-  box-shadow: 0 1px 0 #c8a44d, 0 2px 0 #1a1410;
+  color: var(--color-grim-ink);
+  border: 1px solid var(--color-grim-ink);
+  box-shadow: 0 1px 0 var(--color-grim-gold), 0 2px 0 var(--color-grim-ink);
   transition: all 0.15s ease;
   cursor: pointer;
 }
-.theme-grimoire .icon-rune:hover { color: #8b1d27; transform: translateY(-1px); }
+.theme-grimoire .icon-rune:hover { color: var(--color-grim-blood); transform: translateY(-1px); }
 .theme-grimoire.dark .icon-rune {
-  background: linear-gradient(180deg, #1a1d2a, #0e0f17);
-  color: #c8a44d;
-  border-color: #c8a44d;
+  background: linear-gradient(180deg, #1a1d2a, var(--color-grim-obsidian));
+  color: var(--color-grim-gold);
+  border-color: var(--color-grim-gold);
   box-shadow: 0 0 14px rgba(240,128,41,0.25);
 }
-.theme-grimoire.dark .icon-rune:hover { color: #f08029; box-shadow: 0 0 22px rgba(240,128,41,0.55); }
+.theme-grimoire.dark .icon-rune:hover { color: var(--color-grim-ember); box-shadow: 0 0 22px rgba(240,128,41,0.55); }
 
 /* WAX SEAL — tag pills */
 .theme-grimoire .wax-seal {
@@ -362,7 +299,7 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   justify-content: center;
   min-width: 2.25rem;
   padding: 0.5rem 0.9rem;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   font-weight: 700;
   font-size: 0.68rem;
   text-transform: uppercase;
@@ -370,8 +307,8 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   color: #f6ead0;
   background:
     radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%),
-    #8b1d27;
-  border: 1px solid #1a1410;
+    var(--color-grim-blood);
+  border: 1px solid var(--color-grim-ink);
   border-radius: 999px;
   box-shadow:
     inset 0 -2px 4px rgba(0,0,0,0.4),
@@ -383,49 +320,49 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 }
 .theme-grimoire .wax-seal:hover { transform: rotate(0deg) scale(1.05); }
 .theme-grimoire.dark .wax-seal {
-  border-color: #c8a44d;
+  border-color: var(--color-grim-gold);
   box-shadow:
     inset 0 -2px 4px rgba(0,0,0,0.55),
     inset 0 2px 2px rgba(200,164,77,0.25),
     0 0 16px rgba(240,128,41,0.2);
 }
-.theme-grimoire .wax-seal-blood    { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), #8b1d27; }
-.theme-grimoire .wax-seal-arcane   { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), #6a4cab; }
+.theme-grimoire .wax-seal-blood    { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), var(--color-grim-blood); }
+.theme-grimoire .wax-seal-arcane   { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), var(--color-grim-arcane); }
 .theme-grimoire .wax-seal-ember    { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), #b65a13; color: #fff3d8; }
 .theme-grimoire .wax-seal-phosphor { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%), #2aa758; }
-.theme-grimoire .wax-seal-gold     { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.4), transparent 50%), #c8a44d; color: #1a1410; text-shadow: 0 1px 0 rgba(255,255,255,0.25); }
-.theme-grimoire .wax-seal-ichor    { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.3), transparent 50%), #2d1b3a; }
+.theme-grimoire .wax-seal-gold     { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.4), transparent 50%), var(--color-grim-gold); color: var(--color-grim-ink); text-shadow: 0 1px 0 rgba(255,255,255,0.25); }
+.theme-grimoire .wax-seal-ichor    { background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.3), transparent 50%), var(--color-grim-ichor); }
 
 /* HEADINGS — Matrix-minimal monospace, no ornate text-shadow */
 .theme-grimoire .h-blackletter {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   font-weight: 800;
-  color: #8b1d27;
+  color: var(--color-grim-blood);
   line-height: 1.0;
   letter-spacing: -0.04em;
   text-transform: uppercase;
   font-feature-settings: "ss02" on, "calt" on;
 }
 .theme-grimoire.dark .h-blackletter {
-  color: #c8a44d;
+  color: var(--color-grim-gold);
   text-shadow: 0 0 10px rgba(200,164,77,0.35), 0 0 28px rgba(240,128,41,0.12);
 }
 .theme-grimoire .h-engraved {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-engraved);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #3a2f25;
+  color: var(--color-grim-shadow);
 }
-.theme-grimoire.dark .h-engraved { color: #c8a44d; }
+.theme-grimoire.dark .h-engraved { color: var(--color-grim-gold); }
 
 /* RUNE DIVIDER — horizontal rule with center label */
 .theme-grimoire .rune-divider {
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  color: #8b1d27;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  color: var(--color-grim-blood);
+  font-family: var(--font-blackletter);
   font-size: 0.72rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
@@ -438,7 +375,7 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(139,29,39,0.6), transparent);
 }
-.theme-grimoire.dark .rune-divider { color: #c8a44d; }
+.theme-grimoire.dark .rune-divider { color: var(--color-grim-gold); }
 .theme-grimoire.dark .rune-divider::before,
 .theme-grimoire.dark .rune-divider::after {
   background: linear-gradient(90deg, transparent, rgba(200,164,77,0.6), transparent);
@@ -449,23 +386,23 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   content: "▮";
   display: inline-block;
   margin-left: 0.35rem;
-  color: #f08029;
-  animation: grimoire-blink 1s steps(2, start) infinite;
+  color: var(--color-grim-ember);
+  animation: var(--animate-blink);
 }
-.theme-grimoire.dark .cursor-blink::after { color: #57f287; }
+.theme-grimoire.dark .cursor-blink::after { color: var(--color-grim-phosphor); }
 
 /* ARC LINK — subtle inline link styling */
 .theme-grimoire .arc-link {
-  color: #8b1d27;
+  color: var(--color-grim-blood);
   text-decoration: underline;
   text-decoration-style: dotted;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   transition: color 0.15s ease;
 }
-.theme-grimoire .arc-link:hover { color: #f08029; text-decoration-style: solid; }
-.theme-grimoire.dark .arc-link { color: #c8a44d; }
-.theme-grimoire.dark .arc-link:hover { color: #f08029; }
+.theme-grimoire .arc-link:hover { color: var(--color-grim-ember); text-decoration-style: solid; }
+.theme-grimoire.dark .arc-link { color: var(--color-grim-gold); }
+.theme-grimoire.dark .arc-link:hover { color: var(--color-grim-ember); }
 
 /* SUMMONING CIRCLE — decorative SVG container */
 .theme-grimoire .summoning-circle {
@@ -488,12 +425,12 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 .theme-grimoire .grim-marquee {
   overflow: hidden;
   white-space: nowrap;
-  background: linear-gradient(180deg, #07080d, #0e0f17);
-  color: #c8a44d;
-  border-top: 1px solid #c8a44d;
-  border-bottom: 1px solid #c8a44d;
+  background: linear-gradient(180deg, var(--color-grim-void), var(--color-grim-obsidian));
+  color: var(--color-grim-gold);
+  border-top: 1px solid var(--color-grim-gold);
+  border-bottom: 1px solid var(--color-grim-gold);
   padding: 0.55rem 0;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   font-weight: 500;
   font-size: 0.74rem;
   letter-spacing: 0.22em;
@@ -504,34 +441,34 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   animation: grimoire-marquee 38s linear infinite;
 }
 .theme-grimoire .grim-marquee__token { display: inline-block; padding: 0 1.5rem; }
-.theme-grimoire .grim-marquee__token span { color: #f08029; padding-right: 1.5rem; }
+.theme-grimoire .grim-marquee__token span { color: var(--color-grim-ember); padding-right: 1.5rem; }
 
 /* INCANT OVERLAY — Konami code easter egg */
 .theme-grimoire .incant-overlay {
   position: fixed;
   inset: 0;
   background: radial-gradient(circle, rgba(7,8,13,0.85), rgba(7,8,13,0.98));
-  color: #c8a44d;
+  color: var(--color-grim-gold);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   text-align: center;
   animation: grimoire-incant 1.2s ease-out forwards;
 }
 .theme-grimoire .incant-overlay .incant-title {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   font-weight: 800;
   letter-spacing: -0.02em;
   font-size: clamp(2.5rem, 9vw, 6rem);
-  color: #f08029;
+  color: var(--color-grim-ember);
   text-shadow: 0 0 24px rgba(240,128,41,0.65), 0 0 60px rgba(240,128,41,0.35);
 }
 .theme-grimoire .incant-overlay .incant-sub {
-  font-family: "IBM Plex Mono", monospace;
-  color: #57f287;
+  font-family: var(--font-plex);
+  color: var(--color-grim-phosphor);
   letter-spacing: 0.4em;
   margin-top: 1rem;
   text-transform: uppercase;
@@ -542,28 +479,28 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 ---------------------------------------------------------------------- */
 
 .theme-grimoire .prose-grimoire {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   font-size: 1.05rem;
   line-height: 1.72;
-  color: #1a1410;
+  color: var(--color-grim-ink);
   font-feature-settings: "ss01" on, "cv11" on, "kern", "liga";
 }
-.theme-grimoire.dark .prose-grimoire { color: #e9e0c8; }
+.theme-grimoire.dark .prose-grimoire { color: var(--color-grim-bone); }
 
 /* Matrix drop cap — chunky monospace block letter, thin underline */
 .theme-grimoire .prose-grimoire > p:first-of-type::first-letter {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   font-weight: 800;
   float: left;
   font-size: 4.4rem;
   line-height: 0.95;
   padding: 0.15rem 0.55rem 0.15rem 0;
   margin-right: 0.25rem;
-  color: #8b1d27;
+  color: var(--color-grim-blood);
   border-bottom: 2px solid currentColor;
 }
 .theme-grimoire.dark .prose-grimoire > p:first-of-type::first-letter {
-  color: #57f287;
+  color: var(--color-grim-phosphor);
   text-shadow: 0 0 10px rgba(87,242,135,0.45), 0 0 24px rgba(87,242,135,0.18);
   border-bottom-color: rgba(87,242,135,0.55);
 }
@@ -571,45 +508,45 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 .theme-grimoire .prose-grimoire h1,
 .theme-grimoire .prose-grimoire h2,
 .theme-grimoire .prose-grimoire h3 {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   font-weight: 700;
   margin-top: 2em;
   margin-bottom: 0.6em;
   letter-spacing: -0.02em;
-  color: #3a2f25;
+  color: var(--color-grim-shadow);
   text-transform: uppercase;
 }
 .theme-grimoire.dark .prose-grimoire h1,
 .theme-grimoire.dark .prose-grimoire h2,
-.theme-grimoire.dark .prose-grimoire h3 { color: #c8a44d; }
+.theme-grimoire.dark .prose-grimoire h3 { color: var(--color-grim-gold); }
 .theme-grimoire .prose-grimoire h1 {
   font-size: 1.65rem;
-  border-bottom: 1px solid #8b1d27;
+  border-bottom: 1px solid var(--color-grim-blood);
   padding-bottom: 0.35em;
 }
-.theme-grimoire .prose-grimoire h2 { font-size: 1.35rem; color: #8b1d27; }
+.theme-grimoire .prose-grimoire h2 { font-size: 1.35rem; color: var(--color-grim-blood); }
 .theme-grimoire .prose-grimoire h3 { font-size: 1.1rem; }
-.theme-grimoire.dark .prose-grimoire h1 { border-bottom-color: #c8a44d; }
-.theme-grimoire.dark .prose-grimoire h2 { color: #f08029; }
+.theme-grimoire.dark .prose-grimoire h1 { border-bottom-color: var(--color-grim-gold); }
+.theme-grimoire.dark .prose-grimoire h2 { color: var(--color-grim-ember); }
 
 .theme-grimoire .prose-grimoire p { margin-bottom: 1.1em; }
 
-.theme-grimoire .prose-grimoire strong { color: #8b1d27; font-weight: 800; }
-.theme-grimoire.dark .prose-grimoire strong { color: #f08029; }
+.theme-grimoire .prose-grimoire strong { color: var(--color-grim-blood); font-weight: 800; }
+.theme-grimoire.dark .prose-grimoire strong { color: var(--color-grim-ember); }
 
-.theme-grimoire .prose-grimoire em { font-style: italic; color: #6a4cab; }
-.theme-grimoire.dark .prose-grimoire em { color: #c8a44d; }
+.theme-grimoire .prose-grimoire em { font-style: italic; color: var(--color-grim-arcane); }
+.theme-grimoire.dark .prose-grimoire em { color: var(--color-grim-gold); }
 
 .theme-grimoire .prose-grimoire a {
-  color: #8b1d27;
+  color: var(--color-grim-blood);
   text-decoration: underline;
   text-decoration-style: dotted;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
-.theme-grimoire .prose-grimoire a:hover { color: #f08029; text-decoration-style: solid; }
-.theme-grimoire.dark .prose-grimoire a { color: #c8a44d; }
-.theme-grimoire.dark .prose-grimoire a:hover { color: #f08029; }
+.theme-grimoire .prose-grimoire a:hover { color: var(--color-grim-ember); text-decoration-style: solid; }
+.theme-grimoire.dark .prose-grimoire a { color: var(--color-grim-gold); }
+.theme-grimoire.dark .prose-grimoire a:hover { color: var(--color-grim-ember); }
 
 .theme-grimoire .prose-grimoire ul,
 .theme-grimoire .prose-grimoire ol {
@@ -619,55 +556,55 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 .theme-grimoire .prose-grimoire ul { list-style: none; }
 .theme-grimoire .prose-grimoire ul > li::before {
   content: "✦";
-  color: #8b1d27;
+  color: var(--color-grim-blood);
   font-weight: 700;
   margin-right: 0.55em;
   display: inline-block;
   transform: translateY(-1px);
 }
-.theme-grimoire.dark .prose-grimoire ul > li::before { color: #c8a44d; }
+.theme-grimoire.dark .prose-grimoire ul > li::before { color: var(--color-grim-gold); }
 .theme-grimoire .prose-grimoire ol { list-style: decimal; }
 .theme-grimoire .prose-grimoire ol::marker {
-  color: #8b1d27;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  color: var(--color-grim-blood);
+  font-family: var(--font-blackletter);
   font-weight: 700;
 }
 .theme-grimoire .prose-grimoire li { margin-bottom: 0.4em; }
 
 .theme-grimoire .prose-grimoire blockquote {
   position: relative;
-  border-left: 2px solid #8b1d27;
+  border-left: 2px solid var(--color-grim-blood);
   background: rgba(200,164,77,0.10);
   padding: 1em 1.2em 1em 2.4em;
   margin: 1.5em 0;
   font-style: italic;
-  color: #3a2f25;
+  color: var(--color-grim-shadow);
 }
 .theme-grimoire .prose-grimoire blockquote::before {
   content: ">";
   position: absolute;
   left: 0.7em;
   top: 1em;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   font-weight: 700;
   font-style: normal;
   font-size: 1.05em;
-  color: #8b1d27;
+  color: var(--color-grim-blood);
   line-height: 1;
 }
 .theme-grimoire.dark .prose-grimoire blockquote {
-  border-left-color: #c8a44d;
+  border-left-color: var(--color-grim-gold);
   background: rgba(106,76,171,0.10);
-  color: #e9e0c8;
+  color: var(--color-grim-bone);
 }
-.theme-grimoire.dark .prose-grimoire blockquote::before { color: #c8a44d; }
+.theme-grimoire.dark .prose-grimoire blockquote::before { color: var(--color-grim-gold); }
 
 /* Code blocks — wizard's terminal (phosphor green on void) */
 .theme-grimoire .prose-grimoire pre,
 .theme-grimoire pre.highlight {
-  background: #07080d !important;
-  color: #57f287 !important;
-  border: 1px solid #c8a44d;
+  background: var(--color-grim-void) !important;
+  color: var(--color-grim-phosphor) !important;
+  border: 1px solid var(--color-grim-gold);
   box-shadow:
     inset 0 0 80px rgba(106,76,171,0.18),
     0 0 22px rgba(87,242,135,0.18),
@@ -675,7 +612,7 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   padding: 1rem 1.1rem;
   margin: 1.5em 0;
   overflow-x: auto;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-plex);
   font-size: 0.92rem;
   line-height: 1.55;
   position: relative;
@@ -684,16 +621,16 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 .theme-grimoire pre.highlight::before {
   content: "▒▓ ~/grimoire/spells $ cast";
   display: block;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   font-weight: 500;
   font-size: 0.66rem;
-  color: #c8a44d;
+  color: var(--color-grim-gold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   margin: -1rem -1.1rem 0.8rem;
   padding: 0.55rem 0.9rem;
-  background: #0e0f17;
-  border-bottom: 1px solid #c8a44d;
+  background: var(--color-grim-obsidian);
+  border-bottom: 1px solid var(--color-grim-gold);
 }
 .theme-grimoire .prose-grimoire pre::after,
 .theme-grimoire pre.highlight::after {
@@ -710,9 +647,9 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 
 .theme-grimoire .prose-grimoire code,
 .theme-grimoire code:not(pre code) {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-plex);
   background: rgba(139,29,39,0.10);
-  color: #8b1d27;
+  color: var(--color-grim-blood);
   padding: 0 6px;
   border: 1px solid rgba(139,29,39,0.35);
   font-size: 0.92em;
@@ -721,7 +658,7 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 .theme-grimoire.dark .prose-grimoire code,
 .theme-grimoire.dark code:not(pre code) {
   background: rgba(200,164,77,0.10);
-  color: #c8a44d;
+  color: var(--color-grim-gold);
   border-color: rgba(200,164,77,0.4);
 }
 .theme-grimoire .prose-grimoire pre code,
@@ -746,18 +683,18 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
 }
 
 .theme-grimoire .prose-grimoire img {
-  border: 1px solid #1a1410;
+  border: 1px solid var(--color-grim-ink);
   box-shadow:
-    inset 0 0 0 4px #ebd9b3,
-    inset 0 0 0 5px #c8a44d,
+    inset 0 0 0 4px var(--color-grim-parchment),
+    inset 0 0 0 5px var(--color-grim-gold),
     0 18px 36px -16px rgba(20,12,6,0.55);
   margin: 1.5em 0;
 }
 .theme-grimoire.dark .prose-grimoire img {
-  border-color: #c8a44d;
+  border-color: var(--color-grim-gold);
   box-shadow:
-    inset 0 0 0 4px #07080d,
-    inset 0 0 0 5px #c8a44d,
+    inset 0 0 0 4px var(--color-grim-void),
+    inset 0 0 0 5px var(--color-grim-gold),
     0 18px 36px -16px rgba(0,0,0,0.85);
 }
 
@@ -765,37 +702,35 @@ html.theme-grimoire.dark ::-webkit-scrollbar-thumb:hover { background: #f08029; 
   width: 100%;
   border-collapse: collapse;
   margin: 1.4em 0;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-blackletter);
   font-size: 0.86rem;
 }
 .theme-grimoire .prose-grimoire th,
 .theme-grimoire .prose-grimoire td {
-  border: 1px solid #1a1410;
+  border: 1px solid var(--color-grim-ink);
   padding: 0.55rem 0.8rem;
   text-align: left;
 }
 .theme-grimoire .prose-grimoire th {
-  background: #c8a44d;
-  color: #1a1410;
+  background: var(--color-grim-gold);
+  color: var(--color-grim-ink);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-weight: 700;
 }
 .theme-grimoire.dark .prose-grimoire th {
-  background: #2d1b3a;
-  color: #c8a44d;
-  border-color: #c8a44d;
+  background: var(--color-grim-ichor);
+  color: var(--color-grim-gold);
+  border-color: var(--color-grim-gold);
 }
 .theme-grimoire.dark .prose-grimoire td { border-color: rgba(200,164,77,0.4); }
 
 /* ----------------------------------------------------------------------
-   Keyframes (prefixed with `grimoire-` to avoid clashing with other themes)
+   Keyframes that are theme-local. The shared `theme-blink` keyframe
+   (registered in @theme as `--animate-blink`) is also available via the
+   `animate-blink` utility, but `.cursor-blink` and others reference
+   `var(--animate-blink)` directly to keep this file self-contained.
 ---------------------------------------------------------------------- */
-
-@keyframes grimoire-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
 
 @keyframes grimoire-marquee {
   0% { transform: translateX(0); }
