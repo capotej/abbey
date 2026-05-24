@@ -12,7 +12,7 @@ Minimal blog using Rails 8, designed to be easily [self-hosted on AWS](https://g
 * Markdown and Code Highlighting
 * [Link Blog](https://capotej.com/links)
 * Drag and Drop image uploads for Pages and Posts
-* Themable (default minimal look + optional `retro` Memphis/8-bit theme — see [Themes](#themes))
+* Themable (default minimal look + drop-in community themes — see [Themes](#themes))
 
 # Getting Started
 
@@ -59,14 +59,29 @@ This will scan the given path for files ending in `.markdown` and create a seed 
 
 # Themes
 
-Abbey ships with an opt-in theme system. The default theme keeps the existing
-minimal look. Built-in alternatives currently include:
+Abbey ships with a drop-in theme system designed for community contribution. A
+theme is **one self-contained folder** under `app/themes/<name>/`:
 
-| Theme     | Description |
-|-----------|-------------|
+```
+app/themes/aurora/
+  theme.rb               # manifest (Abbey::Theme.register)
+  assets/tailwind.css    # per-theme Tailwind build
+  views/                 # ERB overrides (any subset, optional)
+  README.md
+```
+
+Dropping a folder in and setting `ABBEY_THEME=<name>` is the entire install —
+zero edits to any central file. The default Abbey bundle stays byte-for-byte
+unchanged no matter how many themes the project ships.
+
+## Built-in themes
+
+| Theme      | Description |
+|------------|-------------|
 | `default`  | Original minimal Abbey look (no behavioural change). |
 | `retro`    | Memphis-style / 8-bit / 80s computer chrome — neo-brutalist cards, CRT scanlines, terminal code blocks, pixel-display headings. |
 | `grimoire` | Retro hacker dark fantasy — Matrix-minimal monospace, parchment + void palette with phosphor/ember/gold accents, tome cards, wax-seal tags, an animated summoning circle, and a Konami-code easter egg. |
+| `midnight` | Sample drop-in theme. ~80 lines total demonstrating the "30-second recolor" pattern. Deep slate palette with warm amber accents, Inter + JetBrains Mono. |
 
 ## Switching themes
 
@@ -84,48 +99,23 @@ When the active theme is `default`, the app behaves identically to before —
 no extra assets are loaded, the default Tailwind build is unchanged, and the
 existing markdown renderer is used.
 
-## How themes work
-
-A theme can override any view by placing a same-named file under
-`app/views/themes/<theme>/`. Rails' view lookup is augmented at request time
-(see `app/controllers/concerns/theming.rb`) so that:
-
-    app/views/themes/retro/blog/index.html.erb
-
-wins over the default
-
-    app/views/blog/index.html.erb
-
-whenever `Rails.application.config.theme == "retro"`. The same is true for
-the `layouts/application.html.erb`, every partial under `shared/`, and the
-page/links/papers views.
-
-A theme can also ship its own stylesheets under
-`app/assets/stylesheets/themes/<theme>.css` and, optionally,
-`themes/<theme>-highlight.css`. These are loaded automatically by the
-default layout via the `theme_stylesheets` helper (in
-`app/helpers/application_helper.rb`) when the theme is active.
-
-Finally, a theme can request the simpler `MinimalMarkdownRender` (semantic
-HTML output, no inline Tailwind utility classes) by adding itself to
-`Rails.application.config.themes_using_minimal_renderer` in
-`config/initializers/themes.rb`. This lets the theme style markdown content
-entirely from a wrapper class (e.g. `.prose-retro`) rather than fighting
-the renderer's hard-coded utility classes.
-
 ## Authoring a new theme
 
-The simplest theme is just a CSS file:
+```sh
+bin/rails g abbey:theme aurora             # full scaffold
+bin/rails g abbey:theme aurora --minimal   # pure recolor (theme.rb + tailwind.css + 3-line layout)
+bin/rails g abbey:theme aurora --from=retro # clone retro as starting point
+```
 
-    # add a stylesheet under
-    app/assets/stylesheets/themes/sunset.css
+Then edit `app/themes/aurora/theme.rb` (display name, colors, fonts) and
+`app/themes/aurora/assets/tailwind.css` (your `@theme` tokens). Boot with
+`ABBEY_THEME=aurora bin/dev`.
 
-    # set the theme:
-    ABBEY_THEME=sunset bin/dev
-
-The theme will be loaded after the default stylesheet, so it can override
-anything cosmetic without touching the rest of the app. Add views under
-`app/views/themes/sunset/` only when you need to change markup.
+For a guided walkthrough — concepts, manifest reference, common patterns,
+gotchas — see [**docs/THEMES.md**](docs/THEMES.md). For the exhaustive
+manifest field reference and registry API, see
+[**docs/THEMES_API.md**](docs/THEMES_API.md). For a minimal working
+example to fork, look at [`app/themes/midnight/`](app/themes/midnight/).
 
 # Deploying to AWS
 

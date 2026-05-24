@@ -63,4 +63,13 @@ class ThemeBundleIsolationTest < ActiveSupport::TestCase
     refute_match(/--color-grim-[a-z]+/, retro,
                  "retro bundle leaked Grimoire tokens — each theme should only scan its own views")
   end
+
+  test "midnight (sample theme) bundle ships its tokens and stays out of the default" do
+    midnight = read("tailwind-midnight.css")
+    default  = read("tailwind.css")
+
+    assert_match(/--color-midnight-bg/,     midnight, "midnight bundle missing its core token")
+    assert_match(/--color-midnight-accent/, midnight, "midnight bundle missing its accent token")
+    refute_match(/--color-midnight-/,       default,  "default bundle leaked Midnight tokens")
+  end
 end

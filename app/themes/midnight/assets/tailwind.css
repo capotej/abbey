@@ -1,0 +1,64 @@
+/* =============================================================================
+   Midnight theme Tailwind entry point.
+
+   Sample theme for Abbey — a 30-second minimal recolor that demonstrates
+   the drop-in theme system. Compiled into
+   `app/assets/builds/tailwind-midnight.css` and loaded only when
+   ABBEY_THEME=midnight is active.
+============================================================================= */
+
+@import 'tailwindcss';
+
+@source "../views";
+
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* Deep slate palette with a single warm accent. */
+  --color-midnight-bg:     #0f172a;
+  --color-midnight-fg:     #e2e8f0;
+  --color-midnight-muted:  #94a3b8;
+  --color-midnight-accent: #fbbf24;
+  --color-midnight-card:   #1e293b;
+  --color-midnight-border: #334155;
+
+  /* Inter for body, JetBrains Mono for code — loaded via theme.rb's t.fonts. */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Component classes — keep these to a minimum in a sample theme. */
+.theme-midnight a {
+  color: var(--color-midnight-accent);
+  text-decoration: none;
+}
+.theme-midnight a:hover {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
+/* Card-ish styling for blog post + page articles. */
+.theme-midnight article {
+  background: var(--color-midnight-card);
+  border: 1px solid var(--color-midnight-border);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Prose: rely on Tailwind Typography defaults inverted for dark backgrounds. */
+.theme-midnight .prose {
+  --tw-prose-body:          var(--color-midnight-fg);
+  --tw-prose-headings:      var(--color-midnight-fg);
+  --tw-prose-links:         var(--color-midnight-accent);
+  --tw-prose-bold:          var(--color-midnight-fg);
+  --tw-prose-counters:      var(--color-midnight-muted);
+  --tw-prose-bullets:       var(--color-midnight-muted);
+  --tw-prose-hr:            var(--color-midnight-border);
+  --tw-prose-quotes:        var(--color-midnight-fg);
+  --tw-prose-quote-borders: var(--color-midnight-accent);
+  --tw-prose-code:          var(--color-midnight-accent);
+  --tw-prose-pre-code:      var(--color-midnight-fg);
+  --tw-prose-pre-bg:        #020617;
+}
