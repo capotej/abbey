@@ -49,6 +49,17 @@ class ThemeBundleIsolationTest < ActiveSupport::TestCase
     assert_match(/\.bg-memphis-/,        retro, "retro bundle missing memphis bg utility (used in views)")
   end
 
+  test "theme bundles use class-based dark mode, not prefers-color-scheme" do
+    %w[tailwind-retro.css tailwind-grimoire.css tailwind-midnight.css].each do |bundle|
+      css = read(bundle)
+
+      refute_match(/prefers-color-scheme:\s*dark/, css,
+                   "#{bundle} should not use OS dark mode — themes toggle `.dark` on <html>")
+      assert_match(/\.dark\\:bg-.*:where\(\.dark/, css,
+                   "#{bundle} should emit class-based dark:bg-* utilities")
+    end
+  end
+
   test "tailwind-grimoire.css contains grim tokens + utilities" do
     grimoire = read("tailwind-grimoire.css")
 

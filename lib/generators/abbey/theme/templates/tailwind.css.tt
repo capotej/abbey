@@ -10,6 +10,12 @@
 
 @import 'tailwindcss';
 
+/* Dark mode follows the `.dark` class on <html> (cookie-driven toggle),
+   not the OS prefers-color-scheme setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@config '../../../../config/tailwind.config.js';
+
 /* Scan only this theme's views — keeps every other theme + the default
    bundle out of this build so your utility set is just what your theme
    uses. */

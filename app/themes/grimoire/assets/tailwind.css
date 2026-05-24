@@ -10,6 +10,10 @@
 
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@config '../../../../config/tailwind.config.js';
+
 @source "../views";
 
 @plugin "@tailwindcss/typography";

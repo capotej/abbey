@@ -10,6 +10,13 @@
 
 @import 'tailwindcss';
 
+/* Match the default Abbey bundle: dark mode is toggled via a `.dark`
+   class on <html>, not the OS prefers-color-scheme setting. Without
+   this, `dark:bg-*` utilities ignore our cookie-driven toggle. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@config '../../../../config/tailwind.config.js';
+
 /* Scan only this theme's view files. Tailwind walks every directory we
    list here; everything else (the default app/views/, other themes) is
    ignored, so memphis-* utilities don't bleed into the default bundle. */
