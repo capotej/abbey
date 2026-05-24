@@ -1,31 +1,41 @@
-# Prepends the active theme's view directory to the lookup path so that
-# `app/views/themes/<theme>/foo/bar.html.erb` overrides
-# `app/views/foo/bar.html.erb` (including layouts) when a non-default theme
+# frozen_string_literal: true
+
+# Prepends the active theme's view directory to Rails' lookup path so that
+# `app/themes/<theme>/views/<scope>/<name>.html.erb` overrides
+# `app/views/<scope>/<name>.html.erb` (including layouts) while the theme
 # is active. The default theme is a no-op.
 module Theming
   extend ActiveSupport::Concern
 
   included do
     before_action :prepend_theme_view_path
-    helper_method :current_theme, :theme_active?
+    helper_method :current_theme, :theme_active?, :active_theme
   end
 
   private
 
+  # Returns the active `Abbey::Theme` instance (or its DefaultTheme sentinel
+  # when no named theme is configured). Always non-nil.
+  def active_theme
+    Abbey::Theme.active
+  end
+
+  # Backward-compat string accessor used by older view helpers.
   def current_theme
-    Rails.application.config.theme.to_s.presence || "default"
+    active_theme.name.to_s
   end
 
   def theme_active?
-    current_theme != "default"
+    !active_theme.default?
   end
 
   def prepend_theme_view_path
-    return unless theme_active?
+    theme = active_theme
+    return if theme.default?
 
-    theme_root = Rails.root.join("app/views/themes", current_theme)
-    return unless theme_root.exist?
+    views = theme.views_path
+    return unless views&.directory?
 
-    prepend_view_path theme_root.to_s
+    prepend_view_path views.to_s
   end
 end

@@ -18,8 +18,8 @@ class ThemesTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_no_match(/class="theme-retro/, response.body)
     assert_no_match(/class="theme-grimoire/, response.body)
-    assert_no_match(%r{themes/retro}, response.body, "default theme should not load theme stylesheets")
-    assert_no_match(%r{themes/grimoire}, response.body, "default theme should not load theme stylesheets")
+    assert_no_match(%r{/assets/retro[-/]},     response.body, "default theme should not load retro CSS")
+    assert_no_match(%r{/assets/grimoire[-/]},  response.body, "default theme should not load grimoire CSS")
     assert_select "header h1"
     assert_select "footer"
   end
@@ -30,7 +30,8 @@ class ThemesTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_match(/class="theme-retro/, response.body)
-    assert_match(%r{themes/retro}, response.body, "retro theme should load themes/retro CSS")
+    assert_match(%r{/assets/retro[-.]},           response.body, "retro theme should load retro.css")
+    assert_match(%r{/assets/retro-highlight[-.]}, response.body, "retro theme should load retro-highlight.css")
     # System test contract: header still has h1, footer still present.
     assert_select "header h1"
     assert_select "footer"
@@ -46,7 +47,8 @@ class ThemesTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_match(/class="theme-grimoire/, response.body)
-    assert_match(%r{themes/grimoire}, response.body, "grimoire theme should load themes/grimoire CSS")
+    assert_match(%r{/assets/grimoire[-.]},           response.body, "grimoire theme should load grimoire.css")
+    assert_match(%r{/assets/grimoire-highlight[-.]}, response.body, "grimoire theme should load grimoire-highlight.css")
     # System test contract: header still has h1, footer still present.
     assert_select "header h1"
     assert_select "footer"
@@ -71,28 +73,19 @@ class ThemesTest < ActionDispatch::IntegrationTest
   end
 
   test "theme_stylesheets helper is empty for default and populated for named themes" do
-    helper = Class.new do
-      include ApplicationHelper
-      attr_accessor :_theme
+    helper = Class.new { include ApplicationHelper }.new
 
-      def current_theme
-        @_theme.to_s
-      end
-
-      def theme_active?
-        current_theme.present? && current_theme != "default"
-      end
-    end.new
-
-    helper._theme = "default"
+    Rails.application.config.theme = "default"
     assert_empty helper.theme_stylesheets
 
-    helper._theme = "retro"
-    assert_includes helper.theme_stylesheets, "themes/retro"
-    assert_includes helper.theme_stylesheets, "themes/retro-highlight"
+    Rails.application.config.theme = "retro"
+    sheets = helper.theme_stylesheets
+    assert_includes sheets, "retro"
+    assert_includes sheets, "retro-highlight"
 
-    helper._theme = "grimoire"
-    assert_includes helper.theme_stylesheets, "themes/grimoire"
-    assert_includes helper.theme_stylesheets, "themes/grimoire-highlight"
+    Rails.application.config.theme = "grimoire"
+    sheets = helper.theme_stylesheets
+    assert_includes sheets, "grimoire"
+    assert_includes sheets, "grimoire-highlight"
   end
 end

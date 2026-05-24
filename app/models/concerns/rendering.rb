@@ -35,15 +35,19 @@ module Rendering
   end
 
   class_methods do
-    # Themes can request the minimal renderer (semantic HTML, no inline
-    # Tailwind classes) by adding their name to
-    # Rails.application.config.themes_using_minimal_renderer (Array<String>).
-    # The default theme keeps the original MarkdownRender for backwards
-    # compatibility with existing imported posts.
+    # Resolve the Redcarpet renderer class to use for this request.
+    #
+    # Themes declare their renderer in their manifest:
+    #
+    #   Abbey::Theme.register(:retro) do |t|
+    #     t.markdown_renderer = :minimal   # or :default, or a custom class
+    #   end
+    #
+    # The default theme (no manifest) keeps `MarkdownRender` for backward
+    # compatibility with existing imported posts that depend on its inline
+    # Tailwind class output.
     def markdown_renderer
-      themes = Rails.application.config.try(:themes_using_minimal_renderer) || []
-      active = Rails.application.config.try(:theme).to_s
-      themes.include?(active) ? MinimalMarkdownRender : MarkdownRender
+      Abbey::Theme.active.markdown_renderer
     end
   end
 end
