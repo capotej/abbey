@@ -1,0 +1,29 @@
+/* =============================================================================
+   <%= theme_display_name %> theme Tailwind entry point.
+
+   Compiled into app/assets/builds/tailwind-<%= file_name %>.css by
+   `bin/rails tailwindcss:build` and loaded only when ABBEY_THEME=<%= file_name %>
+   is active. Self-contained: declare your design tokens in @theme below
+   and they'll generate matching utility classes (bg-*, text-*, shadow-*,
+   font-*, animate-*) for use in app/themes/<%= file_name %>/views/**.
+============================================================================= */
+
+@import 'tailwindcss';
+
+/* Scan only this theme's views — keeps every other theme + the default
+   bundle out of this build so your utility set is just what your theme
+   uses. */
+@source "../views";
+
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* ---------- <%= theme_display_name %> palette ---------- */
+  --color-<%= file_name %>-bg:      #ffffff;
+  --color-<%= file_name %>-fg:      #0a0a0a;
+  --color-<%= file_name %>-accent:  <%= theme_module_color %>;
+  --color-<%= file_name %>-muted:   #6b7280;
+
+  /* Add more colors / shadows / animations here.
+     See docs/THEMES.md for examples + recipes. */
+}

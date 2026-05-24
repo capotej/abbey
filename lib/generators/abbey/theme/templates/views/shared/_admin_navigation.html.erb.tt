@@ -1,0 +1,9 @@
+<%%# <%= theme_display_name %> theme admin nav. Visible only when authenticated. %>
+<%% if authenticated? %>
+  <div class="fixed top-0 inset-x-0 bg-<%= file_name %>-accent text-white text-xs px-4 py-2 z-50 flex gap-4">
+    <span class="font-semibold">admin</span>
+    <a class="underline" href="<%%= new_post_path %>">new post</a>
+    <a class="underline" href="<%%= new_page_path %>">new page</a>
+    <%%= button_to "logout", session_path(Current.session), method: :delete, class: "underline ml-auto" %>
+  </div>
+<%% end %>
