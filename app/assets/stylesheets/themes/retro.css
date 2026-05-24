@@ -2,33 +2,65 @@
    Abbey – Retro Theme
    Memphis / 8-bit / 80s computer aesthetic.
 
-   Pure CSS – served by Propshaft, loaded only when
-   `Rails.application.config.theme == "retro"`. All declarations are scoped
-   under `.theme-retro` (set on <html> by themes/retro/layouts/application.html.erb)
-   so loading this file in another context is a no-op.
+   Loaded only when `Rails.application.config.theme == "retro"`. All
+   declarations are scoped under `.theme-retro` (set on <html> by
+   themes/retro/layouts/application.html.erb) so loading this file in any
+   other context is a no-op.
 
-   Custom palette:
-     ink     #0d0d12   paper #fff8ef   crt   #0a0e1a
-     pink    #ff3eb5   cyan  #00e5ff   yellow #ffd400
-     mint    #00ff9c   purple #b14aff  coral  #ff6b4a
-   =============================================================================*/
+   Color/shadow/font/animation TOKENS live in `app/assets/tailwind/application.css`
+   under `@theme`, which makes Tailwind auto-generate the matching utility
+   classes (`bg-memphis-pink`, `shadow-retro-lg`, `dark:text-memphis-mint`,
+   `hover:bg-memphis-pink`, `animate-blink`, `text-[0.62rem]`, etc.) — no
+   hand-rolled `.theme-retro .bg-foo-bar` declarations needed.
+
+   This file ships:
+     1. theme-root environmental styles (page bg, drifting confetti backdrop,
+        CRT scanlines, selection color)
+     2. font-family rebinding inside `.theme-retro` so utilities like
+        `font-sans`, `font-mono`, `font-display` resolve to the retro stack
+     3. component classes (`.card-retro`, `.btn-retro`, `.tag-retro`,
+        `.h-display`, `.crt-window`, `.marquee`, `.date-sticker`,
+        `.glitch-hover`, `.cursor-blink`)
+     4. typography for the `.prose-retro` wrapper (h1-h3 with hard
+        text-shadows, wavy-underline links, highlighted <strong>, terminal
+        <pre> blocks, Memphis tables, dotted SVG <hr>)
+
+   Palette: ink #0d0d12 · paper #fff8ef · crt #0a0e1a ·
+            pink #ff3eb5 · cyan #00e5ff · yellow #ffd400 ·
+            mint #00ff9c · purple #b14aff · coral #ff6b4a
+============================================================================= */
+
+/* ----------------------------------------------------------------------
+   Font-family rebinding via CSS variable cascade.
+   Tailwind generates `.font-sans`, `.font-mono`, `.font-display` as
+   `{ font-family: var(--font-sans|mono|display) }`. Redefining those
+   variables on `.theme-retro` makes every `font-*` utility inside the
+   retro theme resolve to the retro font stack — without touching the
+   default theme.
+---------------------------------------------------------------------- */
+
+.theme-retro {
+  --font-sans:    "Space Grotesk", system-ui, sans-serif;
+  --font-mono:    "VT323", ui-monospace, monospace;
+  --font-display: "Press Start 2P", system-ui, sans-serif;
+}
 
 /* ----------------------------------------------------------------------
    Base – body backdrop, CRT scanlines, selection
 ---------------------------------------------------------------------- */
 
 html.theme-retro {
-  background-color: #fff8ef;
-  color: #0d0d12;
+  background-color: var(--color-memphis-paper);
+  color: var(--color-memphis-ink);
   image-rendering: pixelated;
 }
 html.theme-retro.dark {
-  background-color: #0a0e1a;
+  background-color: var(--color-memphis-crt);
   color: #f0fff7;
 }
 
 html.theme-retro body {
-  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-feature-settings: "ss01" on, "ss02" on;
   position: relative;
   overflow-x: hidden;
@@ -89,127 +121,21 @@ html.theme-retro .content-layer {
 }
 
 html.theme-retro ::selection {
-  background: #ff3eb5;
-  color: #fff8ef;
+  background: var(--color-memphis-pink);
+  color: var(--color-memphis-paper);
 }
 html.theme-retro.dark ::selection {
-  background: #00ff9c;
-  color: #0a0e1a;
+  background: var(--color-memphis-mint);
+  color: var(--color-memphis-crt);
 }
 
 /* ----------------------------------------------------------------------
-   Utility-style color/shadow/font classes used inline in retro views.
-   Scoped to `.theme-retro` so they cannot leak into the default theme,
-   and intentionally redundant with the dedicated component classes so
-   markup remains expressive without requiring Tailwind config edits.
+   Keyframes that are theme-local (drift/glitch don't need utilities).
+   Note: blink / wiggle / pop-in / marquee are registered in @theme so
+   Tailwind generates `animate-blink`, `animate-wiggle`, etc. and inlines
+   the keyframes — they're not duplicated here.
 ---------------------------------------------------------------------- */
 
-.theme-retro .bg-memphis-paper  { background-color: #fff8ef; }
-.theme-retro .bg-memphis-ink    { background-color: #0d0d12; }
-.theme-retro .bg-memphis-crt    { background-color: #0a0e1a; }
-.theme-retro .bg-memphis-pink   { background-color: #ff3eb5; }
-.theme-retro .bg-memphis-cyan   { background-color: #00e5ff; }
-.theme-retro .bg-memphis-yellow { background-color: #ffd400; }
-.theme-retro .bg-memphis-mint   { background-color: #00ff9c; }
-.theme-retro .bg-memphis-purple { background-color: #b14aff; }
-.theme-retro .bg-memphis-coral  { background-color: #ff6b4a; }
-
-.theme-retro .text-memphis-ink    { color: #0d0d12; }
-.theme-retro .text-memphis-paper  { color: #fff8ef; }
-.theme-retro .text-memphis-pink   { color: #ff3eb5; }
-.theme-retro .text-memphis-cyan   { color: #00e5ff; }
-.theme-retro .text-memphis-yellow { color: #ffd400; }
-.theme-retro .text-memphis-mint   { color: #00ff9c; }
-.theme-retro .text-memphis-purple { color: #b14aff; }
-.theme-retro .text-memphis-coral  { color: #ff6b4a; }
-
-.theme-retro .border-memphis-ink   { border-color: #0d0d12; }
-.theme-retro .border-memphis-pink  { border-color: #ff3eb5; }
-.theme-retro .border-memphis-mint  { border-color: #00ff9c; }
-.theme-retro .border-memphis-cyan  { border-color: #00e5ff; }
-.theme-retro .border-memphis-yellow{ border-color: #ffd400; }
-
-.theme-retro .shadow-retro-sm     { box-shadow: 4px 4px 0 0 #0d0d12; }
-.theme-retro .shadow-retro        { box-shadow: 6px 6px 0 0 #0d0d12; }
-.theme-retro .shadow-retro-lg     { box-shadow: 10px 10px 0 0 #0d0d12; }
-.theme-retro .shadow-retro-pink   { box-shadow: 6px 6px 0 0 #ff3eb5; }
-.theme-retro .shadow-retro-cyan   { box-shadow: 6px 6px 0 0 #00e5ff; }
-.theme-retro .shadow-retro-yellow { box-shadow: 6px 6px 0 0 #ffd400; }
-.theme-retro .shadow-retro-mint   { box-shadow: 6px 6px 0 0 #00ff9c; }
-.theme-retro .shadow-retro-purple { box-shadow: 6px 6px 0 0 #b14aff; }
-.theme-retro .shadow-retro-coral  { box-shadow: 6px 6px 0 0 #ff6b4a; }
-
-.theme-retro .font-display { font-family: "Press Start 2P", system-ui, sans-serif; }
-.theme-retro .font-mono    { font-family: "VT323", ui-monospace, monospace; }
-.theme-retro .font-sans    { font-family: "Space Grotesk", system-ui, sans-serif; }
-
-.theme-retro .animate-blink    { animation: retro-blink 1s steps(2, start) infinite; }
-.theme-retro .animate-wiggle   { animation: retro-wiggle 0.4s ease-in-out; }
-.theme-retro .animate-pop-in   { animation: retro-pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-
-/* Dark-mode variants of the above (mirrors Tailwind dark: prefix when
-   <html> carries both `theme-retro` and `dark` classes). */
-.theme-retro.dark .dark\:bg-memphis-paper  { background-color: #fff8ef; }
-.theme-retro.dark .dark\:bg-memphis-ink    { background-color: #0d0d12; }
-.theme-retro.dark .dark\:bg-memphis-crt    { background-color: #0a0e1a; }
-.theme-retro.dark .dark\:bg-memphis-pink   { background-color: #ff3eb5; }
-.theme-retro.dark .dark\:bg-memphis-cyan   { background-color: #00e5ff; }
-.theme-retro.dark .dark\:bg-memphis-yellow { background-color: #ffd400; }
-.theme-retro.dark .dark\:bg-memphis-mint   { background-color: #00ff9c; }
-.theme-retro.dark .dark\:bg-memphis-purple { background-color: #b14aff; }
-.theme-retro.dark .dark\:bg-memphis-coral  { background-color: #ff6b4a; }
-.theme-retro.dark .dark\:bg-black          { background-color: #000000; }
-
-.theme-retro.dark .dark\:text-memphis-paper  { color: #fff8ef; }
-.theme-retro.dark .dark\:text-memphis-ink    { color: #0d0d12; }
-.theme-retro.dark .dark\:text-memphis-pink   { color: #ff3eb5; }
-.theme-retro.dark .dark\:text-memphis-cyan   { color: #00e5ff; }
-.theme-retro.dark .dark\:text-memphis-yellow { color: #ffd400; }
-.theme-retro.dark .dark\:text-memphis-mint   { color: #00ff9c; }
-.theme-retro.dark .dark\:text-memphis-purple { color: #b14aff; }
-
-.theme-retro.dark .dark\:border-memphis-mint  { border-color: #00ff9c; }
-.theme-retro.dark .dark\:border-memphis-pink  { border-color: #ff3eb5; }
-.theme-retro.dark .dark\:border-memphis-cyan  { border-color: #00e5ff; }
-.theme-retro.dark .dark\:shadow-none          { box-shadow: none; }
-
-/* Hover & group-hover Memphis color variants
-   (mirror Tailwind `hover:text-memphis-pink` syntax without requiring
-   Memphis tokens in the Tailwind config). */
-.theme-retro .hover\:text-memphis-pink:hover   { color: #ff3eb5; }
-.theme-retro .hover\:text-memphis-cyan:hover   { color: #00e5ff; }
-.theme-retro .hover\:text-memphis-mint:hover   { color: #00ff9c; }
-.theme-retro .hover\:text-memphis-yellow:hover { color: #ffd400; }
-.theme-retro .hover\:bg-memphis-pink:hover     { background-color: #ff3eb5; }
-.theme-retro .hover\:text-memphis-paper:hover  { color: #fff8ef; }
-
-.theme-retro.dark .dark\:hover\:text-memphis-mint:hover   { color: #00ff9c; }
-.theme-retro.dark .dark\:hover\:text-memphis-cyan:hover   { color: #00e5ff; }
-.theme-retro.dark .dark\:hover\:text-memphis-yellow:hover { color: #ffd400; }
-.theme-retro.dark .dark\:hover\:text-memphis-pink:hover   { color: #ff3eb5; }
-
-.theme-retro .group:hover .group-hover\:animate-wiggle { animation: retro-wiggle 0.4s ease-in-out; }
-.theme-retro .group:hover .group-hover\:text-memphis-pink { color: #ff3eb5; }
-.theme-retro.dark .group:hover .dark\:group-hover\:text-memphis-yellow { color: #ffd400; }
-
-/* Color with alpha (mirrors Tailwind `text-memphis-paper/90` opacity syntax). */
-.theme-retro .text-memphis-ink\/40   { color: rgba(13, 13, 18, 0.4); }
-.theme-retro .text-memphis-paper\/90 { color: rgba(255, 248, 239, 0.9); }
-.theme-retro.dark .dark\:text-memphis-mint\/40   { color: rgba(0, 255, 156, 0.4); }
-.theme-retro.dark .dark\:text-memphis-paper\/90  { color: rgba(255, 248, 239, 0.9); }
-
-/* ----------------------------------------------------------------------
-   Keyframes
----------------------------------------------------------------------- */
-
-@keyframes retro-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-@keyframes retro-marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
 @keyframes retro-drift {
   0%, 100% { background-position: 0 0; }
   50%      { background-position: 80px 60px; }
@@ -222,15 +148,6 @@ html.theme-retro.dark ::selection {
   80%  { transform: translate(2px, 1px); }
   100% { transform: translate(0, 0); }
 }
-@keyframes retro-pop-in {
-  0%   { opacity: 0; transform: translateY(8px) scale(0.96); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes retro-wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25%      { transform: rotate(-3deg); }
-  75%      { transform: rotate(3deg); }
-}
 
 /* ----------------------------------------------------------------------
    Cards / containers
@@ -238,30 +155,30 @@ html.theme-retro.dark ::selection {
 
 .theme-retro .card-retro {
   background: #ffffff;
-  border: 3px solid #0d0d12;
-  box-shadow: 6px 6px 0 0 #0d0d12;
+  border: 3px solid var(--color-memphis-ink);
+  box-shadow: var(--shadow-retro);
   padding: 1.5rem;
   transition: transform 200ms ease, box-shadow 200ms ease;
 }
 .theme-retro.dark .card-retro {
-  background: #0a0e1a;
-  border-color: #00ff9c;
-  box-shadow: 6px 6px 0 0 #00ff9c;
+  background: var(--color-memphis-crt);
+  border-color: var(--color-memphis-mint);
+  box-shadow: var(--shadow-retro-mint);
 }
 .theme-retro .card-retro:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 10px 10px 0 0 #0d0d12;
+  box-shadow: var(--shadow-retro-lg);
 }
 .theme-retro.dark .card-retro:hover {
-  box-shadow: 10px 10px 0 0 #00ff9c;
+  box-shadow: 10px 10px 0 0 var(--color-memphis-mint);
 }
 
-.theme-retro .card-shadow-pink   { box-shadow: 6px 6px 0 0 #ff3eb5; }
-.theme-retro .card-shadow-cyan   { box-shadow: 6px 6px 0 0 #00e5ff; }
-.theme-retro .card-shadow-yellow { box-shadow: 6px 6px 0 0 #ffd400; }
-.theme-retro .card-shadow-mint   { box-shadow: 6px 6px 0 0 #00ff9c; }
-.theme-retro .card-shadow-purple { box-shadow: 6px 6px 0 0 #b14aff; }
-.theme-retro .card-shadow-coral  { box-shadow: 6px 6px 0 0 #ff6b4a; }
+.theme-retro .card-shadow-pink   { box-shadow: var(--shadow-retro-pink); }
+.theme-retro .card-shadow-cyan   { box-shadow: var(--shadow-retro-cyan); }
+.theme-retro .card-shadow-yellow { box-shadow: var(--shadow-retro-yellow); }
+.theme-retro .card-shadow-mint   { box-shadow: var(--shadow-retro-mint); }
+.theme-retro .card-shadow-purple { box-shadow: var(--shadow-retro-purple); }
+.theme-retro .card-shadow-coral  { box-shadow: var(--shadow-retro-coral); }
 
 /* ----------------------------------------------------------------------
    Buttons
@@ -271,32 +188,32 @@ html.theme-retro.dark ::selection {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: "Press Start 2P", system-ui, sans-serif;
+  font-family: var(--font-display);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: #ffd400;
-  color: #0d0d12;
-  border: 3px solid #0d0d12;
+  background: var(--color-memphis-yellow);
+  color: var(--color-memphis-ink);
+  border: 3px solid var(--color-memphis-ink);
+  box-shadow: var(--shadow-retro);
   padding: 0.5rem 1rem;
-  box-shadow: 6px 6px 0 0 #0d0d12;
   transition: transform 150ms ease, box-shadow 150ms ease;
   cursor: pointer;
 }
 .theme-retro .btn-retro:hover {
   transform: translate(2px, 2px);
-  box-shadow: 4px 4px 0 0 #0d0d12;
+  box-shadow: var(--shadow-retro-sm);
 }
 .theme-retro .btn-retro:active {
   transform: translate(4px, 4px);
   box-shadow: 0 0 0 0 transparent;
 }
-.theme-retro .btn-retro-pink   { background: #ff3eb5; color: #fff8ef; }
-.theme-retro .btn-retro-cyan   { background: #00e5ff; color: #0d0d12; }
-.theme-retro .btn-retro-mint   { background: #00ff9c; color: #0d0d12; }
-.theme-retro .btn-retro-purple { background: #b14aff; color: #fff8ef; }
-.theme-retro .btn-retro-coral  { background: #ff6b4a; color: #fff8ef; }
-.theme-retro .btn-retro-ghost  { background: #fff8ef; color: #0d0d12; }
+.theme-retro .btn-retro-pink   { background: var(--color-memphis-pink);   color: var(--color-memphis-paper); }
+.theme-retro .btn-retro-cyan   { background: var(--color-memphis-cyan);   color: var(--color-memphis-ink); }
+.theme-retro .btn-retro-mint   { background: var(--color-memphis-mint);   color: var(--color-memphis-ink); }
+.theme-retro .btn-retro-purple { background: var(--color-memphis-purple); color: var(--color-memphis-paper); }
+.theme-retro .btn-retro-coral  { background: var(--color-memphis-coral);  color: var(--color-memphis-paper); }
+.theme-retro .btn-retro-ghost  { background: var(--color-memphis-paper);  color: var(--color-memphis-ink); }
 
 .theme-retro .btn-icon-retro {
   display: inline-flex;
@@ -304,10 +221,10 @@ html.theme-retro.dark ::selection {
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  background: #fff8ef;
-  color: #0d0d12;
-  border: 3px solid #0d0d12;
-  box-shadow: 4px 4px 0 0 #0d0d12;
+  background: var(--color-memphis-paper);
+  color: var(--color-memphis-ink);
+  border: 3px solid var(--color-memphis-ink);
+  box-shadow: var(--shadow-retro-sm);
   transition: transform 150ms ease, box-shadow 150ms ease;
   cursor: pointer;
 }
@@ -316,9 +233,9 @@ html.theme-retro.dark ::selection {
   box-shadow: 0 0 0 0 transparent;
 }
 .theme-retro.dark .btn-icon-retro {
-  background: #0a0e1a;
-  color: #00ff9c;
-  border-color: #00ff9c;
+  background: var(--color-memphis-crt);
+  color: var(--color-memphis-mint);
+  border-color: var(--color-memphis-mint);
   box-shadow: none;
 }
 
@@ -329,38 +246,38 @@ html.theme-retro.dark ::selection {
 .theme-retro .tag-retro {
   display: inline-flex;
   align-items: center;
-  font-family: "VT323", ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 1rem;
   line-height: 1;
   padding: 0.25rem 0.75rem;
-  border: 2px solid #0d0d12;
-  box-shadow: 4px 4px 0 0 #0d0d12;
+  border: 2px solid var(--color-memphis-ink);
+  box-shadow: var(--shadow-retro-sm);
   transition: transform 150ms ease;
 }
 .theme-retro .tag-retro:hover {
   transform: rotate(-2deg) scale(1.05);
 }
-.theme-retro .tag-color-1 { background: #ff3eb5; color: #fff8ef; }
-.theme-retro .tag-color-2 { background: #00e5ff; color: #0d0d12; }
-.theme-retro .tag-color-3 { background: #ffd400; color: #0d0d12; }
-.theme-retro .tag-color-4 { background: #00ff9c; color: #0d0d12; }
-.theme-retro .tag-color-5 { background: #b14aff; color: #fff8ef; }
-.theme-retro .tag-color-6 { background: #ff6b4a; color: #fff8ef; }
+.theme-retro .tag-color-1 { background: var(--color-memphis-pink);   color: var(--color-memphis-paper); }
+.theme-retro .tag-color-2 { background: var(--color-memphis-cyan);   color: var(--color-memphis-ink); }
+.theme-retro .tag-color-3 { background: var(--color-memphis-yellow); color: var(--color-memphis-ink); }
+.theme-retro .tag-color-4 { background: var(--color-memphis-mint);   color: var(--color-memphis-ink); }
+.theme-retro .tag-color-5 { background: var(--color-memphis-purple); color: var(--color-memphis-paper); }
+.theme-retro .tag-color-6 { background: var(--color-memphis-coral);  color: var(--color-memphis-paper); }
 
 /* ----------------------------------------------------------------------
    Pixel-display headings
 ---------------------------------------------------------------------- */
 
 .theme-retro .h-display {
-  font-family: "Press Start 2P", system-ui, sans-serif;
-  color: #0d0d12;
+  font-family: var(--font-display);
+  color: var(--color-memphis-ink);
   line-height: 1.4;
   letter-spacing: -0.02em;
-  text-shadow: 3px 3px 0 #ff3eb5;
+  text-shadow: 3px 3px 0 var(--color-memphis-pink);
 }
 .theme-retro.dark .h-display {
-  color: #00ff9c;
-  text-shadow: 3px 3px 0 #00e5ff;
+  color: var(--color-memphis-mint);
+  text-shadow: 3px 3px 0 var(--color-memphis-cyan);
 }
 .theme-retro .h-display-sm { font-size: 1rem; }
 .theme-retro .h-display-md { font-size: 1.25rem; }
@@ -382,34 +299,34 @@ html.theme-retro.dark ::selection {
   content: "▮";
   display: inline-block;
   margin-left: 0.25rem;
-  color: #ff3eb5;
-  animation: retro-blink 1s steps(2, start) infinite;
+  color: var(--color-memphis-pink);
+  animation: var(--animate-blink);
 }
-.theme-retro.dark .cursor-blink::after { color: #00ff9c; }
+.theme-retro.dark .cursor-blink::after { color: var(--color-memphis-mint); }
 
 .theme-retro .marquee {
   overflow: hidden;
   white-space: nowrap;
-  border-top: 3px solid #0d0d12;
-  border-bottom: 3px solid #0d0d12;
+  border-top: 3px solid var(--color-memphis-ink);
+  border-bottom: 3px solid var(--color-memphis-ink);
   background: repeating-linear-gradient(
     45deg,
-    #ffd400 0,
-    #ffd400 18px,
-    #0d0d12 18px,
-    #0d0d12 36px
+    var(--color-memphis-yellow) 0,
+    var(--color-memphis-yellow) 18px,
+    var(--color-memphis-ink) 18px,
+    var(--color-memphis-ink) 36px
   );
   padding: 4px 0;
 }
 .theme-retro .marquee__track {
   display: inline-block;
-  animation: retro-marquee 28s linear infinite;
-  font-family: "Press Start 2P", monospace;
+  animation: var(--animate-marquee);
+  font-family: var(--font-display);
   font-size: 12px;
-  color: #0d0d12;
-  background: #fff8ef;
+  color: var(--color-memphis-ink);
+  background: var(--color-memphis-paper);
   padding: 6px 16px;
-  border: 2px solid #0d0d12;
+  border: 2px solid var(--color-memphis-ink);
 }
 
 /* ----------------------------------------------------------------------
@@ -418,32 +335,28 @@ html.theme-retro.dark ::selection {
 
 .theme-retro .crt-window {
   position: relative;
-  background: #0a0e1a;
-  color: #00ff9c;
-  border: 3px solid #0d0d12;
-  box-shadow: 6px 6px 0 0 #0d0d12;
-  font-family: "VT323", ui-monospace, monospace;
+  background: var(--color-memphis-crt);
+  color: var(--color-memphis-mint);
+  border: 3px solid var(--color-memphis-ink);
+  box-shadow: var(--shadow-retro);
+  font-family: var(--font-mono);
   font-size: 0.875rem;
   overflow: hidden;
 }
 .theme-retro .crt-window::before {
   content: "● ● ●";
   display: block;
-  background: #ff3eb5;
-  color: #0d0d12;
-  font-family: "Press Start 2P", monospace;
+  background: var(--color-memphis-pink);
+  color: var(--color-memphis-ink);
+  font-family: var(--font-display);
   font-size: 10px;
   letter-spacing: 4px;
   padding: 6px 12px;
-  border-bottom: 3px solid #0d0d12;
+  border-bottom: 3px solid var(--color-memphis-ink);
 }
 
 .theme-retro .glitch-hover:hover {
   animation: retro-glitch 0.8s steps(1) 1;
-}
-
-.theme-retro .animate-pop-in {
-  animation: retro-pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 /* ----------------------------------------------------------------------
@@ -452,17 +365,17 @@ html.theme-retro.dark ::selection {
 
 .theme-retro .date-sticker {
   display: inline-block;
-  font-family: "Press Start 2P", monospace;
+  font-family: var(--font-display);
   font-size: 10px;
-  background: #ffd400;
-  color: #0d0d12;
-  border: 2px solid #0d0d12;
+  background: var(--color-memphis-yellow);
+  color: var(--color-memphis-ink);
+  border: 2px solid var(--color-memphis-ink);
   padding: 4px 8px;
   transform: rotate(-3deg);
-  box-shadow: 3px 3px 0 0 #0d0d12;
+  box-shadow: 3px 3px 0 0 var(--color-memphis-ink);
 }
-.theme-retro .date-sticker--pink { background: #ff3eb5; color: #fff8ef; }
-.theme-retro .date-sticker--mint { background: #00ff9c; color: #0d0d12; }
+.theme-retro .date-sticker--pink { background: var(--color-memphis-pink); color: var(--color-memphis-paper); }
+.theme-retro .date-sticker--mint { background: var(--color-memphis-mint); color: var(--color-memphis-ink); }
 
 /* ----------------------------------------------------------------------
    Rendered markdown content (`.prose-retro` wrapper)
@@ -470,58 +383,58 @@ html.theme-retro.dark ::selection {
 ---------------------------------------------------------------------- */
 
 .theme-retro .prose-retro {
-  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-size: 1.05rem;
   line-height: 1.75;
-  color: #0d0d12;
+  color: var(--color-memphis-ink);
 }
 .theme-retro.dark .prose-retro { color: #d6ffe9; }
 
 .theme-retro .prose-retro h1,
 .theme-retro .prose-retro h2,
 .theme-retro .prose-retro h3 {
-  font-family: "Press Start 2P", system-ui, sans-serif;
+  font-family: var(--font-display);
   line-height: 1.5;
   margin: 2em 0 0.8em;
   letter-spacing: -0.02em;
 }
-.theme-retro .prose-retro h1 { font-size: 1.5rem;  color: #ff3eb5; text-shadow: 3px 3px 0 #0d0d12; }
-.theme-retro .prose-retro h2 { font-size: 1.15rem; color: #b14aff; text-shadow: 2px 2px 0 #ffd400; }
+.theme-retro .prose-retro h1 { font-size: 1.5rem;  color: var(--color-memphis-pink);   text-shadow: 3px 3px 0 var(--color-memphis-ink); }
+.theme-retro .prose-retro h2 { font-size: 1.15rem; color: var(--color-memphis-purple); text-shadow: 2px 2px 0 var(--color-memphis-yellow); }
 .theme-retro .prose-retro h3 { font-size: 0.95rem; color: #00a3cc; }
 
-.theme-retro.dark .prose-retro h1 { color: #00ff9c; text-shadow: 3px 3px 0 #ff3eb5; }
-.theme-retro.dark .prose-retro h2 { color: #ffd400; text-shadow: 2px 2px 0 #b14aff; }
-.theme-retro.dark .prose-retro h3 { color: #00e5ff; }
+.theme-retro.dark .prose-retro h1 { color: var(--color-memphis-mint);   text-shadow: 3px 3px 0 var(--color-memphis-pink); }
+.theme-retro.dark .prose-retro h2 { color: var(--color-memphis-yellow); text-shadow: 2px 2px 0 var(--color-memphis-purple); }
+.theme-retro.dark .prose-retro h3 { color: var(--color-memphis-cyan); }
 
 .theme-retro .prose-retro p { margin-bottom: 1.1em; }
 
 .theme-retro .prose-retro strong {
-  background: #ffd400;
-  color: #0d0d12;
+  background: var(--color-memphis-yellow);
+  color: var(--color-memphis-ink);
   padding: 0 4px;
-  border: 2px solid #0d0d12;
+  border: 2px solid var(--color-memphis-ink);
   font-weight: 700;
 }
 .theme-retro.dark .prose-retro strong {
-  background: #00ff9c;
-  color: #0a0e1a;
-  border-color: #00ff9c;
+  background: var(--color-memphis-mint);
+  color: var(--color-memphis-crt);
+  border-color: var(--color-memphis-mint);
 }
 
-.theme-retro .prose-retro em { font-style: italic; color: #b14aff; }
-.theme-retro.dark .prose-retro em { color: #00e5ff; }
+.theme-retro .prose-retro em { font-style: italic; color: var(--color-memphis-purple); }
+.theme-retro.dark .prose-retro em { color: var(--color-memphis-cyan); }
 
 .theme-retro .prose-retro a {
-  color: #ff3eb5;
+  color: var(--color-memphis-pink);
   font-weight: 600;
   text-decoration: underline;
   text-decoration-style: wavy;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
 }
-.theme-retro .prose-retro a:hover { background: #ffd400; color: #0d0d12; }
-.theme-retro.dark .prose-retro a { color: #00ff9c; }
-.theme-retro.dark .prose-retro a:hover { background: #ff3eb5; color: #fff8ef; }
+.theme-retro .prose-retro a:hover { background: var(--color-memphis-yellow); color: var(--color-memphis-ink); }
+.theme-retro.dark .prose-retro a { color: var(--color-memphis-mint); }
+.theme-retro.dark .prose-retro a:hover { background: var(--color-memphis-pink); color: var(--color-memphis-paper); }
 
 .theme-retro .prose-retro ul,
 .theme-retro .prose-retro ol {
@@ -531,73 +444,73 @@ html.theme-retro.dark ::selection {
 .theme-retro .prose-retro ul { list-style: none; }
 .theme-retro .prose-retro ul > li::before {
   content: "▸ ";
-  color: #ff3eb5;
+  color: var(--color-memphis-pink);
   font-weight: 700;
   margin-right: 0.4em;
 }
-.theme-retro.dark .prose-retro ul > li::before { color: #00ff9c; }
+.theme-retro.dark .prose-retro ul > li::before { color: var(--color-memphis-mint); }
 .theme-retro .prose-retro ol { list-style: decimal; }
 .theme-retro .prose-retro li { margin-bottom: 0.4em; }
 
 .theme-retro .prose-retro blockquote {
-  border-left: 6px solid #ff3eb5;
+  border-left: 6px solid var(--color-memphis-pink);
   background: rgba(255, 212, 0, 0.18);
   padding: 1em 1.2em;
   margin: 1.5em 0;
   font-style: italic;
 }
 .theme-retro.dark .prose-retro blockquote {
-  border-left-color: #00ff9c;
+  border-left-color: var(--color-memphis-mint);
   background: rgba(0, 229, 255, 0.08);
 }
 
 .theme-retro .prose-retro pre,
 .theme-retro pre.highlight {
-  background: #0a0e1a;
-  color: #00ff9c;
-  border: 3px solid #0d0d12;
-  box-shadow: 6px 6px 0 0 #ff3eb5;
+  background: var(--color-memphis-crt);
+  color: var(--color-memphis-mint);
+  border: 3px solid var(--color-memphis-ink);
+  box-shadow: var(--shadow-retro-pink);
   padding: 1rem 1.1rem;
   margin: 1.5em 0;
   overflow-x: auto;
-  font-family: "VT323", ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 1.05rem;
   line-height: 1.4;
   position: relative;
 }
 .theme-retro.dark .prose-retro pre,
 .theme-retro.dark pre.highlight {
-  box-shadow: 6px 6px 0 0 #00e5ff;
-  border-color: #00ff9c;
+  box-shadow: var(--shadow-retro-cyan);
+  border-color: var(--color-memphis-mint);
 }
 .theme-retro .prose-retro pre::before,
 .theme-retro pre.highlight::before {
   content: "● TERMINAL — RUN.EXE";
   display: block;
-  font-family: "Press Start 2P", monospace;
+  font-family: var(--font-display);
   font-size: 9px;
-  color: #ffd400;
+  color: var(--color-memphis-yellow);
   letter-spacing: 2px;
   margin: -1rem -1.1rem 0.8rem;
   padding: 6px 12px;
-  background: #0d0d12;
-  border-bottom: 2px solid #00ff9c;
+  background: var(--color-memphis-ink);
+  border-bottom: 2px solid var(--color-memphis-mint);
 }
 
 .theme-retro .prose-retro code,
 .theme-retro code:not(pre code) {
-  font-family: "VT323", ui-monospace, monospace;
-  background: #ffd400;
-  color: #0d0d12;
+  font-family: var(--font-mono);
+  background: var(--color-memphis-yellow);
+  color: var(--color-memphis-ink);
   padding: 0 6px;
-  border: 2px solid #0d0d12;
+  border: 2px solid var(--color-memphis-ink);
   font-size: 1em;
 }
 .theme-retro.dark .prose-retro code,
 .theme-retro.dark code:not(pre code) {
-  background: #ff3eb5;
-  color: #0a0e1a;
-  border-color: #0a0e1a;
+  background: var(--color-memphis-pink);
+  color: var(--color-memphis-crt);
+  border-color: var(--color-memphis-crt);
 }
 .theme-retro .prose-retro pre code,
 .theme-retro pre.highlight code {
@@ -620,7 +533,7 @@ html.theme-retro.dark ::selection {
 }
 
 .theme-retro .prose-retro img {
-  border: 3px solid #0d0d12;
-  box-shadow: 6px 6px 0 0 #00e5ff;
+  border: 3px solid var(--color-memphis-ink);
+  box-shadow: 6px 6px 0 0 var(--color-memphis-cyan);
   margin: 1.5em 0;
 }
