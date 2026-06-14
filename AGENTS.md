@@ -6,6 +6,18 @@
 **NEVER** run `bundle exec rails console`.
 </rules>
 
+## RFCs
+
+Significant changes, architectural decisions, and new features should be proposed as RFCs in the `rfcs/` directory. RFCs use the format `rfcs/YYYY-MM-DD_short_title.md` with the following structure:
+
+- `# Title` — short descriptive title
+- `**Date:**` — proposal date (ISO format)
+- `**Status:**` — `Proposed`, `Accepted`, `Implemented`, or `Rejected`
+- `## Goal` — what the RFC aims to accomplish
+- Remaining sections are free-form but typically include motivation, technical details, and an implementation checklist
+
+See `rfcs/2026-05-26_rest_api_for_links_and_posts.md` for a complete example.
+
 ## Commands
 
 **Test**
