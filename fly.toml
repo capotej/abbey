@@ -1,0 +1,48 @@
+# fly.toml for Abbey on fly.io.
+#
+# The image itself is built and signed by .github/workflows/docker.yml and
+# published to GHCR. Deploy it with:
+#
+#   fly deploy --image ghcr.io/<owner>/<repo>:<tag>     # e.g. :latest or :<sha>
+#
+# One-time setup (run once before the first deploy):
+#
+#   fly apps create abbey                                          # if it doesn't exist yet
+#   fly volumes create abbey_data -r iad --size 1                  # persistent SQLite + uploads
+#   fly secrets set RAILS_MASTER_KEY=$(cat config/master.key)
+#
+# Update `app` and `primary_region` below to match your setup.
+
+app = "abbey"
+primary_region = "iad"
+
+[env]
+  # Run the Solid Queue supervisor inside the Puma process (single-machine setup).
+  SOLID_QUEUE_IN_PUMA = "true"
+
+[http_service]
+  # Thruster listens on port 80 by default and proxies to Puma on 3000.
+  internal_port = 80
+  # fly terminates TLS at the edge and redirects http -> https.
+  force_https = true
+  # Scale to zero when idle to save cost; wake on the first request.
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  # Set to 1 to keep a machine warm and avoid cold starts.
+  min_machines_running = 0
+
+[http_service.concurrency]
+  type = "requests"
+  soft_limit = 200
+  hard_limit = 250
+
+# Persistent volume backing the SQLite databases and Active Storage uploads.
+# SQLite is single-writer, so keep exactly one volume in one region.
+[[mounts]]
+  source = "abbey_data"
+  destination = "/rails/storage"
+
+# arm64 to match the linux/arm64 image published by the workflow.
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"

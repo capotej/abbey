@@ -2,7 +2,7 @@
 
 <img src="https://github.com/user-attachments/assets/410090cc-85a2-41c7-b18f-a7fc7551178a" alt="abbey" width="400"/>
 
-Minimal blog using Rails 8, designed to be easily [self-hosted on AWS](https://github.com/capotej/abbey?tab=readme-ov-file#deploying-to-aws).
+Minimal blog using Rails 8, designed to be easily [self-hosted on fly.io](https://github.com/capotej/abbey?tab=readme-ov-file#deploying-to-flyio).
 
 # Features
 
@@ -56,174 +56,113 @@ This will scan the given path for files ending in `.markdown` and create a seed 
 
 **Note: This will delete everything in the local database and re-seed using `db/seeds/*`.**
 
-# Deploying to AWS
+# Deploying to fly.io
+
+Abbey ships as a Docker image that is [built and signed in CI](.github/workflows/docker.yml) on every push to `main` and on each release, then published to the GitHub Container Registry (GHCR). Deploying is just pointing fly.io at that image.
+
+The app runs [Thruster](https://github.com/basecamp/thruster/) in front of Puma, uses SQLite on a persistent volume, and runs the Solid Queue job supervisor inside the web process — so a single machine is all you need.
 
 ## Assumptions
 
-This deployment guide makes the following assumptions:
+* You have a [fly.io](https://fly.io) account and the [`flyctl` CLI](https://fly.io/docs/flyctl/) installed and authenticated (`flyctl auth login`).
+* You have a domain name you control.
+* The GitHub Actions workflow has run at least once, so an image exists at `ghcr.io/<owner>/<repo>:latest`.
 
-* You have an AWS account and are familiar with IAM policies.
+## Step 1: Create the app
 
-* You use [Tailscale](https://tailscale.com) with [Tailscale SSH](https://tailscale.com/kb/1193/tailscale-ssh) configured.
+    $ flyctl apps create --name abbey
 
-* Your computer uses ARM/Apple Silicon.
+Use any globally unique name. If you change it, update `app = "..."` in [`fly.toml`](fly.toml) to match.
 
-* You have a tool for loading `.env` files, like [dotenvx](https://dotenvx.com).
+## Step 2: Create a persistent volume
 
-## Dependencies
+SQLite and uploaded files live on a single volume (SQLite is single-writer, so keep it to one region):
 
-* A working `docker` setup. On Mac, you can use [Rancher Desktop](https://rancherdesktop.io).
+    $ flyctl volumes create abbey_data --region iad --size 1
 
-## AWS Setup
+The name `abbey_data` and mount path `/rails/storage` must match the `[[mounts]]` block in [`fly.toml`](fly.toml).
 
-### Step 1: Ensure you have a IAM role with the following policy
+## Step 3: Set secrets
 
-This role will need to be able to attach EBS volumes as well create log groups and streams inside of CloudWatch.
+    $ flyctl secrets set RAILS_MASTER_KEY=$(cat config/master.key)
 
-For example:
+## Step 4: Reserve IPs and add your domain
 
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-                "logs:DescribeLogStreams"
-            ],
-            "Resource": [
-                "arn:aws:logs:*:*:log-group:*:*",
-                "arn:aws:logs:*:*:log-group:*:*:log-stream:*"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:AttachVolume",
-                "ec2:DescribeVolumes"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
+    $ flyctl ips allocate-v4
+    $ flyctl ips allocate-v6
 
-### Step 2: Create volume
+Point an `A` record at the IPv4 address and an `AAAA` record at the IPv6 address, then request a certificate:
 
-Create an EBS volume of the desired size, noting the Availibility Zone it gets created in.
+    $ flyctl certs add your-domain.com
 
-### Step 2.5 Create a lifecycle policy to back up EBS volume
+## Step 5: Deploy the image
 
-You can use the Lifecycle Manager to create a default policy that backs up all EBS volumes going back 7 days.
-    
-### Step 3: Fill out .env
-    
-Create an `.env` file with the following variables set:
+    $ flyctl deploy --image ghcr.io/<owner>/<repo>:latest
 
-```sh
-# Get this at https://login.tailscale.com/admin/settings/keys
-# Note: These are one-time use, you'll need to generate a new one whenever you are provisioning a new instance
-TAILSCALE_AUTH_KEY=tskey-auth-xxxxxxx
+fly.io needs to pull the image from GHCR. The simplest path is to make the package **public** (Packages → your package → Package settings → Change visibility). To keep it private, [configure fly.io to authenticate](https://fly.io/docs/app-guides/private-registries/) with a GitHub PAT that has `read:packages`.
 
-# The hostname on the instance will be set to this
-# Note: This uses Tailscale HTTPS to generate certificates, so this hostname will be exposed in a public ledger: https://tailscale.com/kb/1153/enabling-https#machine-names-in-the-public-ledger
-TAILSCALE_HOSTNAME=my-blog-host-1
+The container's entrypoint runs `bin/rails db:prepare` on boot, so the database and its schema are created/migrated automatically on the first deploy.
 
-# Your hostname + Tailnet name: https://tailscale.com/kb/1217/tailnet-name
-TAILSCALE_FQDN=my-blog-host-1.tailxxxxx.ts.net
+## Step 6: Seed the database
 
-# The EBS volume-id created in Step 1
-EBS_VOLUME_ID=vol-00000000
-```
+If you imported posts earlier with `rake "blog:import[/path/to/posts]"`, load them now:
 
-## Step 4: Generate your cloud-init script
+    $ flyctl ssh console -C "/rails/bin/rails db:setup"
 
-The following rake task generates a `cloud-init` script for AWS & AWS Linux.
-    
-    $ dotenvx run --quiet -- rake cloud_init:generate
+## Step 7: Create your admin user
 
-This will do the following on a newly created instance:
-* Sets hostname
-* Sends System & Application logs to CloudWatch
-* Attaches and mounts EBS volume, partitioning/formatting, if necessary
-* Joins your Tailnet
-* Sets up a Docker registry in Tailnet, using Tailscale HTTPS
+Drop into an interactive console and replace the default user:
 
-## Step 5: Create instance
-
-Create an EC2 instance with the following settings:
-
-* Image: `Amazon Linux 2023 AMI`
-* Architecture: `64-bit (Arm)`
-* Type: `t2.small`
-* Keypair: `Proceed without a key pair` (Tailscale SSH will be managing access)
-* Network & Subnet: Ensure subnet is in the same Availability Zone as the EBS Volume created in Step 2
-* Firewall (security groups): Only allow `HTTP (80)` and `HTTPS (443)` from any `IPv4` or `IPv6` address
-* Storage: Default is fine, `8GiB gp3` Root Volume
-* Advanced Details / IAM Instance Profile: The role created in Step 1
-* Advanced Details / User data: The output of Step 4 (on Mac you can add `| pbcopy` to get it in your clipboard)
-
-## Step 6: Point domain to instance
-
-Create an `A Record` pointing to the public IPv4 address of the instance created in Step 5.
-
-## Step 7: Configure config/deploy.yml
-
-Open `config/deploy.yml` and change the `host:` to the domain used in Step 6:
-
-```yaml
-proxy:
-  ssl: true
-  host: capotej.com
-```
-
-## Step 8: Setup Kamal
-
-    $ dotenvx run -- kamal setup
-
-## Step 9: Setup database
-
-If you used `rake "blog:import[/path/to/posts]"` above, this will create those posts at this time.
-
-    $ dotenvx run -- kamal app exec -i rake db:setup
-
-## Step 10: Delete default user and create your own
-
-    $ dotenvx run -- kamal console
-    rails(production)> User.destroy_all
-    rails(production)> User.create!(email_address: "you@example.org", password: "s3cr3t",   password_confirmation: "s3cr3t")
+    $ flyctl ssh console -C "/rails/bin/rails console"
+    irb(production)> User.destroy_all
+    irb(production)> User.create!(email_address: "you@example.org", password: "s3cr3t", password_confirmation: "s3cr3t")
 
 # Runbook
 
-## View Logs
+## View logs
 
-    $ dotenvx run -- kamal logs
+    $ flyctl logs
 
 ## Get a console
 
-    $ dotenvx run -- kamal console
+    $ flyctl ssh console -C "/rails/bin/rails console"
+
+## Get a shell
+
+    $ flyctl ssh console
 
 ## Deploy
 
-    $ dotenvx run -- kamal deploy
-    
+    $ flyctl deploy --image ghcr.io/<owner>/<repo>:latest
+
 ## Run a rake task
 
-    $ dotenvx run -- kamal app exec -i rake db:setup
+    $ flyctl ssh console -C "/rails/bin/rails <task>"
 
 # Common Issues / Troubleshooting
 
-## Docker registry cert expiration
+## Volume permission errors on first deploy
+
+The Dockerfile runs as a non-root user (`uid 1000`), but fly.io mounts volumes as `root`. The first write to `/rails/storage` (the SQLite database) may fail with a permission error. Fix the ownership once:
+
+    $ flyctl ssh console -C "sudo chown -R 1000:1000 /rails/storage"
+
+If `sudo` is unavailable in the image, redeploy with the machine running as root for one boot to fix ownership, or adjust the entrypoint to chown the mount before dropping privileges.
+
+## Image not found / pull unauthorized
 
 ```
-tls: failed to verify certificate: x509: certificate has expired or is not yet valid
+image not found: ghcr.io/<owner>/<repo>:latest
 ```
 
-To fix this, SSH into the instance and restart the docker registry server to regenerate certificates.
+Either the CI workflow hasn't published an image yet, or the GHCR package is private and fly.io can't authenticate. Make the package public, or [configure registry auth](https://fly.io/docs/app-guides/private-registries/).
 
-```
-# systemctl restart registry
-```
+## Database not migrating
+
+The entrypoint runs `db:prepare` automatically on boot. To force it manually:
+
+    $ flyctl ssh console -C "/rails/bin/rails db:migrate"
+
+## HTTPS not working
+
+Check the certificate status with `flyctl certs show your-domain.com`, and confirm your DNS records point at the addresses from `flyctl ips list`.

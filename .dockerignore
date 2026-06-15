@@ -39,12 +39,21 @@
 # Ignore CI service files.
 /.github
 
-# Ignore Kamal files.
+# Ignore deploy files.
 /config/deploy*.yml
-/.kamal
+/fly.toml
 
 # Ignore development files
 /.devcontainer
+
+# Ignore editor, agent, and dev-tooling config (not needed at runtime).
+/.claude
+/.crush
+/.crush.json
+/.agents
+/AGENTS.md
+/mise.toml
+/Procfile.dev
 
 # Ignore Docker-related files
 /.dockerignore
