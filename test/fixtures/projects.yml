@@ -1,0 +1,15 @@
+abbey:
+  name: Abbey
+  year: 2024
+  github_url: https://github.com/capotej/abbey
+  license: MIT
+  language: Ruby
+  description: A personal blog built with Rails.
+
+example:
+  name: Example Project
+  year: 2022
+  github_url: https://github.com/capotej/example
+  license: Apache-2.0
+  language: Go
+  description: An example Go project.

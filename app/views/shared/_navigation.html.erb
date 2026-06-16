@@ -17,8 +17,8 @@
       <%= link_to "Presentations", "/p/presentations",
           class: "#{current_page?('/p/presentations') ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'} transition-colors" %>
 
-      <%= link_to "Projects", "/p/projects",
-          class: "#{current_page?('/p/projects') ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'} transition-colors" %>
+      <%= link_to "Projects", projects_path,
+          class: "#{current_page?(projects_path) ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'} transition-colors" %>
 
       <%= link_to "Links", links_path,
           class: "#{current_page?(links_path) ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'} transition-colors" %>

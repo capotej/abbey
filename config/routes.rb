@@ -34,7 +34,7 @@ Rails.application.routes.draw do
 
   # handle old pages from capotej.com
   get "/about", to: redirect("/p/about")
-  get "/projects", to: redirect("/p/projects")
+  resources :projects, only: %i[ index new create edit update destroy ]
   get "/presentations", to: redirect("/p/presentations")
   get "/render-image-links-directly-inside-adium", to: "blog#redirect"
   get "/finagle-with-scala-bootstrapper", to: "blog#redirect"
