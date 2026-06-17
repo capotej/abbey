@@ -1,2 +1,3 @@
 web: bin/rails server
 css: bin/rails tailwindcss:watch
+themes: bin/rails themes:tailwind:watch

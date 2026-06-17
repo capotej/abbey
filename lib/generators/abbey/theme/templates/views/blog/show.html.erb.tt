@@ -1,0 +1,23 @@
+<%%# <%= theme_display_name %> blog post. %>
+<%% content_for :title, @post.title %>
+<%% content_for :meta do %>
+  <%%= meta_tags(
+    title:          @post.title,
+    description:    @post.markdown_excerpt,
+    type:           "article",
+    published_time: @post.created_at.iso8601,
+    updated_time:   @post.updated_at.iso8601,
+    tags:           @post.tags.map(&:name),
+  ) %>
+<%% end %>
+
+<article class="max-w-3xl mx-auto">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold mb-2"><%%= @post.title %></h1>
+    <time class="text-sm text-<%= file_name %>-muted"><%%= @post.created_at.strftime("%Y-%m-%d") %></time>
+  </header>
+  <div class="prose dark:prose-invert max-w-none">
+    <%%= @post.rendered_body.html_safe %>
+  </div>
+  <%%= render "shared/tags", tags: @post.tags %>
+</article>

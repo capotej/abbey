@@ -1,0 +1,5 @@
+<%%# Thin layout shell for the <%= file_name %> theme.
+    The shared chrome partial reads everything from theme.rb. %>
+<%%= render "layouts/abbey_chrome" do %>
+  <%%= yield %>
+<%% end %>

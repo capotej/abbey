@@ -1,0 +1,9 @@
+<%%# <%= theme_display_name %> single link. %>
+<li>
+  <a class="text-<%= file_name %>-accent hover:underline" href="<%%= link.url %>" target="_blank" rel="noopener">
+    <%%= link.title %>
+  </a>
+  <%% if link.notes.present? %>
+    <p class="text-sm text-<%= file_name %>-muted mt-1"><%%= link.notes %></p>
+  <%% end %>
+</li>

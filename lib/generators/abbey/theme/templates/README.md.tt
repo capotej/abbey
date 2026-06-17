@@ -1,0 +1,28 @@
+# <%= theme_display_name %>
+
+An Abbey drop-in theme. Activate with:
+
+```sh
+ABBEY_THEME=<%= file_name %> bin/dev
+```
+
+## Folder layout
+
+```
+app/themes/<%= file_name %>/
+  theme.rb          # manifest (Abbey::Theme.register)
+  assets/
+    tailwind.css    # per-theme Tailwind entry point
+  views/            # ERB overrides (any subset; the rest fall back to defaults)
+  README.md
+```
+
+## How it loads
+
+* Abbey boots → scans `app/themes/*/theme.rb` → registers each theme.
+* `ABBEY_THEME=<%= file_name %>` (or `Rails.application.config.theme = "<%= file_name %>"`) makes this the active theme.
+* The active theme's `views/` directory is prepended to Rails' view path, so any ERB you ship overrides Abbey's default.
+* The chrome partial (`app/views/layouts/_abbey_chrome.html.erb`) renders `<head>`, `<body>`, navigation, and footer using values from `theme.rb`. You don't need to maintain a full layout unless you want to.
+* The per-theme Tailwind bundle (`tailwind-<%= file_name %>.css`) is built into `app/assets/builds/` and loaded automatically.
+
+See `docs/THEMES.md` for the authoring guide and `docs/THEMES_API.md` for the full manifest reference.

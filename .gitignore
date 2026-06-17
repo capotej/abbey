@@ -16,6 +16,9 @@
 !/log/.keep
 !/tmp/.keep
 
+# Generator test scratch directory (Rails::Generators::TestCase destination).
+/test/tmp/
+
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
 !/tmp/pids/

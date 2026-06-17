@@ -1,0 +1,24 @@
+<% if authenticated? %>
+  <div class="fixed top-0 left-0 right-0 z-50 bg-memphis-ink text-memphis-mint border-b-[3px] border-memphis-pink shadow-retro-pink font-mono text-base">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <div class="flex items-center justify-between h-10">
+        <div class="flex items-center gap-5">
+          <span class="font-display text-[9px] uppercase tracking-widest text-memphis-yellow">SYSOP&gt;</span>
+          <%= link_to "New Post",  new_post_path,    class: "hover:text-memphis-pink transition-colors" %>
+          <%= link_to "New Page",  new_page_path,    class: "hover:text-memphis-pink transition-colors" %>
+          <%= link_to "New Link",  new_link_path,    class: "hover:text-memphis-pink transition-colors" %>
+          <%= link_to "Feeds",     feeds_path,       class: "hover:text-memphis-cyan transition-colors" %>
+          <%= link_to "Read",      feed_posts_path,  class: "hover:text-memphis-cyan transition-colors" %>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="hidden sm:inline text-memphis-yellow text-sm">ONLINE<span class="animate-blink">▮</span></span>
+          <%= button_to session_path,
+              method: :delete,
+              class: "hover:text-memphis-pink transition-colors" do %>
+            Sign out
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

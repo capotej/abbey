@@ -1,0 +1,17 @@
+<%%# <%= theme_display_name %> blog index. %>
+<div class="space-y-8">
+  <%% @posts.each do |post| %>
+    <article>
+      <h2 class="text-xl font-semibold mb-1">
+        <a class="hover:text-<%= file_name %>-accent" href="<%%= dated_post_path(year: post.year, month: post.month, day: post.day, id: post.slug) %>">
+          <%%= post.title %>
+        </a>
+      </h2>
+      <time class="block text-sm text-<%= file_name %>-muted mb-2"><%%= post.created_at.strftime("%Y-%m-%d") %></time>
+      <div class="prose dark:prose-invert max-w-none">
+        <%%= post.rendered_excerpt.html_safe %>
+      </div>
+    </article>
+  <%% end %>
+  <%%= paginate @posts %>
+</div>

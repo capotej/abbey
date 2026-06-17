@@ -1,0 +1,24 @@
+<% if authenticated? %>
+  <div class="fixed top-0 left-0 right-0 z-50 bg-grim-void text-grim-bone border-b border-grim-gold font-plex text-[0.74rem] tracking-[0.12em]">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <div class="flex items-center justify-between h-10">
+        <div class="flex items-center gap-5">
+          <span class="text-grim-ember font-bold uppercase">adept@grimoire $</span>
+          <%= link_to ":transcribe", new_post_path,    class: "text-grim-gold hover:text-grim-ember transition-colors" %>
+          <%= link_to ":inscribe",  new_page_path,    class: "text-grim-gold hover:text-grim-ember transition-colors" %>
+          <%= link_to ":bind",      new_link_path,    class: "text-grim-gold hover:text-grim-ember transition-colors" %>
+          <%= link_to ":auguries",  feeds_path,       class: "text-grim-phosphor hover:text-grim-ember transition-colors" %>
+          <%= link_to ":scry",      feed_posts_path,  class: "text-grim-phosphor hover:text-grim-ember transition-colors" %>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="hidden sm:inline text-grim-phosphor text-[0.7rem]">RING-0<span class="cursor-blink"></span></span>
+          <%= button_to session_path,
+              method: :delete,
+              class: "text-grim-gold hover:text-grim-ember transition-colors" do %>
+            :depart
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

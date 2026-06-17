@@ -1,0 +1,37 @@
+<% content_for :title do %>
+Papers | <%= Rails.application.config.site_name %>
+<% end %>
+
+<div class="max-w-3xl mx-auto">
+  <header class="mb-8 bg-memphis-yellow text-memphis-ink border-[3px] border-memphis-ink shadow-retro p-6 -rotate-1">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <p class="font-display text-[10px] uppercase tracking-widest text-memphis-pink mb-2">// reading_list</p>
+        <h1 class="h-display h-display-lg" style="text-shadow: 3px 3px 0 #0d0d12">
+          Papers
+        </h1>
+        <p class="font-mono text-xl mt-2">&gt; arxiv printouts &amp; pdf rabbit holes<span class="animate-blink">_</span></p>
+      </div>
+      <% if @papers.any? && authenticated? %>
+        <%= link_to "+ Add paper", new_link_path, class: "btn-retro btn-retro-pink" %>
+      <% end %>
+    </div>
+  </header>
+
+  <% if @papers.any? %>
+    <div class="space-y-6">
+      <%= render @papers %>
+    </div>
+
+    <div class="pt-4">
+      <%= paginate @papers %>
+    </div>
+  <% else %>
+    <div class="bg-memphis-paper dark:bg-memphis-crt border-[3px] border-memphis-ink dark:border-memphis-mint shadow-retro p-8 text-center">
+      <p class="font-mono text-xl text-memphis-purple dark:text-memphis-cyan mb-4">&gt; no papers in this archive yet<span class="animate-blink">_</span></p>
+      <% if authenticated? %>
+        <%= link_to "+ Add your first paper", new_link_path, class: "btn-retro btn-retro-pink" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

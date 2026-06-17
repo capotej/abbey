@@ -1,0 +1,79 @@
+/* =============================================================================
+   Retro theme Tailwind entry point.
+
+   Compiled by `bin/rails tailwindcss:build` into
+   `app/assets/builds/tailwind-retro.css` and loaded only when
+   ABBEY_THEME=retro is active (via app/helpers/application_helper.rb#
+   theme_stylesheets). Self-contained: the default Abbey bundle never
+   sees these tokens or scans these views.
+============================================================================= */
+
+@import 'tailwindcss';
+
+/* Match the default Abbey bundle: dark mode is toggled via a `.dark`
+   class on <html>, not the OS prefers-color-scheme setting. Without
+   this, `dark:bg-*` utilities ignore our cookie-driven toggle. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@config '../../../../config/tailwind.config.js';
+
+/* Scan only this theme's view files. Tailwind walks every directory we
+   list here; everything else (the default app/views/, other themes) is
+   ignored, so memphis-* utilities don't bleed into the default bundle. */
+@source "../views";
+
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* ---------- Memphis palette ---------- */
+  --color-memphis-paper:  #fff8ef;
+  --color-memphis-ink:    #0d0d12;
+  --color-memphis-crt:    #0a0e1a;
+  --color-memphis-pink:   #ff3eb5;
+  --color-memphis-cyan:   #00e5ff;
+  --color-memphis-yellow: #ffd400;
+  --color-memphis-mint:   #00ff9c;
+  --color-memphis-purple: #b14aff;
+  --color-memphis-coral:  #ff6b4a;
+
+  /* ---------- Retro hard-shadow utilities ---------- */
+  --shadow-retro-sm:     4px 4px 0 0 #0d0d12;
+  --shadow-retro:        6px 6px 0 0 #0d0d12;
+  --shadow-retro-lg:     10px 10px 0 0 #0d0d12;
+  --shadow-retro-pink:   6px 6px 0 0 #ff3eb5;
+  --shadow-retro-cyan:   6px 6px 0 0 #00e5ff;
+  --shadow-retro-yellow: 6px 6px 0 0 #ffd400;
+  --shadow-retro-mint:   6px 6px 0 0 #00ff9c;
+  --shadow-retro-purple: 6px 6px 0 0 #b14aff;
+  --shadow-retro-coral:  6px 6px 0 0 #ff6b4a;
+
+  /* ---------- Theme font families ----------
+     Default values are inert system stacks; .theme-retro rebinds them
+     to the Google Fonts loaded in the layout (Space Grotesk, VT323,
+     Press Start 2P). See retro.css for the rebinding. */
+  --font-display: ui-sans-serif, system-ui, sans-serif;
+
+  /* ---------- Theme animations ---------- */
+  --animate-blink:   theme-blink   1s steps(2, start) infinite;
+  --animate-wiggle:  theme-wiggle  0.4s ease-in-out;
+  --animate-pop-in:  theme-pop-in  0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-marquee: theme-marquee 28s linear infinite;
+
+  @keyframes theme-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  @keyframes theme-wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25%      { transform: rotate(-3deg); }
+    75%      { transform: rotate(3deg); }
+  }
+  @keyframes theme-pop-in {
+    0%   { opacity: 0; transform: translateY(8px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes theme-marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+}

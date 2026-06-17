@@ -1,0 +1,10 @@
+<%%# <%= theme_display_name %> theme tag chips. %>
+<%% if tags.present? %>
+  <div class="flex flex-wrap gap-2">
+    <%% tags.each do |tag| %>
+      <a class="text-xs px-2 py-1 border border-<%= file_name %>-muted/40 rounded hover:text-<%= file_name %>-accent" href="<%%= tag_path(name: tag.name) %>">
+        #<%%= tag.name %>
+      </a>
+    <%% end %>
+  </div>
+<%% end %>

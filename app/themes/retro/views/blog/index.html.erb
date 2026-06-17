@@ -1,0 +1,54 @@
+<%
+  card_palettes = [
+    { shadow: 'shadow-retro-pink',   accent: 'bg-memphis-pink',   text: 'text-memphis-paper' },
+    { shadow: 'shadow-retro-cyan',   accent: 'bg-memphis-cyan',   text: 'text-memphis-ink'   },
+    { shadow: 'shadow-retro-yellow', accent: 'bg-memphis-yellow', text: 'text-memphis-ink'   },
+    { shadow: 'shadow-retro-mint',   accent: 'bg-memphis-mint',   text: 'text-memphis-ink'   },
+    { shadow: 'shadow-retro-purple', accent: 'bg-memphis-purple', text: 'text-memphis-paper' },
+    { shadow: 'shadow-retro-coral',  accent: 'bg-memphis-coral',  text: 'text-memphis-paper' }
+  ]
+%>
+
+<div class="space-y-10">
+  <% @posts.each_with_index do |post, idx| %>
+    <% palette = card_palettes[(post.id || idx) % card_palettes.length] %>
+    <article class="relative bg-memphis-paper dark:bg-memphis-crt border-[3px] border-memphis-ink dark:border-memphis-mint <%= palette[:shadow] %> p-6 md:p-8 animate-pop-in transition-transform duration-200 hover:-translate-x-1 hover:-translate-y-1">
+
+      <div class="absolute -top-4 -left-4 <%= palette[:accent] %> <%= palette[:text] %> border-[3px] border-memphis-ink px-3 py-1 font-display text-[10px] uppercase tracking-widest shadow-retro-sm rotate-[-3deg]">
+        <%= post.created_at.strftime('%b %Y') %>
+      </div>
+
+      <h2 class="h-display h-display-md mt-2 mb-3">
+        <%= link_to post.title, dated_post_path(year: post.year, day: post.day, month: post.month, id: post),
+            class: "hover:text-memphis-pink dark:hover:text-memphis-cyan transition-colors glitch-hover" %>
+      </h2>
+
+      <time class="font-mono text-base text-memphis-purple dark:text-memphis-cyan mb-4 block">
+        &gt;&gt; <%= post.created_at.strftime('%Y-%m-%d') %>
+      </time>
+
+      <div class="font-sans text-memphis-ink dark:text-memphis-paper/90 leading-relaxed mb-4">
+        <%= post.rendered_excerpt.html_safe %>
+      </div>
+
+      <div class="flex flex-wrap gap-2 my-4">
+        <%= render "shared/tags", post: post %>
+      </div>
+
+      <div class="mt-4 flex items-center gap-3 flex-wrap">
+        <% if authenticated? %>
+          <%= link_to "Edit", edit_post_path(post), class: "font-mono text-base text-memphis-purple dark:text-memphis-cyan hover:underline" %>
+          <span class="font-mono text-memphis-ink/40 dark:text-memphis-mint/40">|</span>
+        <% end %>
+        <%= link_to dated_post_path(year: post.year, day: post.day, month: post.month, id: post),
+            class: "btn-retro btn-retro-cyan" do %>
+          ▶ Read more
+        <% end %>
+      </div>
+    </article>
+  <% end %>
+
+  <div class="pt-4">
+    <%= paginate @posts %>
+  </div>
+</div>

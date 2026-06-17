@@ -1,0 +1,8 @@
+<%%# <%= theme_display_name %> page. %>
+<%% content_for :title, @page.title %>
+<article class="max-w-3xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6"><%%= @page.title %></h1>
+  <div class="prose dark:prose-invert max-w-none">
+    <%%= @page.rendered_body.html_safe %>
+  </div>
+</article>

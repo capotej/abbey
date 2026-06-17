@@ -1,0 +1,6 @@
+<%%# <%= theme_display_name %> links index. %>
+<h2 class="text-2xl font-bold mb-6">Links</h2>
+<ul class="space-y-4">
+  <%%= render @links %>
+</ul>
+<%%= paginate @links %>

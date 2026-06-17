@@ -1,0 +1,9 @@
+<%%# <%= theme_display_name %> single paper. %>
+<li>
+  <a class="text-<%= file_name %>-accent hover:underline" href="<%%= paper.url %>" target="_blank" rel="noopener">
+    <%%= paper.title %>
+  </a>
+  <%% if paper.authors.present? %>
+    <p class="text-sm text-<%= file_name %>-muted mt-1"><%%= paper.authors %></p>
+  <%% end %>
+</li>

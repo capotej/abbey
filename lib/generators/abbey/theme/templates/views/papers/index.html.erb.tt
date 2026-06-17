@@ -1,0 +1,6 @@
+<%%# <%= theme_display_name %> papers index. %>
+<h2 class="text-2xl font-bold mb-6">Papers</h2>
+<ul class="space-y-4">
+  <%%= render @papers %>
+</ul>
+<%%= paginate @papers %>

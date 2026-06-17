@@ -1,0 +1,20 @@
+<%%# <%= theme_display_name %> theme navigation. Override of app/views/shared/_navigation.html.erb. %>
+<header class="border-b border-gray-200 dark:border-gray-800">
+  <div class="container mx-auto px-4 py-6 max-w-5xl">
+    <a class="block" href="<%%= root_path %>">
+      <h1 class="text-2xl font-bold text-<%= file_name %>-fg dark:text-<%= file_name %>-bg">
+        <%%= Rails.application.config.site_name %>
+      </h1>
+    </a>
+    <nav class="mt-4 flex flex-wrap gap-4 text-sm">
+      <a class="hover:text-<%= file_name %>-accent" href="<%%= root_path %>">Home</a>
+      <a class="hover:text-<%= file_name %>-accent" href="/p/about">About</a>
+      <a class="hover:text-<%= file_name %>-accent" href="/links">Links</a>
+      <a class="hover:text-<%= file_name %>-accent" href="/papers">Papers</a>
+      <button onclick="toggleDarkMode()" class="ml-auto" aria-label="Toggle dark mode">
+        <span class="dark:hidden">🌙</span>
+        <span class="hidden dark:inline">☀</span>
+      </button>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,114 @@
+/* =============================================================================
+   Abbey – Grimoire Theme Syntax Highlighting
+   ------------------------------------------------------------------
+   The wizard's terminal: phosphor green base, gold sigils for keywords,
+   blood-red for strings (literal incantations), ember for comments
+   (footnotes from the necromancer).
+
+   All Rouge classes are scoped under `.theme-grimoire` so this file is a
+   no-op when another theme (or the default theme) is active.
+   =============================================================================*/
+
+.theme-grimoire pre.highlight,
+.theme-grimoire .highlight pre {
+  background: #07080d !important;
+  color: #57f287;
+}
+
+/* Comments — the necromancer's marginalia */
+.theme-grimoire .highlight .c,
+.theme-grimoire .highlight .ch,
+.theme-grimoire .highlight .cd,
+.theme-grimoire .highlight .cm,
+.theme-grimoire .highlight .cpf,
+.theme-grimoire .highlight .c1,
+.theme-grimoire .highlight .cs { color: #f08029; font-style: italic; opacity: 0.85; }
+.theme-grimoire .highlight .cp { color: #f08029; font-weight: 700; }
+
+/* Errors — broken sigils */
+.theme-grimoire .highlight .err { color: #ff5a5f; background: rgba(255,90,95,0.12); }
+
+/* Keywords — true names */
+.theme-grimoire .highlight .k,
+.theme-grimoire .highlight .kc,
+.theme-grimoire .highlight .kd,
+.theme-grimoire .highlight .kn,
+.theme-grimoire .highlight .kp,
+.theme-grimoire .highlight .kr,
+.theme-grimoire .highlight .kv { color: #c8a44d; font-weight: 700; }
+.theme-grimoire .highlight .kt { color: #c8a44d; }
+
+/* Operators / punctuation */
+.theme-grimoire .highlight .o,
+.theme-grimoire .highlight .ow { color: #c8a44d; }
+.theme-grimoire .highlight .p { color: #e9e0c8; }
+
+/* Names */
+.theme-grimoire .highlight .n   { color: #e9e0c8; }
+.theme-grimoire .highlight .na  { color: #c8a44d; }
+.theme-grimoire .highlight .nb  { color: #c8a44d; }
+.theme-grimoire .highlight .nc  { color: #f08029; font-weight: 700; }
+.theme-grimoire .highlight .no  { color: #c8a44d; }
+.theme-grimoire .highlight .nd  { color: #f08029; }
+.theme-grimoire .highlight .ne  { color: #ff5a5f; font-weight: 700; }
+.theme-grimoire .highlight .nf  { color: #57f287; font-weight: 700; }
+.theme-grimoire .highlight .nl  { color: #c8a44d; }
+.theme-grimoire .highlight .nn  { color: #e9e0c8; }
+.theme-grimoire .highlight .py  { color: #c8a44d; }
+.theme-grimoire .highlight .nt  { color: #f08029; font-weight: 700; }
+.theme-grimoire .highlight .nv,
+.theme-grimoire .highlight .vc,
+.theme-grimoire .highlight .vg,
+.theme-grimoire .highlight .vi { color: #c8a44d; }
+
+/* Literals */
+.theme-grimoire .highlight .l   { color: #57f287; }
+.theme-grimoire .highlight .ld  { color: #57f287; }
+
+/* Strings — literal incantations */
+.theme-grimoire .highlight .s,
+.theme-grimoire .highlight .sb,
+.theme-grimoire .highlight .sc,
+.theme-grimoire .highlight .dl,
+.theme-grimoire .highlight .sd,
+.theme-grimoire .highlight .s2,
+.theme-grimoire .highlight .se,
+.theme-grimoire .highlight .sh,
+.theme-grimoire .highlight .si,
+.theme-grimoire .highlight .sx,
+.theme-grimoire .highlight .sr,
+.theme-grimoire .highlight .s1,
+.theme-grimoire .highlight .ss { color: #ff8d97; }
+
+/* Numbers */
+.theme-grimoire .highlight .m,
+.theme-grimoire .highlight .mb,
+.theme-grimoire .highlight .mf,
+.theme-grimoire .highlight .mh,
+.theme-grimoire .highlight .mi,
+.theme-grimoire .highlight .il,
+.theme-grimoire .highlight .mo,
+.theme-grimoire .highlight .mx { color: #f08029; }
+
+/* Diff */
+.theme-grimoire .highlight .gd { color: #ff5a5f; background: rgba(255,90,95,0.10); }
+.theme-grimoire .highlight .gi { color: #57f287; background: rgba(87,242,135,0.10); }
+
+/* Generic */
+.theme-grimoire .highlight .ge { font-style: italic; }
+.theme-grimoire .highlight .gh { color: #c8a44d; font-weight: 700; }
+.theme-grimoire .highlight .gs { font-weight: 700; }
+.theme-grimoire .highlight .gu { color: #f08029; font-weight: 700; }
+.theme-grimoire .highlight .gp { color: #c8a44d; }
+.theme-grimoire .highlight .gt { color: #ff5a5f; }
+.theme-grimoire .highlight .gl { color: #e9e0c8; }
+
+/* Line numbers */
+.theme-grimoire .highlight .lineno,
+.theme-grimoire .highlight .gh.filename {
+  color: #6a4cab;
+  border-right: 1px solid rgba(200,164,77,0.25);
+  padding-right: .55em;
+  margin-right: .55em;
+  user-select: none;
+}

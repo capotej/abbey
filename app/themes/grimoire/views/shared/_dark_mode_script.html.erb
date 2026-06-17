@@ -1,0 +1,40 @@
+<%# Grimoire override: shared Turbo-safe dark mode + Konami easter egg. %>
+<%= render "shared/dark_mode_script_core", theme: Abbey::Theme.active %>
+<script>
+//<![CDATA[
+if (!window.__abbeyKonamiBound) { window.__abbeyKonamiBound = true;
+(function() {
+  var seq = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","KeyB","KeyA"];
+  var idx = 0;
+  document.addEventListener("keydown", function(e) {
+    var want = seq[idx];
+    if (e.code === want || e.key === want) {
+      idx++;
+      if (idx === seq.length) { idx = 0; summon(); }
+    } else {
+      idx = (e.code === seq[0] || e.key === seq[0]) ? 1 : 0;
+    }
+  });
+  function summon() {
+    document.cookie = "dark_mode=true; path=/; max-age=31536000; SameSite=Lax";
+    window.applyAbbeyDarkMode();
+    var overlay = document.createElement("div");
+    overlay.className = "incant-overlay";
+    overlay.innerHTML = "<div class=\"incant-title\">N E C R O M A N C E R</div><div class=\"incant-sub\">// mode unlocked · press any key to dismiss //</div>";
+    document.body.appendChild(overlay);
+    var dismiss = function() {
+      overlay.style.transition = "opacity .4s ease";
+      overlay.style.opacity = 0;
+      setTimeout(function() { overlay.remove(); }, 400);
+      document.removeEventListener("keydown", dismiss);
+      document.removeEventListener("click", dismiss);
+    };
+    setTimeout(function() {
+      document.addEventListener("keydown", dismiss);
+      document.addEventListener("click", dismiss);
+    }, 200);
+  }
+})();
+}
+//]]>
+</script>

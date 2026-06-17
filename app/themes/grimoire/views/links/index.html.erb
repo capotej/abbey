@@ -1,0 +1,34 @@
+<% content_for :rss do %>
+  <%= auto_discovery_link_tag(:atom, links_feed_path) %>
+<% end %>
+
+<% content_for :rss_button do %>
+  <%= link_to links_feed_path, class: "icon-rune", aria: { label: "RSS Feed" } do %>
+    <%= render "shared/icons/rss" %>
+  <% end %>
+<% end %>
+
+<% content_for :title do %>
+Forbidden Tomes | <%= Rails.application.config.site_name %>
+<% end %>
+
+<div class="max-w-3xl mx-auto">
+  <header class="tome mb-10">
+    <p class="font-plex text-xs tracking-[0.22em] uppercase text-grim-blood dark:text-grim-ember mb-2">
+      // reliquary
+    </p>
+    <h1 class="h-blackletter text-3xl md:text-4xl mb-2">
+      Forbidden Tomes<span class="cursor-blink"></span>
+    </h1>
+    <p class="font-plex text-xs tracking-[0.18em] uppercase text-grim-shadow/70 dark:text-grim-gold/70">
+      ✦ links worth your wax candle ✦
+    </p>
+  </header>
+
+  <div class="rune-divider"><span>// BOOKMARKS //</span></div>
+
+  <div class="space-y-6 mt-6">
+    <%= render @links %>
+  </div>
+  <div class="pt-4"><%= paginate @links %></div>
+</div>

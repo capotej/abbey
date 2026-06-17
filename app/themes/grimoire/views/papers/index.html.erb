@@ -1,0 +1,45 @@
+<% content_for :title do %>
+Treatises | <%= Rails.application.config.site_name %>
+<% end %>
+
+<div class="max-w-3xl mx-auto">
+  <header class="tome mb-10">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <p class="font-plex text-xs tracking-[0.22em] uppercase text-grim-blood dark:text-grim-ember mb-2">
+          // codices &amp; treatises
+        </p>
+        <h1 class="h-blackletter text-3xl md:text-4xl mb-2">
+          Treatises<span class="cursor-blink"></span>
+        </h1>
+        <p class="font-plex text-xs tracking-[0.18em] uppercase text-grim-shadow/70 dark:text-grim-gold/70">
+          ✦ arxiv printouts &amp; pdf rabbit holes
+        </p>
+      </div>
+      <% if @papers.any? && authenticated? %>
+        <%= link_to "+ inscribe paper", new_link_path, class: "spell-btn spell-btn-blood" %>
+      <% end %>
+    </div>
+  </header>
+
+  <% if @papers.any? %>
+    <div class="rune-divider"><span>// FOLIO //</span></div>
+
+    <div class="space-y-6 mt-6">
+      <%= render @papers %>
+    </div>
+
+    <div class="pt-4">
+      <%= paginate @papers %>
+    </div>
+  <% else %>
+    <div class="tome text-center">
+      <p class="font-plex text-sm tracking-[0.18em] uppercase text-grim-shadow/70 dark:text-grim-gold/70 mb-4">
+        // no folios in this archive yet<span class="cursor-blink"></span>
+      </p>
+      <% if authenticated? %>
+        <%= link_to "+ inscribe first paper", new_link_path, class: "spell-btn spell-btn-blood" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

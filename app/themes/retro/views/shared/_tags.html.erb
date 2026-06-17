@@ -1,0 +1,15 @@
+<%
+  tag_palette = %w[
+    tag-color-1
+    tag-color-2
+    tag-color-3
+    tag-color-4
+    tag-color-5
+    tag-color-6
+  ]
+%>
+<% post.tags.each do |tag| %>
+  <% color = tag_palette[tag.name.sum % tag_palette.length] %>
+  <%= link_to "##{tag.name}", tag_path(id: tag.name),
+      class: "tag-retro #{color}" %>
+<% end %>

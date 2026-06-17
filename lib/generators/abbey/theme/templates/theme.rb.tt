@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+
+# Manifest for the <%= file_name %> theme.
+# See docs/THEMES_API.md for the full manifest reference.
+Abbey::Theme.register(:<%= file_name %>) do |t|
+  t.display_name      = <%= theme_display_name.inspect %>
+  t.html_class        = <%= theme_html_class.inspect %>
+  t.body_class        = "min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+  t.main_class        = "container mx-auto px-4 py-8 max-w-5xl flex-1"
+
+  # :default (Tailwind-class-rich HTML) or :minimal (semantic HTML).
+  # See app/models/concerns/rendering.rb for what each emits.
+  t.markdown_renderer = :default
+
+  # Browser chrome color — emitted as <meta name="theme-color"> for
+  # light + dark modes. Use a single value or both.
+  t.theme_color_light = "#ffffff"
+  t.theme_color_dark  = "#0a0a0a"
+
+  # Inline SVG favicon (kept inline so themes don't need precompiled
+  # binary assets shipped through the asset pipeline). Optional.
+  # t.favicon_svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='<%= theme_module_color %>'/></svg>"
+
+  # Web fonts to inject in <head>. Array of full stylesheet URLs.
+  # The chrome partial adds the preconnect <link>s automatically.
+  # t.fonts = [
+  #   "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap",
+  # ]
+end
