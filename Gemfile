@@ -71,7 +71,7 @@ gem "tailwindcss-rails", "~> 4.0"
 
 gem "kaminari", "~> 1.2"
 
-gem "rouge", "~> 5.0"
+gem "rouge", "~> 5.1"
 
 gem "redcarpet", "~> 3.6"
 
